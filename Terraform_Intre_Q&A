@@ -1,0 +1,153 @@
+Here are some commonly asked Terraform interview questions along with answers to help you prepare for your DevOps Engineer position:
+
+---
+
+### **1. What is Terraform? How is it different from other IaC tools?**
+**Answer:**  
+Terraform is an open-source Infrastructure as Code (IaC) tool developed by HashiCorp. It allows DevOps engineers to define, provision, and manage infrastructure resources across various cloud providers using declarative configuration files.
+
+**Difference from other IaC tools:**  
+- Unlike Ansible, Terraform focuses on provisioning infrastructure rather than configuration management.
+- Compared to CloudFormation (which is AWS-specific), Terraform is cloud-agnostic and supports multiple providers.
+
+---
+
+### **2. What are Terraform providers?**
+**Answer:**  
+Terraform providers are plugins that enable Terraform to interact with different cloud providers and services (AWS, Azure, Google Cloud) as well as on-premises systems (VMware, Kubernetes).  
+Example in Terraform configuration:
+```hcl
+provider "aws" {
+  region = "us-east-1"
+}
+```
+
+---
+
+### **3. What is a Terraform state file? Why is it important?**
+**Answer:**  
+The Terraform state file (`terraform.tfstate`) keeps track of the resources managed by Terraform. It is crucial because:
+- Stores metadata about the infrastructure.
+- Allows Terraform to detect changes between the actual infrastructure and the configuration.
+- Acts as a single source of truth for resource management.
+
+---
+
+### **4. How do you handle sensitive data in Terraform configurations?**
+**Answer:**  
+Sensitive data such as secrets and API keys can be protected by:
+- Using **Terraform variables** and **environment variables**:
+  ```hcl
+  variable "db_password" {
+    type      = string
+    sensitive = true
+  }
+  ```
+- Integrating **HashiCorp Vault** for secret management.
+- Encrypting the `terraform.tfstate` file when using remote backends.
+- Setting sensitive output:
+  ```hcl
+  output "db_password" {
+    value       = var.db_password
+    sensitive   = true
+  }
+  ```
+
+---
+
+### **5. How does Terraform handle resource dependencies?**
+**Answer:**  
+Terraform automatically infers dependencies between resources based on resource references. You can also explicitly define dependencies using the `depends_on` argument:
+```hcl
+resource "aws_instance" "example" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+  depends_on    = [aws_vpc.example]
+}
+```
+
+---
+
+### **6. What are Terraform modules, and why are they used?**
+**Answer:**  
+Modules are reusable blocks of Terraform configurations that help organize code and maintain consistency across environments. They allow you to:
+- Reuse infrastructure components
+- Reduce code duplication
+- Simplify project structure
+
+**Example Usage:**
+```hcl
+module "vpc" {
+  source = "./modules/vpc"
+  cidr_block = "10.0.0.0/16"
+}
+```
+
+---
+
+### **7. What are Terraform backends? Can you name some examples?**
+**Answer:**  
+Terraform backends define where the Terraform state is stored and how operations are executed. Examples of backends include:
+- **Local:** Stores the state file locally.
+- **Remote:** Stores the state in services like AWS S3, GCS, or HashiCorp Consul.
+
+Example backend configuration:
+```hcl
+terraform {
+  backend "s3" {
+    bucket         = "terraform-state-bucket"
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+  }
+}
+```
+
+---
+
+### **8. What is the difference between `terraform plan` and `terraform apply`?**
+**Answer:**  
+- **`terraform plan`:** Shows the execution plan and what changes will be made to the infrastructure without actually applying them.
+- **`terraform apply`:** Executes the changes and provisions the infrastructure as defined in the configuration files.
+
+---
+
+### **9. How do you manage Terraform state for a large team?**
+**Answer:**  
+- **Use Remote Backends:** Store the state in cloud services like AWS S3 with DynamoDB for state locking.
+- **State Locking:** Ensure only one operation is performed on the state file at a time by enabling state locking.
+- **Version Control:** Manage `.tfstate` files securely and track their changes.
+
+---
+
+### **10. How do you handle infrastructure drift in Terraform?**
+**Answer:**  
+Drift occurs when the actual infrastructure changes without being updated in the Terraform code. To handle it:
+- Run `terraform plan` regularly to detect changes.
+- Use `terraform apply` to revert or align the infrastructure.
+- Enable automation pipelines that check for drift.
+
+---
+
+### **11. What is Terraform Import, and when would you use it?**
+**Answer:**  
+Terraform import allows you to bring existing infrastructure resources into Terraform's management.  
+Example command:
+```bash
+terraform import aws_instance.example i-1234567890abcdef
+```
+**When to use:**  
+- Migrating existing infrastructure to Terraform management without recreating resources.
+
+---
+
+### **12. How do you upgrade Terraform versions safely?**
+**Answer:**  
+1. Check the [Terraform release notes](https://www.terraform.io/downloads.html).
+2. Update the Terraform binary to the new version.
+3. Run `terraform init -upgrade` to upgrade provider plugins.
+4. Review the state using `terraform plan` for potential changes.
+
+---
+
+Would you like additional help on more advanced questions or further elaboration on any topic?

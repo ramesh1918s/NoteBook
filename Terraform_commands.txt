@@ -1,0 +1,121 @@
+Here are common and practical Terraform commands that are frequently used in real-world DevOps scenarios. I've grouped them by use case to help you understand their purpose.  
+
+---
+
+### **1. Terraform Setup Commands**
+- **Initialize Terraform**  
+  ```bash
+  terraform init
+  ```
+  - Downloads necessary provider plugins and sets up the backend configuration.
+
+---
+
+### **2. Terraform Workflow Commands**
+- **Validate Terraform Configuration**  
+  ```bash
+  terraform validate
+  ```
+  - Checks for syntax errors in Terraform configuration files.
+
+- **Format Terraform Code**  
+  ```bash
+  terraform fmt
+  ```
+  - Formats code to meet standard style conventions.
+
+- **Show Execution Plan**  
+  ```bash
+  terraform plan 
+  terraform apply -auto-approve
+
+  ```
+  - Shows what changes Terraform will make to reach the desired state.
+
+- **Apply Infrastructure Changes**  
+  ```bash
+  terraform apply
+
+  ```
+  - Creates or updates resources as defined in your code.
+
+- **Destroy Resources**  
+  ```bash
+  terraform destroy
+  terraform destroy -auto-approve
+
+  ```
+  - Deletes all resources managed by the Terraform configuration.
+
+---
+
+### **3. Resource Management Commands**
+- **Show Terraform State**  
+  ```bash
+  terraform show
+  ```
+  - Displays the current state of resources.
+
+- **List State Resources**  
+  ```bash
+  terraform state list
+  ```
+  - Lists all resources managed by Terraform.
+
+- **Manually Import Resources**  
+  ```bash
+  terraform import aws_instance.example i-0abcd1234efgh5678
+  ```
+  - Imports existing infrastructure into Terraform state.
+
+- **Remove a Resource from State**  
+  ```bash
+  terraform state rm aws_instance.example
+  ```
+  - Removes a resource from the Terraform state.
+
+- **Move Resource to a Different Configuration**  
+  ```bash
+  terraform state mv aws_instance.old aws_instance.new
+  ```
+  - Moves a resource within Terraform configurations.
+
+---
+
+### **4. Terraform Modules Commands**
+- **Create and Reference Modules:**  
+  Navigate to your module directory and run Terraform commands like this:
+  ```bash
+  terraform init
+  terraform plan
+  terraform apply
+  ```
+
+---
+
+### **5. Advanced Commands**
+- **Terraform Workspaces (For Environment Isolation)**  
+  - Create a new workspace:
+    ```bash
+    terraform workspace new staging
+    ```
+  - Switch between workspaces:
+    ```bash
+    terraform workspace select staging
+    ```
+
+- **Output Resource Information**  
+  ```bash
+  terraform output
+  ```
+  - Retrieves outputs defined in the Terraform code.
+
+---
+
+### **6. Debugging & Logs**
+- **Enable Debugging for Troubleshooting**
+  ```bash
+  TF_LOG=DEBUG terraform apply
+  ```
+
+Let me know if you'd like help setting up a specific Terraform use case or scenario for your DevOps goals.
