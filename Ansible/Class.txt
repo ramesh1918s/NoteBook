@@ -1,0 +1,691 @@
+--------------------------------------------------Ansible----------------------------------------------
+Ansible_Server login
+nano /etc/hostname --chnage the hostname puppet
+nano /etc/hosts ---- given below
+
+10.40.1.55    client1.local  client1
+10.40.1.224   client2.local  client2
+10.40.1.25    puppet.local   puppet
+
+-opern client1 server 
+- nano /etc/hosts
+- 10.40.1.55    client1.local  client1
+10.40.1.224   client2.local  client2
+10.40.1.25    puppet.local   puppet
+
+- open client2 server
+- nano /etc/hosts
+- 10.40.1.55    client1.local  client1
+10.40.1.224   client2.local  client2
+10.40.1.25    puppet.local   puppet
+
+
+- then ssh-keygen
+- capy the public ip 
+- cat public ip 
+- copy the key then open client1 server 
+- nano .ssh/authorized_keys
+- then past the Ansible public key 
+-same process excecuted the client2 server
+ ---------------------------------------------------------Install Ansible -----------------------------------------------------
+ - doc.Ansible.com
+ - then install ansible
+ - ubuntu ansible install
+ --
+  sudo apt update
+  sudo apt install software-properties-common
+  sudo add-apt-repository --yes --update ppa:ansible/ansible
+  sudo apt install ansible
+ - commands int ansible server install ansible 
+
+
+--------------------------------------------------------------------------------
+ansible --version 
+
+ - config file = /etc/ansible/ansible.cfg
+ -host key
+#remove host key flase 
+-- create a file 
+- nano inventory
+- [server]
+  client1
+  client2
+save to exit
+  
+- ansible -i inventory all -m ping 
+- to connect the ansible server to clients serves 
+
+ -root@puppet:~# ansible --version
+ansible [core 2.16.9]
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python3/dist-packages/ansible
+  ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/bin/ansible
+  python version = 3.12.3 (main, Apr 10 2024, 05:33:47) [GCC 13.2.0] (/usr/bin/python3)
+  jinja version = 3.1.2
+  libyaml = True
+root@puppet:~# ^C
+root@puppet:~# ^C
+root@puppet:~# nano /etc/ansible/ansible.cfg
+root@puppet:~# nano inventory
+root@puppet:~# ansible -i inventory all -m ping
+client2 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+client1 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+root@puppet:~#
+-------------------------------------------------------------------------------------------------
+
+
+ansible -i inventory all -a uptime
+- root@puppet:~# ansible -i inventory all -a uptime
+client2 | CHANGED | rc=0 >>
+ 06:15:30 up  1:03,  5 users,  load average: 0.08, 0.02, 0.01
+client1 | CHANGED | rc=0 >>
+ 06:15:30 up  1:04,  5 users,  load average: 0.00, 0.00, 0.00
+root@puppet:~#
+-------------------------------------------------------
+ansible -i inventory all -a 'cat /etc/paaswd 
+
+-------------------------------------------------
+root@puppet:~# ansible -i inventory all -a 'df -h'
+
+client1 | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       6.8G  1.6G  5.2G  24% /
+tmpfs           479M     0  479M   0% /dev/shm
+tmpfs           192M  912K  191M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/xvda16     881M   76M  744M  10% /boot
+/dev/xvda15     105M  6.1M   99M   6% /boot/efi
+tmpfs            96M   12K   96M   1% /run/user/1000
+tmpfs            96M   12K   96M   1% /run/user/0
+client2 | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       6.8G  1.6G  5.2G  23% /
+tmpfs           479M     0  479M   0% /dev/shm
+tmpfs           192M  908K  191M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/xvda16     881M   76M  744M  10% /boot
+/dev/xvda15     105M  6.1M   99M   6% /boot/efi
+tmpfs            96M   12K   96M   1% /run/user/1000
+tmpfs            96M   12K   96M   1% /run/user/0
+root@puppet:~#
+---------------------------------------------------------------------
+this command use to 
+
+root@puppet:~# ansible -i inventory all -m shell -a 'echo $(date) >> /tmp/testfile'
+client1 | CHANGED | rc=0 >>
+
+client2 | CHANGED | rc=0 >>
+
+root@puppet:~#
+--  ansible server lo command use cheste same testfile create a client1 server
+-  
+
+
+
+-------------------------------viscode---------------
+create a playbook 
+
+--
+
+--- 
+ - name: Deploy Nginx On Ubuntu
+   hosts: client1
+   tasks:
+   - name: Run Apt Upadate
+     shell: apt upadate 
+   - name: Install Nginx
+     shell: apt install ngnix -y
+   - name: Start Nginx Service
+     shell: service nginx start
+
+ - name: Create TestUser   
+   hosts: client2
+   tasks:
+      - name: Create Testuser
+        user:
+         name: "Testuser"
+         state: present
+
+
+-----------------check playbook.yml ------
+ root@puppet:~# nano playbook.yml
+---
+ - name: Deploy Nginx On Ubuntu
+   hosts: client1:client2
+   tasks:
+   - name: Run Apt Update
+     shell: apt update
+   - name: Install Nginx
+     shell: apt install nginx -y
+   - name: Start Nginx Service
+     shell: service nginx start
+
+ - name: Create TestUser
+   hosts: client2
+   tasks:
+      - name: Create Testuser
+        user:
+         name: "Testuser"
+         state: present
+
+
+root@puppet:~# ansible-playbook -i inventory playbook.yml --syntax-check
+
+playbook: playbook.yml
+root@puppet:~#
+
+-----------------------------------
+ root@puppet:~# ^C
+root@puppet:~# ansible-playbook -i inventory playbook.yml --check
+
+
+
+----------------------command--------------------------
+ root@puppet:~# history
+    1  cat /etc/hostname
+    2  nano /etc/hostname
+    3  cat /etc/hostname
+    4  nano /etc/hostname
+    5  cat /etc/hostname
+    6  nano /etc/hosts
+    7  reboot
+    8  ssh root@client1
+    9  ssh root@client2
+   10  sudo apt update
+   11  sudo apt install software-properties-common
+   12  sudo apt install software-properties-common -y
+   13  sudo add-apt-repository --yes --update ppa:ansible/ansible -y
+   14  sudo apt install ansible
+   15  anisble --version
+   16  ansible --version
+   17  nano /etc/ansible/ansible.cfg
+   18  nano inventory
+   19  ansible -i inventory all -m ping
+   20  ansible -i inventory all -a uptime
+   21  ansible -i inventory all -a 'cat/etc/passwd'
+   22  ansible -i inventory all -a 'cat /etc/passwd'
+   23  ansible -i inventory all -a 'df -h'
+   24  ansible -i inventory all -a 'touch /tmp/testfile1 && echo $(date) > /tmp/testfile1'
+   25  ansible -i inventory all -a 'echo $(date) > /tmp/testfile1'
+   26  ansible -i inventory all -a 'echo $(date) >> /tmp/testfile1'
+   27  ansible -i inventory all -m shell -a '$(date) >> /tmp/testfile1'
+   28  ansible -i inventory all -m shell -a 'echo $(date) >> /tmp/testfile1'
+   29  ansible -i inventory all -m shell -a 'echo $(date) >> /tmp/testfile'
+   30  nano playbook.yml
+   31  ansible-playbook -i inventory playbook.yml --syntax-check
+   32  ansible-playbook -i inventory playbook.yml --check
+   33  ansible-playbook -i inventory playbook.yml -vv
+   34  nano playbook.yml
+   35  ansible-playbook -i inventory playbook.yml -vv
+   36  nano playbook.yml
+   37  ansible-playbook -i inventory playbook.yml -vv
+   38  nano playbook.yml
+   39  ansible-playbook -i inventory playbook.yml -vv
+   40  nano playbook.yml
+   41  ansible-playbook -i inventory playbook.yml
+   42  ansible -i inventory all -a 'cat /etc/passwd'
+   43  ansible-playbook -i inventory playbook.yml
+   44  ansible -i inventory all -a 'cat /etc/passwd'
+   45  history
+------------------------------------------------------------
+
+root@puppet:~# ansible-playbook -i inventory playbook.yml -vv
+ansible-playbook [core 2.16.9]
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python3/dist-packages/ansible
+  ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/bin/ansible-playbook
+  python version = 3.12.3 (main, Jul 31 2024, 17:43:48) [GCC 13.2.0] (/usr/bin/python3)
+  jinja version = 3.1.2
+  libyaml = True
+Using /etc/ansible/ansible.cfg as config file
+Skipping callback 'default', as we already have a stdout callback.
+Skipping callback 'minimal', as we already have a stdout callback.
+Skipping callback 'oneline', as we already have a stdout callback.
+
+PLAYBOOK: playbook.yml **************************************************************************************************************
+2 plays in playbook.yml
+
+PLAY [Deploy Nginx On Ubuntu] *******************************************************************************************************
+
+TASK [Gathering Facts] **************************************************************************************************************
+task path: /root/playbook.yml:2
+ok: [client2]
+ok: [client1]
+
+TASK [Run Apt Update] ***************************************************************************************************************
+task path: /root/playbook.yml:5
+changed: [client1] => {"changed": true, "cmd": "apt update", "delta": "0:00:02.563940", "end": "2024-08-08 07:21:03.298729", "msg": "08-08 07:21:00.734789", "stderr": "\nWARNING: apt does not have a stable CLI interface. Use with caution in scripts.", "stderr_lines"ot have a stable CLI interface. Use with caution in scripts."], "stdout": "Hit:1 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates InRelease\nHit:3 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports Irity.ubuntu.com/ubuntu noble-security InRelease [126 kB]\nFetched 126 kB in 1s (212 kB/s)\nReading package lists...\nBuilding dependeinformation...\n47 packages can be upgraded. Run 'apt list --upgradable' to see them.", "stdout_lines": ["Hit:1 http://us-east-1.ec2.oble InRelease", "Hit:2 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates InRelease", "Hit:3 http://us-east-1.ec2.archive.kports InRelease", "Get:4 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]", "Fetched 126 kB in 1s (212 kB/s)", "RBuilding dependency tree...", "Reading state information...", "47 packages can be upgraded. Run 'apt list --upgradable' to see them."
+changed: [client2] => {"changed": true, "cmd": "apt update", "delta": "0:00:13.501448", "end": "2024-08-08 07:21:14.239567", "msg": "08-08 07:21:00.738119", "stderr": "\nWARNING: apt does not have a stable CLI interface. Use with caution in scripts.", "stderr_lines"ot have a stable CLI interface. Use with caution in scripts."], "stdout": "Hit:1 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]\nGet:3 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-banGet:4 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]\nGet:5 http://us-east-1.ec2.archive.ubuntu.com/ubuntu nobl15.0 MB]\nGet:6 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble/universe Translation-en [5982 kB]\nGet:7 http://security.ubuntu.ain amd64 Packages [269 kB]\nGet:8 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 Components [3871 kB]\nGet:9 htubuntu.com/ubuntu noble/universe amd64 c-n-f Metadata [301 kB]\nGet:10 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble/multiversGet:11 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble/multiverse Translation-en [118 kB]\nGet:12 http://us-east-1.ec2.archive.uiverse amd64 Components [35.0 kB]\nGet:13 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble/multiverse amd64 c-n-f Metadata [8328 .ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [318 kB]\nGet:15 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noblen [82.9 kB]\nGet:16 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 c-n-f Metadata [5676 B]\nGet:17 http://u.com/ubuntu noble-updates/universe amd64 Packages [319 kB]\nGet:18 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/unive\nGet:19 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [45.0 kB]\nGet:20 http://us-east-1.ec noble-updates/universe amd64 c-n-f Metadata [12.6 kB]\nGet:21 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/restricteGet:22 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [40.7 kB]\nGet:23 http://us-east-1.ec2.oble-updates/restricted amd64 c-n-f Metadata [416 B]\nGet:24 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/multiverse et:25 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en [3608 B]\nGet:26 http://us-east-1.ec2.arle-updates/multiverse amd64 Components [212 B]\nGet:27 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 :28 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [208 B]\nGet:29 http://us-east-1.ec2.archiveckports/main amd64 c-n-f Metadata [112 B]\nGet:30 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packa//us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/universe Translation-en [10.5 kB]\nGet:32 http://us-east-1.ec2.archive.ubunts/universe amd64 Components [17.6 kB]\nGet:33 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/universe amd64 c-n-f Mep://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/restricted amd64 Components [216 B]\nGet:35 http://us-east-1.ec2.archive.kports/restricted amd64 c-n-f Metadata [116 B]\nGet:36 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/multiverse amd67 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 c-n-f Metadata [116 B]\nGet:38 http://security.ubuny/main Translation-en [64.4 kB]\nGet:39 http://security.ubuntu.com/ubuntu noble-security/main amd64 c-n-f Metadata [3668 B]\nGet:40 hbuntu noble-security/universe amd64 Packages [249 kB]\nGet:41 http://security.ubuntu.com/ubuntu noble-security/universe Translation-eecurity.ubuntu.com/ubuntu noble-security/universe amd64 Components [8632 B]\nGet:43 http://security.ubuntu.com/ubuntu noble-security/ta [9220 B]\nGet:44 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [208 kB]\nGet:45 http://security.ubunt/restricted Translation-en [40.7 kB]\nGet:46 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 c-n-f Metadata [420 B]untu.com/ubuntu noble-security/multiverse amd64 Packages [10.6 kB]\nGet:48 http://security.ubuntu.com/ubuntu noble-security/multiversGet:49 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Components [208 B]\nGet:50 http://security.ubuntu.com/ubuntuamd64 c-n-f Metadata [344 B]\nFetched 28.2 MB in 6s (5124 kB/s)\nReading package lists...\nBuilding dependency tree...\nReading states can be upgraded. Run 'apt list --upgradable' to see them.", "stdout_lines": ["Hit:1 http://us-east-1.ec2.archive.ubuntu.com/ubuntu tp://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]", "Get:3 http://us-east-1.ec2.archive.ubuntu.com/ubuntu[126 kB]", "Get:4 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]", "Get:5 http://us-east-1.ec2.archive.ubuntu.co64 Packages [15.0 MB]", "Get:6 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble/universe Translation-en [5982 kB]", "Get:7 http:/ noble-security/main amd64 Packages [269 kB]", "Get:8 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 Components s-east-1.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 c-n-f Metadata [301 kB]", "Get:10 http://us-east-1.ec2.archive.ubuntu.comd64 Packages [269 kB]", "Get:11 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble/multiverse Translation-en [118 kB]", "Get:12 httbuntu.com/ubuntu noble/multiverse amd64 Components [35.0 kB]", "Get:13 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble/multivers8 B]", "Get:14 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [318 kB]", "Get:15 http://us-east-1.eu noble-updates/main Translation-en [82.9 kB]", "Get:16 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/main amd64 c-n-f7 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [319 kB]", "Get:18 http://us-east-1.ec2.archivpdates/universe Translation-en [134 kB]", "Get:19 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Componep://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/universe amd64 c-n-f Metadata [12.6 kB]", "Get:21 http://us-east-1.ec2.arch-updates/restricted amd64 Packages [208 kB]", "Get:22 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/restricted Transla http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 c-n-f Metadata [416 B]", "Get:24 http://us-east-1.ec2.oble-updates/multiverse amd64 Packages [14.1 kB]", "Get:25 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/multiverse Trt:26 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [212 B]", "Get:27 http://us-east-1.ec2.oble-updates/multiverse amd64 c-n-f Metadata [532 B]", "Get:28 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/main amet:29 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/main amd64 c-n-f Metadata [112 B]", "Get:30 http://us-east-1.ec2noble-backports/universe amd64 Packages [10.3 kB]", "Get:31 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/universe TGet:32 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [17.6 kB]", "Get:33 http://us-east-1.tu noble-backports/universe amd64 c-n-f Metadata [1016 B]", "Get:34 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/re216 B]", "Get:35 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-backports/restricted amd64 c-n-f Metadata [116 B]", "Get:36 httbuntu.com/ubuntu noble-backports/multiverse amd64 Components [212 B]", "Get:37 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble-b-n-f Metadata [116 B]", "Get:38 http://security.ubuntu.com/ubuntu noble-security/main Translation-en [64.4 kB]", "Get:39 http://secur-security/main amd64 c-n-f Metadata [3668 B]", "Get:40 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [249 ty.ubuntu.com/ubuntu noble-security/universe Translation-en [108 kB]", "Get:42 http://security.ubuntu.com/ubuntu noble-security/univeB]", "Get:43 http://security.ubuntu.com/ubuntu noble-security/universe amd64 c-n-f Metadata [9220 B]", "Get:44 http://security.ubunturestricted amd64 Packages [208 kB]", "Get:45 http://security.ubuntu.com/ubuntu noble-security/restricted Translation-en [40.7 kB]", "tu.com/ubuntu noble-security/restricted amd64 c-n-f Metadata [420 B]", "Get:47 http://security.ubuntu.com/ubuntu noble-security/multikB]", "Get:48 http://security.ubuntu.com/ubuntu noble-security/multiverse Translation-en [2808 B]", "Get:49 http://security.ubuntu.cotiverse amd64 Components [208 B]", "Get:50 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 c-n-f Metadata [344 B]",24 kB/s)", "Reading package lists...", "Building dependency tree...", "Reading state information...", "47 packages can be upgraded. Rto see them."]}
+
+TASK [Install Nginx] ****************************************************************************************************************
+task path: /root/playbook.yml:7
+changed: [client1] => {"changed": true, "cmd": "apt install nginx -y", "delta": "0:00:00.519507", "end": "2024-08-08 07:21:15.134196"t": "2024-08-08 07:21:14.614689", "stderr": "\nWARNING: apt does not have a stable CLI interface. Use with caution in scripts.", "stdapt does not have a stable CLI interface. Use with caution in scripts."], "stdout": "Reading package lists...\nBuilding dependency tration...\nnginx is already the newest version (1.24.0-2ubuntu7).\n0 upgraded, 0 newly installed, 0 to remove and 47 not upgraded.", "ckage lists...", "Building dependency tree...", "Reading state information...", "nginx is already the newest version (1.24.0-2ubuntu7nstalled, 0 to remove and 47 not upgraded."]}
+changed: [client2] => {"changed": true, "cmd": "apt install nginx -y", "delta": "0:00:11.982226", "end": "2024-08-08 07:21:26.613192"t": "2024-08-08 07:21:14.630966", "stderr": "\nWARNING: apt does not have a stable CLI interface. Use with caution in scripts.", "stdapt does not have a stable CLI interface. Use with caution in scripts."], "stdout": "Reading package lists...\nBuilding dependency tration...\nThe following additional packages will be installed:\n  nginx-common\nSuggested packages:\n  fcgiwrap nginx-doc ssl-cert\nTill be installed:\n  nginx nginx-common\n0 upgraded, 2 newly installed, 0 to remove and 47 not upgraded.\nNeed to get 552 kB of archi 1596 kB of additional disk space will be used.\nGet:1 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble/main amd64 nginx-common a]\nGet:2 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble/main amd64 nginx amd64 1.24.0-2ubuntu7 [521 kB]\nPreconfiguring package (22.0 MB/s)\nSelecting previously unselected package nginx-common.\r\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Readiing database ... 67739 files and directories currently installed.)\r\nPreparing to unpack .../nginx-common_1.24.0-2ubuntu7_all.deb .. (1.24.0-2ubuntu7) ...\r\nSelecting previously unselected package nginx.\r\nPreparing to unpack .../nginx_1.24.0-2ubuntu7_amd64.deb ..0-2ubuntu7) ...\r\nSetting up nginx (1.24.0-2ubuntu7) ...\r\nSetting up nginx-common (1.24.0-2ubuntu7) ...\r\nCreated symlink /etc/srget.wants/nginx.service → /usr/lib/systemd/system/nginx.service.\r\r\nProcessing triggers for ufw (0.36.2-6) ...\r\nProcessing triggld2) ...\r\n\nRunning kernel seems to be up-to-date.\n\nNo services need to be restarted.\n\nNo containers need to be restarted.\n\nN outdated binaries.\n\nNo VM guests are running outdated hypervisor (qemu) binaries on this host.", "stdout_lines": ["Reading packagedency tree...", "Reading state information...", "The following additional packages will be installed:", "  nginx-common", "Suggested nx-doc ssl-cert", "The following NEW packages will be installed:", "  nginx nginx-common", "0 upgraded, 2 newly installed, 0 to removeed to get 552 kB of archives.", "After this operation, 1596 kB of additional disk space will be used.", "Get:1 http://us-east-1.ec2.oble/main amd64 nginx-common all 1.24.0-2ubuntu7 [31.2 kB]", "Get:2 http://us-east-1.ec2.archive.ubuntu.com/ubuntu noble/main amd64 n[521 kB]", "Preconfiguring packages ...", "Fetched 552 kB in 0s (22.0 MB/s)", "Selecting previously unselected package nginx-common." "(Reading database ... 5%", "(Reading database ... 10%", "(Reading database ... 15%", "(Reading database ... 20%", "(Reading databasase ... 30%", "(Reading database ... 35%", "(Reading database ... 40%", "(Reading database ... 45%", "(Reading database ... 50%", "(R(Reading database ... 60%", "(Reading database ... 65%", "(Reading database ... 70%", "(Reading database ... 75%", "(Reading databasese ... 85%", "(Reading database ... 90%", "(Reading database ... 95%", "(Reading database ... 100%", "(Reading database ... 67739 fily installed.)", "Preparing to unpack .../nginx-common_1.24.0-2ubuntu7_all.deb ...", "Unpacking nginx-common (1.24.0-2ubuntu7) ...", "cted package nginx.", "Preparing to unpack .../nginx_1.24.0-2ubuntu7_amd64.deb ...", "Unpacking nginx (1.24.0-2ubuntu7) ...", "Settin) ...", "Setting up nginx-common (1.24.0-2ubuntu7) ...", "Created symlink /etc/systemd/system/multi-user.target.wants/nginx.service →inx.service.", "", "Processing triggers for ufw (0.36.2-6) ...", "Processing triggers for man-db (2.12.0-4build2) ...", "", "Running te.", "", "No services need to be restarted.", "", "No containers need to be restarted.", "", "No user sessions are running outdated ts are running outdated hypervisor (qemu) binaries on this host."]}
+
+TASK [Start Nginx Service] **********************************************************************************************************
+task path: /root/playbook.yml:9
+changed: [client1] => {"changed": true, "cmd": "service nginx start", "delta": "0:00:00.719653", "end": "2024-08-08 07:21:27.717556",": "2024-08-08 07:21:26.997903", "stderr": "", "stderr_lines": [], "stdout": "", "stdout_lines": []}
+changed: [client2] => {"changed": true, "cmd": "service nginx start", "delta": "0:00:00.842817", "end": "2024-08-08 07:21:27.887596",": "2024-08-08 07:21:27.044779", "stderr": "", "stderr_lines": [], "stdout": "", "stdout_lines": []}
+
+PLAY [Create TestUser] **************************************************************************************************************
+
+TASK [Gathering Facts] **************************************************************************************************************
+task path: /root/playbook.yml:12
+ok: [client2]
+
+TASK [Create Testuser] **************************************************************************************************************
+task path: /root/playbook.yml:15
+ok: [client2] => {"append": false, "changed": false, "comment": "", "group": 1001, "home": "/home/Testuser", "move_home": false, "nambin/sh", "state": "present", "uid": 1001}
+
+PLAY RECAP **************************************************************************************************************************
+client1                    : ok=4    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+client2                    : ok=6    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+root@puppet:~# nano playbook.yml
+root@puppet:~# ansible-playbook -i inventory playbook.yml
+
+PLAY [Deploy Nginx On Ubuntu] *******************************************************************************************************
+
+TASK [Gathering Facts] **************************************************************************************************************
+ok: [client2]
+ok: [client1]
+
+TASK [Run Apt Update] ***************************************************************************************************************
+changed: [client2]
+changed: [client1]
+
+TASK [Install Nginx] ****************************************************************************************************************
+changed: [client1]
+changed: [client2]
+
+TASK [Start Nginx Service] **********************************************************************************************************
+changed: [client1]
+changed: [client2]
+
+PLAY [Create TestUser] **************************************************************************************************************
+
+TASK [Gathering Facts] **************************************************************************************************************
+ok: [client2]
+ok: [client1]
+
+TASK [Create Testuser] **************************************************************************************************************
+ok: [client2]
+changed: [client1]
+
+PLAY RECAP **************************************************************************************************************************
+client1                    : ok=6    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+client2                    : ok=6    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+root@puppet:~# ansible -i inventory all -a 'cat /etc/passwd'
+client2 | CHANGED | rc=0 >>
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-network:x:998:998:systemd Network Management:/:/usr/sbin/nologin
+systemd-timesync:x:996:996:systemd Time Synchronization:/:/usr/sbin/nologin
+dhcpcd:x:100:65534:DHCP Client Daemon,,,:/usr/lib/dhcpcd:/bin/false
+messagebus:x:101:101::/nonexistent:/usr/sbin/nologin
+syslog:x:102:102::/nonexistent:/usr/sbin/nologin
+systemd-resolve:x:991:991:systemd Resolver:/:/usr/sbin/nologin
+uuidd:x:103:103::/run/uuidd:/usr/sbin/nologin
+tss:x:104:104:TPM software stack,,,:/var/lib/tpm:/bin/false
+sshd:x:105:65534::/run/sshd:/usr/sbin/nologin
+pollinate:x:106:1::/var/cache/pollinate:/bin/false
+tcpdump:x:107:108::/nonexistent:/usr/sbin/nologin
+landscape:x:108:109::/var/lib/landscape:/usr/sbin/nologin
+fwupd-refresh:x:990:990:Firmware update daemon:/var/lib/fwupd:/usr/sbin/nologin
+polkitd:x:989:989:User for polkitd:/:/usr/sbin/nologin
+ec2-instance-connect:x:109:65534::/nonexistent:/usr/sbin/nologin
+_chrony:x:110:112:Chrony daemon,,,:/var/lib/chrony:/usr/sbin/nologin
+ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash
+Testuser:x:1001:1001::/home/Testuser:/bin/sh
+client1 | CHANGED | rc=0 >>
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-network:x:998:998:systemd Network Management:/:/usr/sbin/nologin
+systemd-timesync:x:996:996:systemd Time Synchronization:/:/usr/sbin/nologin
+dhcpcd:x:100:65534:DHCP Client Daemon,,,:/usr/lib/dhcpcd:/bin/false
+messagebus:x:101:101::/nonexistent:/usr/sbin/nologin
+syslog:x:102:102::/nonexistent:/usr/sbin/nologin
+systemd-resolve:x:991:991:systemd Resolver:/:/usr/sbin/nologin
+uuidd:x:103:103::/run/uuidd:/usr/sbin/nologin
+tss:x:104:104:TPM software stack,,,:/var/lib/tpm:/bin/false
+sshd:x:105:65534::/run/sshd:/usr/sbin/nologin
+pollinate:x:106:1::/var/cache/pollinate:/bin/false
+tcpdump:x:107:108::/nonexistent:/usr/sbin/nologin
+landscape:x:108:109::/var/lib/landscape:/usr/sbin/nologin
+fwupd-refresh:x:990:990:Firmware update daemon:/var/lib/fwupd:/usr/sbin/nologin
+polkitd:x:989:989:User for polkitd:/:/usr/sbin/nologin
+ec2-instance-connect:x:109:65534::/nonexistent:/usr/sbin/nologin
+_chrony:x:110:112:Chrony daemon,,,:/var/lib/chrony:/usr/sbin/nologin
+ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash
+Testuser:x:1001:1001::/home/Testuser:/bin/sh
+root@puppet:~# ansible -i inventory all -a 'cat /etc/passwd'
+client2 | CHANGED | rc=0 >>
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-network:x:998:998:systemd Network Management:/:/usr/sbin/nologin
+systemd-timesync:x:996:996:systemd Time Synchronization:/:/usr/sbin/nologin
+dhcpcd:x:100:65534:DHCP Client Daemon,,,:/usr/lib/dhcpcd:/bin/false
+messagebus:x:101:101::/nonexistent:/usr/sbin/nologin
+syslog:x:102:102::/nonexistent:/usr/sbin/nologin
+systemd-resolve:x:991:991:systemd Resolver:/:/usr/sbin/nologin
+uuidd:x:103:103::/run/uuidd:/usr/sbin/nologin
+tss:x:104:104:TPM software stack,,,:/var/lib/tpm:/bin/false
+sshd:x:105:65534::/run/sshd:/usr/sbin/nologin
+pollinate:x:106:1::/var/cache/pollinate:/bin/false
+tcpdump:x:107:108::/nonexistent:/usr/sbin/nologin
+landscape:x:108:109::/var/lib/landscape:/usr/sbin/nologin
+fwupd-refresh:x:990:990:Firmware update daemon:/var/lib/fwupd:/usr/sbin/nologin
+polkitd:x:989:989:User for polkitd:/:/usr/sbin/nologin
+ec2-instance-connect:x:109:65534::/nonexistent:/usr/sbin/nologin
+_chrony:x:110:112:Chrony daemon,,,:/var/lib/chrony:/usr/sbin/nologin
+ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash
+client1 | CHANGED | rc=0 >>
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-network:x:998:998:systemd Network Management:/:/usr/sbin/nologin
+systemd-timesync:x:996:996:systemd Time Synchronization:/:/usr/sbin/nologin
+dhcpcd:x:100:65534:DHCP Client Daemon,,,:/usr/lib/dhcpcd:/bin/false
+messagebus:x:101:101::/nonexistent:/usr/sbin/nologin
+syslog:x:102:102::/nonexistent:/usr/sbin/nologin
+systemd-resolve:x:991:991:systemd Resolver:/:/usr/sbin/nologin
+uuidd:x:103:103::/run/uuidd:/usr/sbin/nologin
+tss:x:104:104:TPM software stack,,,:/var/lib/tpm:/bin/false
+sshd:x:105:65534::/run/sshd:/usr/sbin/nologin
+pollinate:x:106:1::/var/cache/pollinate:/bin/false
+tcpdump:x:107:108::/nonexistent:/usr/sbin/nologin
+landscape:x:108:109::/var/lib/landscape:/usr/sbin/nologin
+fwupd-refresh:x:990:990:Firmware update daemon:/var/lib/fwupd:/usr/sbin/nologin
+polkitd:x:989:989:User for polkitd:/:/usr/sbin/nologin
+ec2-instance-connect:x:109:65534::/nonexistent:/usr/sbin/nologin
+_chrony:x:110:112:Chrony daemon,,,:/var/lib/chrony:/usr/sbin/nologin
+ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash
+root@puppet:~# ansible-playbook -i inventory playbook.yml
+
+PLAY [Deploy Nginx On Ubuntu] *******************************************************************************************************
+
+TASK [Gathering Facts] **************************************************************************************************************
+ok: [client1]
+ok: [client2]
+
+TASK [Run Apt Update] ***************************************************************************************************************
+changed: [client2]
+changed: [client1]
+
+TASK [Install Nginx] ****************************************************************************************************************
+changed: [client1]
+changed: [client2]
+
+TASK [Start Nginx Service] **********************************************************************************************************
+changed: [client1]
+changed: [client2]
+
+PLAY [Create TestUser] **************************************************************************************************************
+
+TASK [Gathering Facts] **************************************************************************************************************
+ok: [client1]
+ok: [client2]
+
+TASK [Create Testuser] **************************************************************************************************************
+changed: [client2]
+changed: [client1]
+
+PLAY RECAP **************************************************************************************************************************
+client1                    : ok=6    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+client2                    : ok=6    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+root@puppet:~# ansible -i inventory all -a 'cat /etc/passwd'
+client1 | CHANGED | rc=0 >>
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-network:x:998:998:systemd Network Management:/:/usr/sbin/nologin
+systemd-timesync:x:996:996:systemd Time Synchronization:/:/usr/sbin/nologin
+dhcpcd:x:100:65534:DHCP Client Daemon,,,:/usr/lib/dhcpcd:/bin/false
+messagebus:x:101:101::/nonexistent:/usr/sbin/nologin
+syslog:x:102:102::/nonexistent:/usr/sbin/nologin
+systemd-resolve:x:991:991:systemd Resolver:/:/usr/sbin/nologin
+uuidd:x:103:103::/run/uuidd:/usr/sbin/nologin
+tss:x:104:104:TPM software stack,,,:/var/lib/tpm:/bin/false
+sshd:x:105:65534::/run/sshd:/usr/sbin/nologin
+pollinate:x:106:1::/var/cache/pollinate:/bin/false
+tcpdump:x:107:108::/nonexistent:/usr/sbin/nologin
+landscape:x:108:109::/var/lib/landscape:/usr/sbin/nologin
+fwupd-refresh:x:990:990:Firmware update daemon:/var/lib/fwupd:/usr/sbin/nologin
+polkitd:x:989:989:User for polkitd:/:/usr/sbin/nologin
+ec2-instance-connect:x:109:65534::/nonexistent:/usr/sbin/nologin
+_chrony:x:110:112:Chrony daemon,,,:/var/lib/chrony:/usr/sbin/nologin
+ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash
+Testuser:x:1001:1001::/home/Testuser:/bin/sh
+client2 | CHANGED | rc=0 >>
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-network:x:998:998:systemd Network Management:/:/usr/sbin/nologin
+systemd-timesync:x:996:996:systemd Time Synchronization:/:/usr/sbin/nologin
+dhcpcd:x:100:65534:DHCP Client Daemon,,,:/usr/lib/dhcpcd:/bin/false
+messagebus:x:101:101::/nonexistent:/usr/sbin/nologin
+syslog:x:102:102::/nonexistent:/usr/sbin/nologin
+systemd-resolve:x:991:991:systemd Resolver:/:/usr/sbin/nologin
+uuidd:x:103:103::/run/uuidd:/usr/sbin/nologin
+tss:x:104:104:TPM software stack,,,:/var/lib/tpm:/bin/false
+sshd:x:105:65534::/run/sshd:/usr/sbin/nologin
+pollinate:x:106:1::/var/cache/pollinate:/bin/false
+tcpdump:x:107:108::/nonexistent:/usr/sbin/nologin
+landscape:x:108:109::/var/lib/landscape:/usr/sbin/nologin
+fwupd-refresh:x:990:990:Firmware update daemon:/var/lib/fwupd:/usr/sbin/nologin
+polkitd:x:989:989:User for polkitd:/:/usr/sbin/nologin
+ec2-instance-connect:x:109:65534::/nonexistent:/usr/sbin/nologin
+_chrony:x:110:112:Chrony daemon,,,:/var/lib/chrony:/usr/sbin/nologin
+ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash
+Testuser:x:1001:1001::/home/Testuser:/bin/sh
+root@puppet:~# history
+
+------------------------------------------
+client server---
+  root@ip-10-40-1-55:~# userdel -r Testuser
+userdel: Testuser mail spool (/var/mail/Testuser) not found
+root@ip-10-40-1-55:~#
+
+PLAY [Deploy Nginx On Ubuntu] ********************************************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************************************************
+ok: [client1]
+
+TASK [Run Apt Upadate] ***************************************************************************************************************************************
+skipping: [client1]
+
+TASK [Install Nginx] *****************************************************************************************************************************************
+skipping: [client1]
+
+TASK [Start Nginx Service] ***********************************************************************************************************************************
+skipping: [client1]
+
+PLAY [Create TestUser] ***************************************************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************************************************
+ok: [client2]
+
+TASK [Create Testuser] ***************************************************************************************************************************************
+changed: [client2]
+
+PLAY RECAP ***************************************************************************************************************************************************
+client1                    : ok=1    changed=0    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0
+client2                    : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+root@puppet:~#
+------------------------------------------PUPPET INSTALL ------------------------------------------------------------------------------------------------------
+
+-  wget https://apt.puppetlabs.com/puppet6-release-bionic.deb
+   48  sudo dpkg -i puppet6-release-bionic.deb
+   49  apt update
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------
+3.86.217.51      client1:local   client1
+34.203.243.159  client2:local   client2
+52.91.188.84     ansible:local   ansible
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+project
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+cd /var/lib/jenkins/workspace/docker_uru_webapp
+
+sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID . '
+sh 'docker image tag $JOB_NAME:v1.$BUILD_ID shivaram1918/$JOB_NAME:v1.$BUILD_ID '
+sh 'docker image tag $JOB_NAME:v1$BUILD_ID shivaram1918/$JOB_NAME:latest '
+
+sh 'docker image push shivaram1918/$JOB_NAME:v1.$BUILD_ID '
+sh 'docker image push shivaram1918/$JOB_NAME:latest '
+
+sh 'docker image rm $JOB_NAME:v1.$BUILD_ID shivaram1918/$JOB_NAME:v1.$BUILD_ID shivaram1918/$JOB_NAME:latest '
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    

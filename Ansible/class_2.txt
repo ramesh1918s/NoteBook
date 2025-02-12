@@ -1,0 +1,28 @@
+10.40.1.83 client1.local client1
+10.40.1.104 client2.local client2
+
+10.40.1.83   client1.local  client1
+10.40.1.104  client2.local  client2
+10.40.1.215  puppet.local   puppet
+
+
+---------------Ansible_Playbook_Install_Nginx------------------------------------------------
+
+---
+-name: Deploy Nginx On Ubuntu
+ hosts: client1
+ tasks:
+    -name: Run Apt Update
+     shell: apt update
+    -name: Install Nginx
+     shell: apt install nginx -y 
+    -name: Start Nginx Service
+     shell: service nginx start
+
+-name: Create Testuser
+ hosts: client2
+ tasks:
+     -name: Create Testuser
+      user:
+        name: "Testuser"
+        state: present

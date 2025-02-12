@@ -1,0 +1,207 @@
+                                             Ansible_Class
+[all]
+10.40.1.4
+10.40.1.98
+10.40.1.43
+10.40.1.192
+
+
+
+root@ip-10-40-1-4:~# history
+    1  ssh-keygen
+    2  ll .ssh/
+    3  cat .ssh/ id_ed25519.pub
+    4  cat .ssh/id_ed25519.pub
+    5  ls .ssh/
+    6  ssh -i ssh/id_ed255519 root@10.40.1.98
+    7  history
+    8  nano ansible_hosts
+    9  ansible -i ansible_hosts -m ping all
+   10  nano ansible_hosts
+   11  ssh ec2-user@10.40.1.4
+   12  ansible -i ansible_hosts -m ping all -vvv
+   13  anisble --version
+   14  ansible --version
+   15  nano /etc/ansible/ansible.cfg
+   16  ansible -i ansible_hosts -m ping all -vvv
+   17  ansible -i ansible_hosts -m ping all
+   18  python3
+   19  apt update -y
+   20  $ sudo apt update
+   21  $ sudo apt install software-properties-common
+   22  $ sudo add-apt-repository --yes --update ppa:ansible/ansible
+   23  $ sudo apt install ansible
+   24  sudo apt install software-properties-common
+   25  sudo add-apt-repository --yes --update ppa:ansible/ansible
+   26  sudo apt install ansible
+   27  ansible -version
+   28  ansible --version
+   29  ssh-keygen
+   30  ll .ssh/
+   31  cat id_ed25519.pub
+   32  cat /root/.ssh/id_ed25519.pub
+   33  sudo su -
+   34  ansible -i ansible_hosts -m ping all -vvv
+   35  ansible -i ansible_hosts -m ping all
+   36  nano ansible_hosts
+   37  ansible --version
+   38  nano /etc/ansible/ansible.cfg
+   39  10.40.1.4 ansible_user=ubuntu ansible_ssh_private_key_file=/path/to/private_key.pem
+   40  ansible -i ansible_hosts -m ping all
+   41  nano ansible_hosts
+   42  ansible -i ansible_hosts -m ping all
+   43  nano ansible_hosts
+   44  ansible -i ansible_hosts -m ping all
+   45  ANSIBLE_HOST_KEY_CHECKING=False ansible -i ansible_hosts -m ping all
+   46  ls .ssh/
+   47  cat .ssh/id_ed25519.pub
+   48  nano .ssh/authorized_keys
+   49  ANSIBLE_HOST_KEY_CHECKING=False ansible -i ansible_hosts -m ping all
+   50  nano ansible.cfg
+   51  ansible --version
+   52  nano ansible_hosts
+   53  ls .ssh/
+   54  ansible -i ansible_hosts -m all shell -a "cat /etc/passwd"
+   55  ansible -i ansible_hosts all -m  shell -a "cat /etc/passwd"
+   56  ansible -i ansible_hosts all -m  shell -a "cat /etc/passwd" | grep -i 10.40.1
+   57  ansible -i ansible_hosts all -m  shell -a "cat /etc/passwd" | grep -i "ubuntu"
+   58  ansible -i ansible_hosts all -m  shell -a "df -h"
+   59  ansible -i ansible_hosts all -m  shell -a free
+   60  ansible -i ansible_hosts all -m  shell -a uptime
+   61  echo $USER
+   62  ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'curl https://get.docker.com | bash'
+   63  ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm init'
+   64  ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm join-token worker -q'
+   65  ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm join-token worker -q' tail -1
+   66  ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm join-token worker -q' | tail -1
+   67  echo $TOKEN
+   68  TOKEN=$ (ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm join-token worker -q' | tail -1)
+   69  TOKEN=$(ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm join-token worker -q' | tail -1)
+   70  echo $TOKEN
+   71  nano ansible_hosts
+   72  echo $TOKEN
+   73  nano ansible_hosts
+   74  history
+   75  nano ansible_hosts
+   76  ansible -i ansible_hosts docker_nodes -m shell -a 'curl https://get.docker.com | bash'
+   77  ansible -i ansible_hosts docker_master -a "docker node ls"
+   78  ansible -i ansible_hosts 10.40.1.98 -m shell -a 'curl -sL http://169.254.169.254/latest/meta-data/'
+   79  ansible -i ansible_hosts 10.40.1.98 -m shell -a 'curl -sL http://44.203.163.189/latest/meta-data/'
+   80  ansible -i ansible_hosts 10.40.1.98 -m shell -a 'curl -sL http://169.254.169.254/latest/meta-data/'
+   81  ansible -i ansible_hosts 10.40.1.98 -m shell -a 'curl -sL http://169.254.169.254/latest/meta-data/local-ipv4'
+   82  ansible -i ansible_hosts 10.40.1.98 -m shell -a 'curl -sL http://169.254.169.254/latest/meta-data/local-ipv4' | tail -1
+   83  PVIP=$(ansible -i ansible_hosts 10.40.1.98 -m shell -a 'curl -sL http://169.254.169.254/latest/meta-data/local-ipv4' | tail -1)
+   84  echo $PVIP
+   85  ansible -i ansible_hosts docker_master -a "docker node ls"
+   86  ansible -i ansible_hosts 10.40.1.98 -m shell -a 'curl -sL http://169.254.169.254/latest/meta-data/'
+   87  [200~ansible -i ansible_hosts 10.40.1.98 -m shell -a 'curl -sL http://169.254.169.254/latest/meta-data/instance-id'
+   88  ~
+   89  ansible -i ansible_hosts 10.40.1.98 -m shell -a 'curl -sL http://169.254.169.254/latest/meta-data/instance-id'
+   90  ansible -i ansible_hosts 10.40.1.98 -m shell -a 'curl -sL http://169.254.169.254/latest/meta-data/local-ipv4'
+   91  TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+   92  curl -H "X-aws-ec2-metadata-token: $TOKEN" -sL http://169.254.169.254/latest/meta-data/local-ipv4
+   93  ansible -i ansible_hosts 10.40.1.98 -m shell -a 'curl -sL http://169.254.169.254/latest/meta-data/local-ipv4'
+   94  ansible -i ansible_hosts 10.40.1.98 -m shell -a 'curl -sL http://169.254.169.254/latest/meta-data/local-ipv4' | tail -1
+   95  ansible -i ansible_hosts docker_nodes -m shell -a "docker swarm join --token $TOKEN SWMTKN-1-5on8xjoz772j3xfkneqzxwb0fq0g2zidtncj2d8w87e8rvdhkz-3sez3ufowab1ihs9e5l6995yk 10.40.1.98:2377"
+   96  ansible -i ansible_hosts docker_nodes -m shell -a "docker swarm join --token SWMTKN-1-5on8xjoz772j3xfkneqzxwb0fq0g2zidtncj2d8w87e8rvdhkz-3sez3ufowab1ihs9e5l6995yk 10.40.1.98:2377"
+   97  ansible -i ansible_hosts docker_master -a "docker node ls"
+   98  cat ansible_hosts
+   99  ansible -i ansible_hosts all -m user -a "name=testuser1 state=present"
+  100  ansible -i ansible_hosts all -m shell -a "cat /etc/passwd" | grep -i test
+  101  ansible -i ansible_hosts all -m user -a "name=testuser1 state=absent"
+  102  ansible -i ansible_hosts all -m shell -a "cat /etc/passwd" | grep -i test
+  103  hository
+  104  history
+  105  nano ansible_hosts
+  106  ansible -i ansible_hosts one -m ping
+  107  ansible -i ansible_hosts one:two -m ping
+  108  ansible -i ansible_hosts one:two:three -m ping
+  109  ansible -i ansible_hosts one:two:three:four -m ping
+  110  hist
+  111  history
+  112  nano ansible_hosts
+  113  ansible -i ansible_hosts all -m ping
+  114  ansible -i ansible_hosts 'all:!four:!three' -m ping
+  115  docker ps
+  116  curl https://get.docker.com | bash
+  117  docker ps
+  118  docker --version
+  119  docker network create --172.20.0.0/16 --gateway 172.20.0.254 ansible_nw
+  120  docker pull sreeharshav/ubuntu:withssh2.0_V2
+  121  docker pull sreeharshav/ubuntu16:withssh2.0_V2
+  122  docker pull sreeharshav/ubuntu16:ansible2.75_V2
+  123  docker network create --172.20.0.0/16 --gateway 172.20.0.254 ansible_nw
+  124  docker network create --subnet 172.20.0.0/16 --gateway 172.20.0.254 ansible_nw
+  125  docker run --rm -dit --name controller --hostname controller --network ansible_nw sreeharshav/ubuntu16:ansible2.75_V2
+  126  docker ps
+  127  docker run --rm -dit --name web3 --hostname web3 -p 8002:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2 docker run --rm -dit --name app1 --hostname app1 -p 9000:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2 docker run --rm -dit --name app2 --hostname app2 -p 9001:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2 docker run --rm -dit --name app3 --hostname app3 -p 9002:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  128  docker run --rm -dit --name app1 --hostname app1 -p 9000:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  129  docker run --rm -dit --name app3 --hostname app3 -p 9002:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  130  docker run --rm -dit --name db1 --hostname db1 -p 9003:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  131  docker run --rm -dit --name db2 --hostname db2 -p 9004:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  132  docker run --rm -dit --name db3 --hostname db3 -p 9005:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  133  docker run --rm -dit --name db4 --hostname db4 -p 9006:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  134  docker ps
+  135  docker exec -it controller bash
+  136  docker run --rm -dit --name web3 --hostname web3 -p 8002:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  137  docker exec -it controller bash
+  138  history
+root@ip-10-40-1-4:~# ^C
+root@ip-10-40-1-4:~#
+
+
+--------------------------------server-2-------------------------------------------------------
+  1  history
+    2  exit
+    3  ssh-keygen
+    4  ls .ssh/
+    5  rm -f .ssh/id_ed25519*
+    6  nano .ssh/authorized_keys
+    7  history
+    8  ssh-keygen
+    9  ls .ssh/
+   10  nano .ssh/authorized_keys
+   11  sudu su -
+   12  sudo su -
+   13  docker --version
+   14  docker info
+   15  docker info | grep -i swarm
+   16  docker swarm join-token work
+   17  docker swarm join-token worker
+   18  history
+root@ip-10-40-1-98:~#
+
+---------------------------------------------------server-3-----------------------------------
+ 1  history
+    2  exit
+    3  ssh-keygen
+    4  ls .ssh/
+    5  rm -f .ssh/id_ed25519*
+    6  nano .ssh/authorized_keys
+    7  history
+    8  ssh-keygen
+    9  ls .ssh/
+   10  nano .ssh/authorized_keys
+   11  sudu su -
+   12  sudo su -
+   13  docker --version
+   14  history
+----------------------------------------server-4----------------------------------------
+  1  history
+    2  exit
+    3  ssh-keygen
+    4  ls .ssh/
+    5  rm -f .ssh/id_ed25519*
+    6  nano .ssh/authorized_keys
+    7  history
+    8  ssh-keygen
+    9  ls .ssh/
+   10  nano .ssh/authorized_keys
+   11  sudu su -
+   12  sudo su -
+   13  nano .ssh/authorized_keys
+   14  ansible -i ansible_hosts -m all shell -a "cat /etc/passwd"
+   15  docker --version
+   16  history
+
+

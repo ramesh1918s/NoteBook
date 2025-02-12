@@ -1,0 +1,551 @@
+                                         Ansible
+                                         ========
+Step-1
+- Create a Two Instances - Ubuntu --t2 micro
+- Connect witn MobaXterm
+- sudo su -
+- Install on Ansible 
+- doc.ansible
+- https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html#installing-ansible-on-ubuntu
+- Ansible Install on Ubuntu linux Commnads 
+
+------------------------------------------------------------------------------------------------------------------------
+
+$ sudo apt update
+$ sudo apt install software-properties-common
+$ sudo add-apt-repository --yes --update ppa:ansible/ansible
+$ sudo apt install ansible -y
+
+----------------------------------------------------------------------------------------------------------------------------
+Check a Version for Ansible
+- ansible --Version
+- ssh-keygen
+- ll .ssh/
+- cat .ssh/ id_ed25519.pub
+- cat .ssh/id_ed25519.pub
+
+
+
+------------------------------------------------------------------------------------------------------------------------------
+Step-2
+- Connect with Second Server MobaXterm
+- sudo su -
+- ssh-keygen
+- ls .ssh/
+- rm -f .ssh/id_ed25519*
+- nano .ssh/authorized_keys
+then past it public key server-1
+and save it clr+o enter clr+x 
+
+--------------------------------------------------------------------------------------------------------------------------------
+Step-3
+- connect check server-1 to server-2
+-  ssh -i ssh/id_ed255519 root@10.40.1.98   (ssh root@10.40.1.222)
+- yes
+- successfull connect is Done
+---------------------------------------------------------------------------------------------------------------------------------
+Step-4
+- Aws Console
+- Select Server-2
+- Create a AMI Image 
+- Ansible-image  AMI-name
+- create a another 2 Instances server-3 & server-4 by using creating AMI
+- connect with the MobaXterm
+
+------------------------------------------------------------------------------------------------------------------------------------
+Step-5
+- GoBack Server-1
+-nano ansible_hosts -(all servers private ip address)
+[all_servers]
+
+10.40.1.4
+10.40.1.98
+10.40.1.43
+10.40.1.192
+
+- save to back
+- ansible --Version --- copy the path of config file = /etc/ansible/ansible.cfg
+- nano /etc/ansible/ansible.cfg
+- to check the [defaults]
+- host_key_checking = False 
+- check the ansible playbook to pinging the all servers
+
+- ANSIBLE_HOST_KEY_CHECKING=False ansible -i ansible_hosts -m ping all
+
+- root@ip-10-40-1-4:~# ANSIBLE_HOST_KEY_CHECKING=False ansible -i ansible_hosts -m ping all
+10.40.1.4 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+10.40.1.43 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+10.40.1.98 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+10.40.1.192 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+
+
+-------------------------------------------------------successfull connecting all servers---------------------------------------------------
+Step-6
+- Add-Hoc Commands & playbook
+- GoBack server-1
+- ansible -i ansible_hosts all -m  shell -a "cat /etc/passwd"
+- ansible -i ansible_hosts all -m  shell -a "cat /etc/passwd" | grep -i 10.40.1
+- ansible -i ansible_hosts all -m  shell -a "cat /etc/passwd" | grep -i "ubuntu"
+- ansible -i ansible_hosts all -m  shell -a "df -h"
+root@ip-10-40-1-4:~# ansible -i ansible_hosts all -m  shell -a "df -h"
+10.40.1.4 | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        24G  2.2G   21G  10% /
+tmpfs           479M  172K  479M   1% /dev/shm
+tmpfs           192M  920K  191M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/xvda16     881M   76M  744M  10% /boot
+/dev/xvda15     105M  6.1M   99M   6% /boot/efi
+tmpfs            96M   12K   96M   1% /run/user/1000
+tmpfs            96M   12K   96M   1% /run/user/0
+10.40.1.43 | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        24G  1.6G   22G   7% /
+tmpfs           228M     0  228M   0% /dev/shm
+tmpfs            91M  896K   90M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/xvda16     881M   76M  744M  10% /boot
+/dev/xvda15     105M  6.1M   99M   6% /boot/efi
+tmpfs            46M   12K   46M   1% /run/user/1000
+tmpfs            46M   12K   46M   1% /run/user/0
+10.40.1.98 | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        24G  1.6G   22G   7% /
+tmpfs           479M     0  479M   0% /dev/shm
+tmpfs           192M  892K  191M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/xvda16     881M   76M  744M  10% /boot
+/dev/xvda15     105M  6.1M   99M   6% /boot/efi
+tmpfs            96M   12K   96M   1% /run/user/1000
+tmpfs            96M   12K   96M   1% /run/user/0
+10.40.1.192 | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        24G  1.6G   22G   7% /
+tmpfs           228M     0  228M   0% /dev/shm
+tmpfs            91M  900K   90M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/xvda16     881M   76M  744M  10% /boot
+/dev/xvda15     105M  6.1M   99M   6% /boot/efi
+tmpfs            46M   12K   46M   1% /run/user/1000
+tmpfs            46M   12K   46M   1% /run/user/0
+root@ip-10-40-1-4:~#
+- ansible -i ansible_hosts all -m  shell -a free
+- ansible -i ansible_hosts all -m  shell -a uptime
+---------------------------------------------------------------------------------------------------------------------------------------------------
+Step-7
+- Server-1 Run playbook Docker install on server-2
+- ansible -i ansible_hosts 10.40.1.98  -m shell \
+> -a 'curl https://get.docker.com | bash'
+enter
+--docker install on server-2----to check it server-2---docker --version---------------------
+- Docker version 27.3.1, build ce12230
+- root@ip-10-40-1-98:~# docker info | grep -i swarm
+ Swarm: inactive
+- GoBack server-1
+-  ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm init'
+- check server-2
+-root@ip-10-40-1-98:~# docker info | grep -i swarm
+WARNING: bridge-nf-call-iptables is disabled
+WARNING: bridge-nf-call-ip6tables is disabled
+ Swarm: active
+
+
+  ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm init'
+   64  ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm join-token worker -q'
+   65  ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm join-token worker -q' tail -1
+   66  ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm join-token worker -q' | tail -1
+   67  echo $TOKEN
+   68  TOKEN=$ (ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm join-token worker -q' | tail -1)
+   69  TOKEN=$(ansible -i ansible_hosts 10.40.1.98  -m shell  -a 'docker swarm join-token worker -q' | tail -1)
+   70  echo $TOKEN
+   71  nano ansible_hosts
+
+
+   [all_servers]
+10.40.1.4
+
+[docker_master]
+10.40.1.98
+
+[docker_nodes]
+10.40.1.43
+10.40.1.192
+
+
+--docker install on nodes servers(server-3 & server-4)----------
+
+- ansible -i ansible_hosts docker_nodes -m shell -a 'curl https://get.docker.com | bash'
+-  ansible -i ansible_hosts docker_master -a "docker node ls"
+10.40.1.98 | CHANGED | rc=0 >>
+ID                            HOSTNAME        STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+a0q2ls065m2ijgygg5ki8uwy7 *   ip-10-40-1-98   Ready     Active         Leader           27.3.1
+
+--server-2
+- root@ip-10-40-1-98:~# docker swarm join-token worker
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-5on8xjoz772j3xfkneqzxwb0fq0g2zidtncj2d8w87e8rvdhkz-3sez3ufowab1ihs9e5l6995yk 10.40.1.98:2377
+
+root@ip-10-40-1-98:~#
+- 
+
+- ansible -i ansible_hosts docker_nodes -m shell -a "docker swarm join --token SWMTKN-1-5on8xjoz772j3xfkneqzxwb0fq0g2zidtncj2d8w87e8rvdhkz-3sez3ufowab1ihs9e5l6995yk 10.40.1.98:2377"
+
+
+root@ip-10-40-1-4:~# ansible -i ansible_hosts docker_master -a "docker node ls"
+10.40.1.98 | CHANGED | rc=0 >>
+ID                            HOSTNAME         STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+d1l5czyz289m82f9n4benkcb9     ip-10-40-1-43    Ready     Active                          27.3.1
+a0q2ls065m2ijgygg5ki8uwy7 *   ip-10-40-1-98    Ready     Active         Leader           27.3.1
+mxybc2z3zb221uf1qo0j29ba8     ip-10-40-1-192   Ready     Active                          27.3.1
+root@ip-10-40-1-4:~#
+
+---------------------------------------------------------------------------error--------------------------------------------------
+root@ip-10-40-1-4:~# ansible -i ansible_hosts docker_nodes -m shell -a "docker swarm join --token $TOKEN SWMTKN-1-5on8xjoz772j3xfkneqzxwb0fq0g2zidtncj2d8w87e8rvdhkz-3sez3ufowab1ihs9e5l6995yk 10.40.1.98:2377"
+10.40.1.43 | FAILED | rc=1 >>
+"docker swarm join" requires exactly 1 argument.
+See 'docker swarm join --help'.
+
+Usage:  docker swarm join [OPTIONS] HOST:PORT
+
+Join a swarm as a node and/or managernon-zero return code
+10.40.1.192 | FAILED | rc=1 >>
+"docker swarm join" requires exactly 1 argument.
+See 'docker swarm join --help'.
+
+Usage:  docker swarm join [OPTIONS] HOST:PORT
+
+Join a swarm as a node and/or managernon-zero return code
+root@ip-10-40-1-4:~# ^C
+root@ip-10-40-1-4:~# ansible -i ansible_hosts docker_nodes -m shell -a "docker swarm join --token SWMTKN-1-5on8xjoz772j3xfkneqzxwb0fq0g2zidtncj2d8w87e8rvdhkz-3sez3ufowab1ihs9e5l6995yk 10.40.1.98:2377"
+10.40.1.43 | CHANGED | rc=0 >>
+This node joined a swarm as a worker.
+10.40.1.192 | CHANGED | rc=0 >>
+This node joined a swarm as a worker.
+root@ip-10-40-1-4:~# ^C
+root@ip-10-40-1-4:~# ansible -i ansible_hosts docker_master -a "docker node ls"
+10.40.1.98 | CHANGED | rc=0 >>
+ID                            HOSTNAME         STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+d1l5czyz289m82f9n4benkcb9     ip-10-40-1-43    Ready     Active                          27.3.1
+a0q2ls065m2ijgygg5ki8uwy7 *   ip-10-40-1-98    Ready     Active         Leader           27.3.1
+mxybc2z3zb221uf1qo0j29ba8     ip-10-40-1-192   Ready     Active                          27.3.1
+root@ip-10-40-1-4:~# ^C
+root@ip-10-40-1-4:~#
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Step-8
+- System-modules for Ansible
+
+
+- ansible -i ansible_hosts all -m user -a "name=testuser1 state=present"
+  100  ansible -i ansible_hosts all -m shell -a "cat /etc/passwd" | grep -i test
+  101  ansible -i ansible_hosts all -m user -a "name=testuser1 state=absent"
+  102  ansible -i ansible_hosts all -m shell -a "cat /etc/passwd" | grep -i test
+
+curl https://docs.ansible.com/ansible/latest/collections/fortinet/fortimanager/fmgr_system_meta_module.html
+
+
+--------------------------------------------Ansible Host Patters--------------------------------------------------------
+- nano ansible_hosts
+-
+[all_servers]
+10.40.1.4
+
+[docker_master]
+10.40.1.98
+
+[docker_nodes]
+10.40.1.43
+10.40.1.192
+
+[one]
+10.40.1.4
+
+[two]
+10.40.1.98
+
+[three]
+10.40.1.43
+
+[four]
+10.40.1.192
+
+- 
+
+
+ ansible -i ansible_hosts one -m ping
+  107  ansible -i ansible_hosts one:two -m ping
+  108  ansible -i ansible_hosts one:two:three -m ping
+  109  ansible -i ansible_hosts one:two:three:four -m ping
+
+root@ip-10-40-1-4:~# ansible -i ansible_hosts 'all:!four:!three' -m ping
+10.40.1.4 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+10.40.1.98 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+
+
+curl https://docs.ansible.com/ansible/latest/inventory_guide/intro_patterns.html
+
+
+
+-------------------------------------ANSIBLE -DOCKER -INSTALLATION----------------------------------------------------------------------------------------------------------------
+Step-9
+- server-1 install on docker 
+-  curl https://get.docker.com | bash
+
+
+
+-  116  curl https://get.docker.com | bash
+  117  docker ps
+  118  docker --version
+  119  
+  120  docker pull sreeharshav/ubuntu16:withssh2.0_V2
+  121  
+  122  docker pull sreeharshav/ubuntu16:ansible2.75_V2
+  123  
+  124  docker network create --subnet 172.20.0.0/16 --gateway 172.20.0.254 ansible_nw
+  125  docker run --rm -dit --name controller --hostname controller --network ansible_nw sreeharshav/ubuntu16:ansible2.75_V2
+  126  docker ps
+       docker run --rm -dit --name app1 --hostname app1 -p 9000:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  129  docker run --rm -dit --name app3 --hostname app3 -p 9002:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  127  docker run --rm -dit --name web3 --hostname web3 -p 8002:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2 docker run --rm -dit --name app1 --hostname app1 -p 9000:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2 docker run --rm -dit --name app2 --hostname app2 -p 9001:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2 docker run --rm -dit --name app3 --hostname app3 -p 9002:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  128  etwork ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  130  docker run --rm -dit --name db1 --hostname db1 -p 9003:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  131  docker run --rm -dit --name db2 --hostname db2 -p 9004:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  132  docker run --rm -dit --name db3 --hostname db3 -p 9005:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  133  docker run --rm -dit --name db4 --hostname db4 -p 9006:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  134  docker ps
+  135  docker exec -it controller bash
+  136  docker run --rm -dit --name web3 --hostname web3 -p 8002:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+  137  docker exec -it controller bash
+
+root@ip-10-40-1-4:~# docker exec -it controller bash
+root@controller:/# ansible -i hosts -m ping all
+db2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+web2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+db1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+localhost | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+web1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+web3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+db4 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+app1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+app3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+app2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+db3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+root@controller:/# ansible -i hosts -m ping all -f 1
+db1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+db2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+db3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+db4 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+web1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+web2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+web3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+localhost | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+app1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+app2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+app3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+root@controller:/# cat hosts
+[local]
+localhost
+
+[web]
+web1
+web2
+web3
+
+[app]
+app1
+app2
+app3
+
+[db]
+db1
+db2
+db3
+db4
+root@controller:/# ansible -i hosts 'web:!app:!db' -m ping
+web1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+web2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+web3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+root@controller:/# ansible -i hosts 'web:app:!db' -m ping
+web3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+web1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+web2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+app1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+app2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+app3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+root@controller:/# ansible -i hosts '!web:app:!db' -m ping
+app1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+app3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+app2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+root@controller:/# ansible -i hosts '!web:!app:!db' -m ping
+localhost | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+root@controller:/#
+
+
+
+========================================Sep/24/2024===================================================================================================
+- create a one Instance -Docker_host
+- curl https://get.docker.com | bash
+- docker ps
+- docker pull sreeharshav/ubuntu16:ansible2.75_V2
+
+- docker pull sreeharshav/ubuntu16:withssh2.0_V2
+-  docker run --rm -dit --name controller --hostname controller --network ansible_nw sreeharshav/ubuntu16:ansible2.75_V2
+   12  docker ps
+   13  docker run --rm -dit --name web3 --hostname web3 -p 8002:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+   14  docker ps
+   15  docker network create --subnet 172.20.0.0/16 --gateway 172.20.0.254 ansible_nw
+   16  docker run --rm -dit --name controller --hostname controller --network ansible_nw sreeharshav/ubuntu16:ansible2.75_V2
+   17  docker run --rm -dit --name web3 --hostname web3 -p 8002:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+   18  docker run --rm -dit --name web2 --hostname web2 -p 8001:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+   19  docker run --rm -dit --name web1 --hostname web1 -p 8000:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+   20  docker run --rm -dit --name app1 --hostname app1 -p 9000:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+   21  docker run --rm -dit --name app1 --hostname app1 -p 9000:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+   22  docker run --rm -dit --name app2 --hostname app2 -p 9001:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+   23  docker run --rm -dit --name app3 --hostname app3 -p 9002:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+   24  docker run --rm -dit --name db1 --hostname db1 -p 9003:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+   25  docker run --rm -dit --name db2 --hostname db2 -p 9004:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+   26  docker run --rm -dit --name db3 --hostname db3 -p 9005:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+   27* docker run --rm -dit --name db4 --hostname db4 -p 9007:80 --network ansible_nw sreeharshav/ubuntu16:withssh2.0_V2
+   28  docker ps
