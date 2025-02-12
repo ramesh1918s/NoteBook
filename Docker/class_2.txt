@@ -1,0 +1,122 @@
+FROM nginx:latest 
+MAINTAINER mavrick202@gmail.com 
+RUN apt install -y curl net-tools jq 
+COPY index.html /usr/share/nginx/html/
+COPY scorekeeper.js /usr/share/nginx/html/
+COPY style.css /usr/share/nginx/html/
+COPY error.html /usr/share/nginx/html/
+COPY ngnix_default.config /etc/nginx/sites-enabled/default
+CMD ["nginx", "-g", "daemon off;"]
+https://github.com/mavrick202/dockertest1/blob/master/Dockerfile
+
+
+ index.html /usr/share/nginx/html/
+ scorekeeper.js /usr/share/nginx/html/
+
+
+
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 339712838475.dkr.ecr.us-east-1.amazonaws.com
+
+
+{
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "containerDefinitions": [
+    {
+      "name": "awsb27nginx",
+      "image": "nginx:339712838475.dkr.ecr.us-east-1.amazonaws.com/awsb1918repo:v8",
+      "memory": 256,
+      "cpu": 256,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+              "awslogs-group": "awslogs-nginx-ecs",
+              "awslogs-region": "us-east-1",
+              "awslogs-region": "us-east-2",
+              "awslogs-stream-prefix": "nginx"
+          }
+      }
+{
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "containerDefinitions": [
+    {
+      "name": "awsb27nginx",
+      "image": "nginx:339712838475.dkr.ecr.us-east-1.amazonaws.com/awsb1918repo:v8",
+      "memory": 256,
+      "cpu": 256,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+              "awslogs-group": "awslogs-nginx-ecs",
+              "awslogs-region": "us-east-1",
+              "awslogs-region": "us-east-2",
+              "awslogs-stream-prefix": "nginx"
+          }
+      }
+    ],    
+  "volumes": [],
+  "networkMode": "bridge",
+  "placementConstraints": [],
+  "family": "nginx"
+}
+
+
+
+
+
+
+{
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "containerDefinitions": [
+    {
+      "name": "nginx",
+      "image": "nginx:339712838475.dkr.ecr.us-east-1.amazonaws.com/awsb1918repo:v8",
+      "memory": 256,
+      "cpu": 256,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+              "awslogs-group": "awslogs-nginx-ecs",
+              "awslogs-region": "us-east-1",
+              "awslogs-region": "us-east-2",
+              "awslogs-stream-prefix": "nginx"
+          }
+      }
+    }
+  ],
+  "volumes": [],
+  "networkMode": "bridge",
+  "placementConstraints": [],
+  "family": "nginx"
+}
+
+
+
+-

@@ -1,0 +1,386 @@
+
+--------------------------------------------------------
+create a instance amg  -linux
+-yum install docker -y
+- docker -version
+- docker star engin 
+- systemctl restart docker.service
+-systemctl status docker.service
+- docker version ---docker engin service kudha vastundi
+-docker info -informetion of docker
+- create a contianer --get a image 
+- go to dockerhub-ubuntu image copy
+- docker pull ubuntu
+-docker images
+- docker run redis --docker run ante image nee teskosundi -- bydiull gaa continer vastundi
+- docker ps --create a run lo unna contianer list chudaniki
+- docker ps -a ---stop lo unna continer list cudaniki
+- docker search jenkins -- search the images
+- docker run -it ubuntu ---create a ubuntu continer 
+- cat /etc/os-release
+- contianer exit-- exit
+- docker run -it --name ram1 ubuntu --name change use this command contianer
+- docker run -it --name ram2 ubuntu /bin/bash
+
+------------------------------------commands-------------------------------
+  1  yum install docker -y
+    2  docker -version
+    3  docker version
+    4  systemctl restart docker.service
+    5  systemctl status docker.service
+    6  docker version
+    7  docker info
+    8  docker pull ubuntu
+    9  docker image
+   10  docker images
+   11  docker run redis
+   12  docker images
+   13  docker ps
+   14  docker ps -a
+   15  docker run alpine
+   16  docker images
+   17  docker ps -a
+   18  docker search jenkins
+   19  docker images
+   20  docker ps
+   21  docker ps -a
+   22  docker run -it ubuntu
+   23  docker ps -a
+   24  docker run -it --name ram1 ubuntu
+   25  docker ps -a
+   26  docker run -it --name ram2 ubuntu /bin/bash
+   27  docker ps -a
+   28  docker run -it --name ram2 ubuntu touch f1
+   29  docker ps -a
+   30  docker start ram1
+   31  docker ps
+   32  docker attact ram1
+   33  docker attach ram1
+   34  docker attach ram2
+   35  docker stop ram1
+   36  docker ps
+   37  docker ps -a
+   38  history
+[root@ip-10-40-1-212
+
+
+
+--------create a image--------
+ docker commit cont1 ubuntu-1
+- cat>viya1
+--this is viya1 file read save to exit 
+--- control+d
+--39  docker images
+   40  docker ps -a
+   41  docker rm ram1
+   42  docker ps -a
+   43  docker run -it --name cont1 ubuntu /bin/bash
+   44  docker commit cont1 ubuntu-1
+   45  docker images
+   46  docker run -it --name cont2 ubuntu-1 /bin/bash
+   47  docker imges
+   48  docker images
+   49  docker ps -a
+   50  docker commit cont-2 ubuntu-2
+   51  docker commit cont2 ubuntu-2
+   52  docker images
+   53  docker run -it --name cont3 ubuntu-2 /bin/bash
+-------------------docker file---------------------
+- Automation of docker images and contianer 
+-D capital letter
+- from --\
+- vim Dockerfile
+- docker build -t image1 .
+-    1  exit
+    2  ll
+    3  cat shiva2
+    4  echo $name
+    5  cat file
+    6  cat file1
+    7  history
+
+
+-----------------docker lo volume lo unna file veri contianer ki share cheyali -------
+-- docker run -it --name new contianer name --privileged=true --volumes-from cont-1 image1 /bin/bash -- use this command
+- docker run -it --name cont-2 --privileged=true --volumes-from cont-1 image1 /bin/bash
+-    6  docker start cont-3
+[root@ip-10-40-1-92 ~]# history
+    1  docker run -it --name cont-3 -v /madhu image3 /bin/bash
+    2  docker run -it --name cont-3 -v /madhu image-5 /bin/bash
+    3  docker run -it --name cont-3 -v /madhu image-1 /bin/bash
+    4  docker images
+    5  docker run -it --name cont-3 -v /madhu image1 /bin/bash
+    6  docker start cont-3
+    7  docker attach cont-3
+    8  docker ps -a
+    9  docker run -it --name cont-4 --privileged=true --volumes-from cont-3 image1 /bin/bash
+   10  history
+-------------------- host to container loki share files-----
+-- docker run -it --name hostcont  -v /home/ec2-user:/hostvolume ubuntu /bin/bash
+---    1  docker ps -a
+    2  docker run -it --nmae hostcont  -v /home/ec2-user:/hostvolume ubuntu /bin/bash
+    3  docker run -it --name hostcont  -v /home/ec2-user:/hostvolume ubuntu /bin/bash
+    4  ll
+    5  docker volumes
+    6  docker volumes ls
+    7  docker volume ls
+    8  docker volume create ram1
+    9  ls
+   10  docker volume ls
+   11  docker volume create ram2
+   12  docker volume ls
+   13  docker volume prume
+   14  docker volume prune
+   15  docker volume ls
+---s
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+project_1
+
+
+
+node {
+    stage ('git checkout'){
+        git 'https://github.com/urukundu917/ramesh.git'
+    }
+    stage('Docker build iamge'){
+        sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID shivaram1918/$JOB_NAME:v1.$BUILD_ID'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID shivaram1918/$JOB_NAME:latest'
+    }
+    
+    stage('pushing images to dockerHub'){
+        withCredentials([string(credentialsId: 'DockerPasswddd', variable: 'MyDockerPasswd')]) {
+            sh "docker login -u shivaram1918 -p ${MyDockerPasswd}"
+            sh 'docker image push shivaram1918/$JOB_NAME:v1.$BUILD_ID'
+            sh 'docker image push shivaram1918/$JOB_NAME:latest'
+        
+            sh 'docker image rm $JOB_NAME:v1.$BUILD_ID shivaram1918/$JOB_NAME:v1.$BUILD_ID shivaram1918/$JOB_NAME:latest'
+
+}
+            stage('Docker continer Deployment'){
+                def docker_run = 'docker run -itd --name scriptedcontainer -p 9000:80 shivaram1918/docker_uru_webapp'
+               sshagent(['webapp_server']) {
+                
+                sh "ssh -o StrictHostKeyChecking=no ubuntu@10.40.1.31 ${docker_run}"
+}
+    }       
+
+
+
+}
+}
+
+-----------------------------------------------
+
+Dockerfile for Jenkins project
+
+-------------------------------------------------------------------------
+
+
+FROM  centos:latest
+MAINTAINER vikashashoke@gmail.com
+RUN apt install httpd \
+ zip\
+ unzip
+ADD ./photogenic.zip /var/www/html/
+WORKDIR /var/www/html/
+RUN unzip photogenic.zip
+RUN cp -rvf photogenic/* .
+RUN rm -rf photogenic photogenic.zip
+CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+EXPOSE 80
+ 
+ 
+# FROM  centos:latest
+# MAINTAINER vikashashoke@gmail.com
+# RUN yum install -y httpd \
+#  zip\
+#  unzip
+# ADD https://www.free-css.com/assets/files/free-css-templates/download/page265/shine.zip /var/www/html/
+# WORKDIR /var/www/html/
+# RUN unzip shine.zip
+# RUN cp -rvf shine/* .
+# RUN rm -rf shine shine.zip
+# CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+# EXPOSE 80   
+
+
+
+
+----------------------------------------------------------------------------------------------------------
+
+Running on Jenkins indocker-ram-webapp
+===============================================================
+ip-10-40-1-81
+
+127.0.0.1 localhost
+
+# The following lines are desirable for IPv6 capable hosts
+::1 ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+
+
+10.40.1.14   webapp1.local    webapp1
+10.40.1.81   webapp2.local    webapp2
+10.40.1.125  jenkins.local    jenkins
+
+
+
+
+
+
+
+
+
+    webappserver.local   webappserver
+10.40.1.193    jenkinsserver.local  jenkinsserver
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+==========================================================================================================================================
+
+  Id CommandLine
+  -- -----------
+   1 docker images
+   2 docker pull mysql
+   3 docker images
+   4 docker history nginx
+   5 docker history nginx
+   6 docker history mysql
+   7 dcoker rmi mysql
+   8 dcoker rm mysql
+   9 docker images
+  10 docker create  9d186acf3ba4
+  11 docker ps
+  12 docker ps -a
+  13 docker start c800f2f51333
+  14 docker ps
+  15 docker exec -it c800f2f51333 /bin/bash
+  16 docker inspect image nginx
+  17 docker inspect nginx
+  18 docker images
+  19 docker inspect image nginx
+  20 docker inspect image mysql
+  21 docker create --name ramesh nginx
+  22 docker ps
+  23 docker ps -a
+  24 docker start ramesh
+  25 docker ps
+  26 docker run --name ram nginx
+  27 docker run -d --name rs nginx
+  28 docker ps
+  29 docker ps -a
+  30 docker start ram
+  31 docker ps
+  32 docker stop ram
+  33 docker ps
+  34 docker ps -a
+  35 docker start ram
+  36 docker ps
+  37 docker exec -it ram /bin/bash
+  38 docker rm ram
+  39 docker stop ram
+  40 docker rm ram
+  41 docker ps
+  42 docker ps -a
+  43 docker create ram nginx
+  44 docker ps -a
+  45 docker run -d --name ram nginx
+  46 docker ps
+  47 docker rmi mysql
+  48 docker images
+----------------------------------------------------------------------------------------------------- 1  docker hostname
+    2  docker hosts
+    3  hostname
+    4  docker images
+    5  docker login
+    6  docker imgaes
+    7  docker images
+    8  docker login'
+    9  docker login
+   10  docker images
+   11  apt update
+   12  apt install docke.oi
+   13  apt install docker.oi
+   14  ifconfig
+   15  docker network
+   16  docker network ls
+   17  docker images
+   18  docker run -d --name ram -p 8080:80 nginx
+   19  docker ps
+   20  ifconfig
+   21  docker stop ram
+   22  docker ps
+   23  docker start ram
+   24  docker ps
+   25  docker run -d --name ramesh nginx
+   26  docker run -d --name ramesh -p 8080:80 nginx
+   27  docker ps
+   28  docker run -d --name sruthi143ram -p 8081:80 nginx
+   29  docker ps
+   30  docker exec -it sruthi143ram
+   31  docker exec -it sruthi143ram /bin/bash
+   32  nano /var/www/html/index.nginx-debian.html
+   33  ls
+   34  ll
+   35  cd docker /
+   36  cd docker
+   37  cd .docker/
+   38  ll
+   39  ls
+   40  cd config.json
+   41  cat config.json
+   42  cd ..
+   43  docker network inspect bridge
+   44  docker run -d --name sruthi --net host nginx
+   45  docker ps
+   46  history
+--------------------------------------------------------------------------------------------------
+volumes
+=================================================================================================
+ 2  docker hosts
+    3  hostname
+    4  docker images
+    5  docker login
+    6  docker imgaes
+    7  docker images
+    8  docker login'
+    9  docker login
+   10  docker images
+   11  apt update
+   12  apt install docke.oi
+   13  apt install docker.oi
+   14  cd /home/ubuntu
+   15  ls
+   16  docker volume create testvol
+   17  ls
+   18  docker volume ls
+   19  docker run -it --name rs --mount source
+   20  docker run -it --name rs --mount source=testvol
+   21  docker run -it --name rs --mount source=testvol nginx
+   22  docker run -it --name rs --mount source=testvol,destination=/date nginx
+   23  docker ps
+   24  docker ps -a
+   25  cd /var/lib/docker/volumes
+   26  ls
+   27  cd testvol
+   28  ls
+   29  cd date
+   30  cd _date
+   31  cd _data
+   32  ls
+   33  cd /home/ubuntu
+   34  docker run -it --name sr -v testvol:data nginx
+   35  docker run -it --name sr -v testvol:/data nginx
+   36  docker ps -a
+   37  docker ps
+   38  history
+-------------------------------------------------------------------------------------------------------------------------

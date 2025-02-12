@@ -1,0 +1,118 @@
+project -1 netflix
+
+
+
+API -57bdfe77af2474c125487822e0d5adb2
+squ_1da06a87401d0fccdedf306a43e585a74415e0fb
+Ramesh@915454
+---------------------------------------------------------------------------------------------------------------
+
+
+pipeline{
+    agent any
+    tools{
+        jdk 'jdk17'
+        nodejs 'node16'
+    }
+    environment {
+        SCANNER_HOME=tool 'sonar-scanner'
+    }
+    stages {
+        stage('clean workspace'){
+            steps{
+                cleanWs()
+            }
+        }
+        stage('Checkout from Git'){
+            steps{
+                git branch: 'main', url: 'https://github.com/N4si/DevSecOps-Project.git'
+            }
+        }
+        stage("Sonarqube Analysis "){
+            steps{
+                withSonarQubeEnv('sonar-server') {
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Netflix \
+                    -Dsonar.projectKey=Netflix '''
+                }
+            }
+        }
+        stage("quality gate"){
+           steps {
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
+                }
+            } 
+        }
+        stage('Install Dependencies') {
+            steps {
+                sh "npm install"
+            }
+        }
+        stage('OWASP FS SCAN') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+        stage('TRIVY FS SCAN') {
+            steps {
+                sh "trivy fs . > trivyfs.txt"
+            }
+        }
+        stage("Docker Build & Push"){
+            steps{
+                script{
+                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
+                       sh "docker build --build-arg TMDB_V3_API_KEY=57bdfe77af2474c125487822e0d5adb2 -t netflix ."
+                       sh "docker tag netflix shivaram1918/netflix:latest "
+                       sh "docker push shivaram1918/netflix:latest "
+                    }
+                }
+            }
+        }
+        stage("TRIVY"){
+            steps{
+                sh "trivy image nasi101/netflix:latest > trivyimage.txt" 
+            }
+        }
+        stage('Deploy to container'){
+            steps{
+                sh 'docker run -d --name netflix -p 8081:80 nasi101/netflix:latest'
+            }
+        }
+    }
+}
+
+
+If you get docker login failed errorr
+
+sudo su
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
+
+
+
+
+
+------------------------------------------------------
+netflix -passwd -jebj cvbf xifo ugnv
+
+
+=======================================================================================================================
+create castam images 
+
+
+
+FROM ubuntu:18.04
+LABEL maintainer="rameshmuddappagari@gmail.com"
+
+RUN apt-get update && apt-get -y install apache2
+EXPOSE 80
+
+ENTRYPOINT ["/usr/sbin/apachectl1"]
+CMD ["-D","FOREGROUND"]
+
+
+
+
+===========================================================================================================================================

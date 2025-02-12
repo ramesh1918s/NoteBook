@@ -1,0 +1,23 @@
+node {
+    stage('Git Checkout') {
+        git 'https://github.com/urukundu917/ramesh.git'
+    }
+
+    stage('Docker Build Image') {
+        sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:v1.$BUILD_ID'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:latest'
+    }
+
+    stage('Push Images to DockerHub') {
+        
+        withCredentials([string(credentialsId: 'Dockerpasswd', variable: 'DockerHubpasswd')]) {
+            sh "docker login -u shivaram1918 -p ${DockerHubpasswd}"
+            sh 'docker image push ramesh561/$JOB_NAME:v1.$BUILD_ID'
+            sh 'docker image push ramesh561/$JOB_NAME:latest'
+
+            // Clean up images locally after pushing to DockerHub
+            sh 'docker image rm $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:latest'
+        }
+    }
+}

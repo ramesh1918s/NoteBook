@@ -1,0 +1,257 @@
+root@ip-192-40-2-31:/home/ubuntu# curl https://get.docker.com/ | bash
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 22592  100 22592    0     0   535k      0 --:--:-- --:--:-- --:--:--  538k
+# Executing docker install script, commit: 4c94a56999e10efcf48c5b8e3f6afea464f9108e
++ sh -c 'apt-get -qq update >/dev/null'
++ sh -c 'DEBIAN_FRONTEND=noninteractive apt-get -y -qq install ca-certificates curl >/dev/null'
++ sh -c 'install -m 0755 -d /etc/apt/keyrings'
++ sh -c 'curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" -o /etc/apt/keyrings/docker.asc'
++ sh -c 'chmod a+r /etc/apt/keyrings/docker.asc'
++ sh -c 'echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu noble stable" > /etc/apt/sources.list.d/docker.list'
++ sh -c 'apt-get -qq update >/dev/null'
++ sh -c 'DEBIAN_FRONTEND=noninteractive apt-get -y -qq install docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-ce-rootless-extras docker-buildx-plugin >/dev/null'
+Scanning processes...
+Scanning linux images...
++ sh -c 'docker version'
+Client: Docker Engine - Community
+ Version:           27.5.1
+ API version:       1.47
+ Go version:        go1.22.11
+ Git commit:        9f9e405
+ Built:             Wed Jan 22 13:41:48 2025
+ OS/Arch:           linux/amd64
+ Context:           default
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          27.5.1
+  API version:      1.47 (minimum version 1.24)
+  Go version:       go1.22.11
+  Git commit:       4c9b3b0
+  Built:            Wed Jan 22 13:41:48 2025
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.7.25
+  GitCommit:        bcc810d6b9066471b0b6fa75f557a15a1cbf31bb
+ runc:
+  Version:          1.2.4
+  GitCommit:        v1.2.4-0-g6c52b3f
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+
+================================================================================
+
+To run Docker as a non-privileged user, consider setting up the
+Docker daemon in rootless mode for your user:
+
+    dockerd-rootless-setuptool.sh install
+
+Visit https://docs.docker.com/go/rootless/ to learn about rootless mode.
+
+
+To run the Docker daemon as a fully privileged service, but granting non-root
+users access, refer to https://docs.docker.com/go/daemon-access/
+
+WARNING: Access to the remote API on a privileged Docker daemon is equivalent
+         to root access on the host. Refer to the 'Docker daemon attack surface'
+         documentation for details: https://docs.docker.com/go/attack-surface/
+
+================================================================================
+
+root@ip-192-40-2-31:/home/ubuntu# docker -v
+Docker version 27.5.1, build 9f9e405
+root@ip-192-40-2-31:/home/ubuntu# docker run --rm -dit --name OuterName --hostname InterName --network host shivaram1918/shippingservice
+Unable to find image 'shivaram1918/shippingservice:latest' locally
+latest: Pulling from shivaram1918/shippingservice
+8a49fdb3b6a5: Pull complete
+61110a96c825: Pull complete
+11809cc987d0: Pull complete
+f91d37a9500e: Pull complete
+d7c1bfb2d569: Pull complete
+Digest: sha256:cdf59f80403e80e23e78e99be6c17e7041893275a52011d1b01ffd03d9e6818b
+Status: Downloaded newer image for shivaram1918/shippingservice:latest
+46edb2a4397436ddd1b89d07108c9444e4eb0c4b7c008c6d9081f5e4895db435
+root@ip-192-40-2-31:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE                          COMMAND                  CREATED          STATUS         PORTS     NAMES
+46edb2a43974   shivaram1918/shippingservice   "/src/shippingservice"   10 seconds ago   Up 8 seconds             OuterName
+root@ip-192-40-2-31:/home/ubuntu# docker ps -a
+CONTAINER ID   IMAGE                          COMMAND                  CREATED          STATUS          PORTS     NAMES
+46edb2a43974   shivaram1918/shippingservice   "/src/shippingservice"   29 seconds ago   Up 28 seconds             OuterName
+root@ip-192-40-2-31:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE                          COMMAND                  CREATED         STATUS         PORTS     NAMES
+46edb2a43974   shivaram1918/shippingservice   "/src/shippingservice"   4 minutes ago   Up 4 minutes             OuterName
+root@ip-192-40-2-31:/home/ubuntu#
+root@ip-192-40-2-31:/home/ubuntu#
+root@ip-192-40-2-31:/home/ubuntu#
+root@ip-192-40-2-31:/home/ubuntu#
+root@ip-192-40-2-31:/home/ubuntu# docker network create test1
+9e9cb942a50d71bcb4d238f7fab8dcb395429ed9160176d047c58501e67b8e20
+root@ip-192-40-2-31:/home/ubuntu# docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+dc8becbb467c   bridge    bridge    local
+62fb4b8083f7   host      host      local
+87b64a901678   none      null      local
+9e9cb942a50d   test1     bridge    local
+root@ip-192-40-2-31:/home/ubuntu# docker inspect test1
+[
+    {
+        "Name": "test1",
+        "Id": "9e9cb942a50d71bcb4d238f7fab8dcb395429ed9160176d047c58501e67b8e20",
+        "Created": "2025-02-11T17:42:02.960641941Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",
+                    "Gateway": "172.18.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {},
+        "Labels": {}
+    }
+]
+root@ip-192-40-2-31:/home/ubuntu# docker network create test2 \
+  --driver=bridge \
+  --subnet=172.28.0.0/16 \
+  --ip-range=172.28.5.0/24 \
+  --gateway=172.28.5.254 \
+  br0
+"docker network create" requires exactly 1 argument.
+See 'docker network create --help'.
+
+Usage:  docker network create [OPTIONS] NETWORK
+
+Create a network
+root@ip-192-40-2-31:/home/ubuntu# docker network create  --driver=bridge   --subnet=172.28.0.0/16   --ip-range=172.28.5.0/24   --gateway=172.28.5.254   br0
+4691868f971849c2d97e30025055e2491696812bd36879e33d4aed8d698b66cf
+root@ip-192-40-2-31:/home/ubuntu# docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+4691868f9718   br0       bridge    local
+dc8becbb467c   bridge    bridge    local
+62fb4b8083f7   host      host      local
+87b64a901678   none      null      local
+9e9cb942a50d   test1     bridge    local
+root@ip-192-40-2-31:/home/ubuntu# docker network create  --driver=test2   --subnet=172.28.0.0/16   --ip-range=172.28.4.0/24   --gateway=172.28.4.254   br0
+Error response from daemon: network with name br0 already exists
+root@ip-192-40-2-31:/home/ubuntu# docker network create  --driver=dev   --subnet=172.28.0.0/16   --ip-range=172.28.4.0/24   --gateway=172.28.4.254   br0
+Error response from daemon: network with name br0 already exists
+root@ip-192-40-2-31:/home/ubuntu#
+root@ip-192-40-2-31:/home/ubuntu#
+root@ip-192-40-2-31:/home/ubuntu#
+root@ip-192-40-2-31:/home/ubuntu#
+root@ip-192-40-2-31:/home/ubuntu# docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+4691868f9718   br0       bridge    local
+dc8becbb467c   bridge    bridge    local
+62fb4b8083f7   host      host      local
+87b64a901678   none      null      local
+9e9cb942a50d   test1     bridge    local
+root@ip-192-40-2-31:/home/ubuntu# docker network prune
+WARNING! This will remove all custom networks not used by at least one container.
+Are you sure you want to continue? [y/N] y
+Deleted Networks:
+test1
+br0
+
+root@ip-192-40-2-31:/home/ubuntu# docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+dc8becbb467c   bridge    bridge    local
+62fb4b8083f7   host      host      local
+87b64a901678   none      null      local
+root@ip-192-40-2-31:/home/ubuntu#
+Network error: Connection reset by peer
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+Session stopped
+    - Press <Return> to exit tab
+    - Press R to restart session
+    - Press S to save terminal output to file
+Authenticating with public key "Imported-Openssh-Key"
+    ┌──────────────────────────────────────────────────────────────────────┐
+    │                 • MobaXterm Personal Edition v24.1 •                 │
+    │               (SSH client, X server and network tools)               │
+    │                                                                      │
+    │ ⮞ SSH session to ubuntu@34.230.91.10                                 │
+    │   • Direct SSH      :  ✓                                             │
+    │   • SSH compression :  ✓                                             │
+    │   • SSH-browser     :  ✓                                             │
+    │   • X11-forwarding  :  ✓  (remote display is forwarded through SSH)  │
+    │                                                                      │
+    │ ⮞ For more info, ctrl+click on help or visit our website.            │
+    └──────────────────────────────────────────────────────────────────────┘
+
+Welcome to Ubuntu 24.04.1 LTS (GNU/Linux 6.8.0-1021-aws x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Tue Feb 11 18:27:45 UTC 2025
+
+  System load:  0.0               Processes:             114
+  Usage of /:   37.1% of 6.71GB   Users logged in:       0
+  Memory usage: 28%               IPv4 address for enX0: 192.40.2.31
+  Swap usage:   0%
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+95 updates can be applied immediately.
+27 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+Last login: Tue Feb 11 17:23:37 2025 from 106.222.229.43
+ubuntu@ip-192-40-2-31:~$ ls
+index.html
+ubuntu@ip-192-40-2-31:~$ docker ps
+permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.47/containers/json": dial unix /var/run/docker.sock: connect: permission denied
+ubuntu@ip-192-40-2-31:~$ sudo su
+]]root@ip-192-40-2-31:/home/ubuntu#
+root@ip-192-40-2-31:/home/ubuntu#
+root@ip-192-40-2-31:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE                          COMMAND                  CREATED          STATUS          PORTS     NAMES
+46edb2a43974   shivaram1918/shippingservice   "/src/shippingservice"   55 minutes ago   Up 55 minutes             OuterName
+root@ip-192-40-2-31:/home/ubuntu# docker push shivaram1918/microservice
+Using default tag: latest
+The push refers to repository [docker.io/shivaram1918/microservice]
+An image does not exist locally with the tag: shivaram1918/microservice
+root@ip-192-40-2-31:/home/ubuntu# docker push shivaram1918/microservice:latest
+The push refers to repository [docker.io/shivaram1918/microservice]
+An image does not exist locally with the tag: shivaram1918/microservice
+root@ip-192-40-2-31:/home/ubuntu# docker run --rm -dit --name ram -p 8080:80 shivaram1918/microservice:latest
+Unable to find image 'shivaram1918/microservice:latest' locally
+latest: Pulling from shivaram1918/microservice
+8921db27df28: Pull complete
+846e3b32ee5a: Pull complete
+a8cf960fcec5: Pull complete
+02a6b95e4384: Pull complete
+cd3584f0f2c1: Pull complete
+db9778672fdf: Pull complete
+b1e9a6162fcc: Pull complete
+6f0e3e203821: Pull complete
+3e5dd6d10e4c: Pull complete
+Digest: sha256:a576bc99745cd0c76bde8ae01c40115bdb20c0de0c45a8a8e3f304ab5b462dc0
+Status: Downloaded newer image for shivaram1918/microservice:latest
+2f854075b24c34cff0842bf790423fba83e8ea36d4fa8367b5bc662b6002eb10
+root@ip-192-40-2-31:/home/ubuntu# docker ps

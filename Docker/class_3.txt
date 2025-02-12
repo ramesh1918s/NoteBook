@@ -1,0 +1,326 @@
+node {
+    stage ('git checkout'){
+        git ''
+    }https://github.com/vikash-kumar01/Jenkins-Docker-Project.git
+    stage('Docker build iamge'){
+        sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:v1.$BUILD_ID'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:latest'
+    }
+}
+
+
+
+ sh 'docker login -u shivaram1918 -p $(Dockerpasswd)'
+    sh 'docker image push ramesh561/$JOB_NAME:v1.$BUILD_ID'
+    sh 'docker image push ramesh561/$JOB_NAME:latest'
+     
+    sh 'docker image rm $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:latest '
+    
+
+
+
+
+
+
+
+
+
+
+node {
+    stage ('git checkout'){
+        git 'https://github.com/urukundu917/ramesh.git'
+    }
+    stage('Docker build iamge'){
+        sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:v1.$BUILD_ID'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:latest'
+    }
+    
+    stage('pushing images to dockerHub'){
+        
+      withCredentials([string(credentialsId: 'DockerPasswd', variable: 'DockerPasswd')]){
+        sh "docker login -u shivaram1918 -p ${DockerPasswd}"
+        sh 'docker image push ramesh561/$JOB_NAME:v1.$BUILD_ID'
+        sh 'docker image push ramesh561/$JOB_NAME:latest '
+        
+        sh 'docker image rm $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:latest '
+    
+    
+       }
+
+   }
+}
+
+
+
+
+node {
+    stage ('git checkout'){
+        git 'https://github.com/urukundu917/ramesh.git'
+    }
+    stage('Docker build iamge'){
+        sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:v1.$BUILD_ID'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:latest'
+    }
+    
+    stage('pushing images to dockerHub'){
+        
+      withCredentials([string(credentialsId: 'DockerhubpasswD', variable: 'shivaram1918')]){
+        sh "docker login -u shivaram1918 -p ${DockerhubpasswD}"
+        sh 'docker image push ramesh561/$JOB_NAME:v1.$BUILD_ID'
+        sh 'docker image push ramesh561/$JOB_NAME:latest '
+        
+        sh 'docker image rm $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:latest '
+    
+    
+       }
+
+   }
+}
+
+
+
+-------------------------------------------------------------------------------------------------
+node {
+    stage ('git checkout'){
+        git 'https://github.com/urukundu917/ramesh.git'
+    }
+    stage('Docker build iamge'){
+        sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:v1.$BUILD_ID'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:latest'
+    }
+    
+    stage('pushing images to dockerHub'){
+        withCredentials([string(credentialsId: 'DockerPasswddd', variable: 'MyDockerPasswd')]) {
+            sh "docker login -u shivaram1918 -p ${MyDockerPasswd}"
+            sh 'docker image push ramesh561/$JOB_NAME:v1.$BUILD_ID'
+            sh 'docker image push ramesh561/$JOB_NAME:latest'
+        
+            sh 'docker image rm $JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:v1.$BUILD_ID ramesh561/$JOB_NAME:latest'
+
+}
+}
+}
+
+
+
+-----------------------------------------------------------------------------------------------------------------
+
+Last login: Sun Aug 11 12:35:57 2024 from 203.192.253.16
+ubuntu@ip-10-40-1-160:~$ sudo su
+root@ip-10-40-1-160:/home/ubuntu#
+root@ip-10-40-1-160:/home/ubuntu# sudo su -
+root@ip-10-40-1-160:~# docker images
+REPOSITORY                    TAG       IMAGE ID       CREATED          SIZE
+docker_uru_webapp             v1.2      05a0009cf8f0   42 minutes ago   506MB
+docker_uru_webapp             v1.3      05a0009cf8f0   42 minutes ago   506MB
+ramesh561/docker_uru_webapp   latest    05a0009cf8f0   42 minutes ago   506MB
+ramesh561/docker_uru_webapp   v1.2      05a0009cf8f0   42 minutes ago   506MB
+ramesh561/docker_uru_webapp   v1.3      05a0009cf8f0   42 minutes ago   506MB
+root@ip-10-40-1-160:~# docker image push ramesh561/docker_uru_webapp
+Using default tag: latest
+The push refers to repository [docker.io/ramesh561/docker_uru_webapp]
+35667c236778: Preparing
+cfc8f88a6d88: Preparing
+f813a6df0c1a: Preparing
+5f70bf18a086: Preparing
+a53a501524d2: Preparing
+9e7f6d4e16fd: Waiting
+4bd41e446f0f: Waiting
+a289276e2600: Waiting
+2e080d753bb3: Waiting
+74ddd0ec08fa: Waiting
+denied: requested access to the resource is denied
+root@ip-10-40-1-160:~# ^C
+root@ip-10-40-1-160:~# docker login
+Log in with your Docker ID or email address to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com/ to create one.
+You can log in with your password or a Personal Access Token (PAT). Using a limited-scope PAT grants better security and is required for organizations using SSO. Learn more at https://docs.docker.com/go/access-tokens/
+
+Username: shivaram1918
+Password:
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credential-stores
+
+Login Succeeded
+root@ip-10-40-1-160:~# docker image push ramesh561/docker_uru_webapp
+Using default tag: latest
+The push refers to repository [docker.io/ramesh561/docker_uru_webapp]
+35667c236778: Preparing
+cfc8f88a6d88: Preparing
+f813a6df0c1a: Preparing
+5f70bf18a086: Preparing
+a53a501524d2: Preparing
+9e7f6d4e16fd: Waiting
+4bd41e446f0f: Waiting
+a289276e2600: Waiting
+2e080d753bb3: Waiting
+74ddd0ec08fa: Waiting
+denied: requested access to the resource is denied
+root@ip-10-40-1-160:~# ^C
+root@ip-10-40-1-160:~# docker images
+REPOSITORY                    TAG       IMAGE ID       CREATED          SIZE
+docker_uru_webapp             v1.2      05a0009cf8f0   54 minutes ago   506MB
+docker_uru_webapp             v1.3      05a0009cf8f0   54 minutes ago   506MB
+ramesh561/docker_uru_webapp   latest    05a0009cf8f0   54 minutes ago   506MB
+ramesh561/docker_uru_webapp   v1.2      05a0009cf8f0   54 minutes ago   506MB
+ramesh561/docker_uru_webapp   v1.3      05a0009cf8f0   54 minutes ago   506MB
+root@ip-10-40-1-160:~# docker image push docker_uru_webapp
+Using default tag: latest
+The push refers to repository [docker.io/library/docker_uru_webapp]
+tag does not exist: docker_uru_webapp:latest
+root@ip-10-40-1-160:~# docker image push ramesh561/docker_uru_webapp:v1.2
+The push refers to repository [docker.io/ramesh561/docker_uru_webapp]
+35667c236778: Preparing
+cfc8f88a6d88: Preparing
+f813a6df0c1a: Preparing
+5f70bf18a086: Preparing
+a53a501524d2: Preparing
+9e7f6d4e16fd: Waiting
+4bd41e446f0f: Waiting
+a289276e2600: Waiting
+2e080d753bb3: Waiting
+74ddd0ec08fa: Waiting
+denied: requested access to the resource is denied
+root@ip-10-40-1-160:~# docker tag 05a0009cf8f0 shivaram1918/uru:v1.2
+root@ip-10-40-1-160:~# docker images
+REPOSITORY                    TAG       IMAGE ID       CREATED          SIZE
+docker_uru_webapp             v1.2      05a0009cf8f0   59 minutes ago   506MB
+docker_uru_webapp             v1.3      05a0009cf8f0   59 minutes ago   506MB
+ramesh561/docker_uru_webapp   latest    05a0009cf8f0   59 minutes ago   506MB
+ramesh561/docker_uru_webapp   v1.2      05a0009cf8f0   59 minutes ago   506MB
+ramesh561/docker_uru_webapp   v1.3      05a0009cf8f0   59 minutes ago   506MB
+shivaram1918/uru              v1.2      05a0009cf8f0   59 minutes ago   506MB
+root@ip-10-40-1-160:~# docker image push ramesh561/docker_uru_webapp:v1.2
+The push refers to repository [docker.io/ramesh561/docker_uru_webapp]
+35667c236778: Preparing
+cfc8f88a6d88: Preparing
+f813a6df0c1a: Preparing
+5f70bf18a086: Preparing
+a53a501524d2: Preparing
+9e7f6d4e16fd: Waiting
+4bd41e446f0f: Waiting
+a289276e2600: Waiting
+2e080d753bb3: Waiting
+74ddd0ec08fa: Waiting
+denied: requested access to the resource is denied
+root@ip-10-40-1-160:~# ^C
+root@ip-10-40-1-160:~# docker login
+Authenticating with existing credentials...
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credential-stores
+
+Login Succeeded
+root@ip-10-40-1-160:~# ^C
+root@ip-10-40-1-160:~# ^C
+root@ip-10-40-1-160:~# ^C
+root@ip-10-40-1-160:~# ^C
+root@ip-10-40-1-160:~# ^C
+root@ip-10-40-1-160:~# docker tag 05a0009cf8f0 ramesh561/docker_uru_webapp:v1.4
+root@ip-10-40-1-160:~# docker push ramesh561/docker_uru_webapp:v1.3
+The push refers to repository [docker.io/ramesh561/docker_uru_webapp]
+35667c236778: Preparing
+cfc8f88a6d88: Preparing
+f813a6df0c1a: Preparing
+5f70bf18a086: Preparing
+a53a501524d2: Preparing
+9e7f6d4e16fd: Waiting
+4bd41e446f0f: Waiting
+a289276e2600: Waiting
+2e080d753bb3: Waiting
+74ddd0ec08fa: Waiting
+denied: requested access to the resource is denied
+root@ip-10-40-1-160:~# docker logout
+Removing login credentials for https://index.docker.io/v1/
+root@ip-10-40-1-160:~# docker login
+Log in with your Docker ID or email address to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com/ to create one.
+You can log in with your password or a Personal Access Token (PAT). Using a limited-scope PAT grants better security and is required for organizations using SSO. Learn more at https://docs.docker.com/go/access-tokens/
+
+Username: urukundudocker
+Password:
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credential-stores
+
+Login Succeeded
+root@ip-10-40-1-160:~# docker push ramesh561/docker_uru_webapp:v1.3
+The push refers to repository [docker.io/ramesh561/docker_uru_webapp]
+35667c236778: Preparing
+cfc8f88a6d88: Preparing
+f813a6df0c1a: Preparing
+5f70bf18a086: Preparing
+a53a501524d2: Preparing
+9e7f6d4e16fd: Waiting
+4bd41e446f0f: Waiting
+a289276e2600: Waiting
+2e080d753bb3: Waiting
+74ddd0ec08fa: Waiting
+denied: requested access to the resource is denied
+root@ip-10-40-1-160:~# ^C
+root@ip-10-40-1-160:~# docker images
+REPOSITORY                    TAG       IMAGE ID       CREATED             SIZE
+docker_uru_webapp             v1.2      05a0009cf8f0   About an hour ago   506MB
+docker_uru_webapp             v1.3      05a0009cf8f0   About an hour ago   506MB
+ramesh561/docker_uru_webapp   latest    05a0009cf8f0   About an hour ago   506MB
+ramesh561/docker_uru_webapp   v1.2      05a0009cf8f0   About an hour ago   506MB
+ramesh561/docker_uru_webapp   v1.3      05a0009cf8f0   About an hour ago   506MB
+ramesh561/docker_uru_webapp   v1.4      05a0009cf8f0   About an hour ago   506MB
+shivaram1918/uru              v1.2      05a0009cf8f0   About an hour ago   506MB
+root@ip-10-40-1-160:~# docker tag 05a0009cf8f0 urukundudocker/docker-webapp:v1.2
+root@ip-10-40-1-160:~# docker push urukundudocker/docker-webapp:v1.2
+The push refers to repository [docker.io/urukundudocker/docker-webapp]
+35667c236778: Pushed
+cfc8f88a6d88: Pushed
+f813a6df0c1a: Pushed
+5f70bf18a086: Pushed
+a53a501524d2: Pushed
+9e7f6d4e16fd: Pushed
+4bd41e446f0f: Pushed
+a289276e2600: Pushed
+2e080d753bb3: Pushed
+74ddd0ec08fa: Pushed
+v1.2: digest: sha256:5d3954b3d92b6a43b2c5224009829aea2f3e1dd3b450fc80adf5eb37543dcaa9 size: 2620
+root@ip-10-40-1-160:~#
+----------------------------------------------------------------------------------------------------------------------------------
+ docker run -itd --name scriptedcontainer -p 9000:80 shivaram1918/docker_uru_webapp '
+}
+--------------------------------------------------------------------------------------------------------------------------------
+node {
+    stage ('git checkout'){
+        git 'https://github.com/N4si/DevSecOps-Project.git'
+    }
+    stage('Docker build iamge'){
+        sh 'docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID shivaram1918/$JOB_NAME:v1.$BUILD_ID'
+        sh 'docker image tag $JOB_NAME:v1.$BUILD_ID shivaram1918/$JOB_NAME:latest'
+    }
+    
+    stage('pushing images to dockerHub'){
+        withCredentials([string(credentialsId: 'DockerPasswddd', variable: 'MyDockerPasswd')]) {
+            sh "docker login -u shivaram1918 -p ${MyDockerPasswd}"
+            sh 'docker image push shivaram1918/$JOB_NAME:v1.$BUILD_ID'
+            sh 'docker image push shivaram1918/$JOB_NAME:latest'
+        
+            sh 'docker image rm $JOB_NAME:v1.$BUILD_ID shivaram1918/$JOB_NAME:v1.$BUILD_ID shivaram1918/$JOB_NAME:latest'
+
+}
+            stage('Docker continer Deployment'){
+                def docker_run = 'docker run -itd --name scriptedcontainer -p 9000:80 shivaram1918/docker_uru_webapp'
+               sshagent(['webapp_server']) {
+                
+                sh "ssh -o StrictHostKeyChecking=no ubuntu@10.40.1.31 $(docker_run)"
+}
+    }       
+
+
+
+}
+}
+
+
+
+---
