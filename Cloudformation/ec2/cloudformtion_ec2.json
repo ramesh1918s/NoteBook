@@ -1,0 +1,116 @@
+
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "CloudFormation template to create a Subnet, and an EC2 instance using an existing VPC",
+    "Resources": {
+      "MySubnet": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+          "VpcId": "vpc-09e86515a72628a0a", 
+          "CidrBlock": "10.77.1.0/24",
+          "AvailabilityZone": {
+            "Fn::Select": [
+              0,
+              {
+                "Fn::GetAZs": ""
+              }
+            ]
+          },
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "MySubnet"
+            }
+          ]
+        }
+      },
+      "MyRouteTable": {
+        "Type": "AWS::EC2::RouteTable",
+        "Properties": {
+          "VpcId": "vpc-09e86515a72628a0a", 
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "MyRouteTable"
+            }
+          ]
+        }
+      },
+      "MyRoute": {
+        "Type": "AWS::EC2::Route",
+        "Properties": {
+          "RouteTableId": {
+            "Ref": "MyRouteTable"
+          },
+          "DestinationCidrBlock": "0.0.0.0/0",
+          "GatewayId": "igw-074c08359dee62519"
+        }
+      },
+      "MySubnetRouteTableAssociation": {
+        "Type": "AWS::EC2::SubnetRouteTableAssociation",
+        "Properties": {
+          "SubnetId": {
+            "Ref": "MySubnet"
+          },
+          "RouteTableId": {
+            "Ref": "MyRouteTable"
+          }
+        }
+      },
+      "MySecurityGroup": {
+        "Type": "AWS::EC2::SecurityGroup",
+        "Properties": {
+          "VpcId": "vpc-09e86515a72628a0a",
+          "GroupDescription": "Allow SSH access",
+          "SecurityGroupIngress": [
+            {
+              "IpProtocol": "tcp",
+              "FromPort": "22",
+              "ToPort": "22",
+              "CidrIp": "0.0.0.0/0"
+            }
+          ],
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "MySecurityGroup"
+            }
+          ]
+        }
+      },
+      "MyEC2Instance": {
+        "Type": "AWS::EC2::Instance",
+        "Properties": {
+          "InstanceType": "t2.micro",
+          "KeyName": "Main_Key",
+          "ImageId": "ami-0e86e20dae9224db8", 
+          "SubnetId": {
+            "Ref": "MySubnet"
+          },
+          "SecurityGroupIds": [
+            {
+              "Ref": "MySecurityGroup"
+            }
+          ]
+        }
+      }
+    },
+    "Outputs": {
+      "InstanceId": {
+        "Description": "ID of the EC2 instance",
+        "Value": {
+          "Ref": "MyEC2Instance"
+        }
+      },
+      "PublicIP": {
+        "Description": "Public IP address of the EC2 instance",
+        "Value": {
+          "Fn::GetAtt": [
+            "MyEC2Instance",
+            "PublicIp"
+          ]
+        }
+      }
+    }
+  }
+  
