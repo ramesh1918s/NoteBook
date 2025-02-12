@@ -1,0 +1,110 @@
+                                               Jenkins
+------------------------------------------------------------------------------------------
+1)CI/CD - Continuous Integration/Continuous Delivery-Deploy
+-developer team and opertion team conection
+- 
+
+
+
+
+
+
+
+step-1)create a instance with amazone linux connect mobaxterm
+sudo su , yum update,jenkins repo jenkins.io lo cenOs lo url-https://pkg.jenkins.io/redhat-stable/  Jenkins Redhat Packages links copy then past in mobax
+key link copy and post
+step-2)install java jdk11 amazone linux 
+- wget https://corretto.aws/downloads/latest/amazon-corretto-11-x64-linux-jdk.rpm
+- sudo yum localinstall -y amazon-corretto-11-x64-linux-jdk.rpm
+- java -version
+- java 11 version
+
+step-2
+
+*)install git jenkins mave
+-----------------------
+- yum install git maven jenkins -y
+- systemctl restart jenkins.service
+- systemctl status jenkins.service
+- active jenkins then poth no-8080
+- public ip address copy then poth no :8080
+- eg 18.212.181.143:8080 in google and then open jenkins unlock webpage
+- copy path address and cat /var/lib/jenkins/secrets/initialAdminPassword
+- b4bdf3b43dc646f598b3e94a137ad6c4 --this is passward copy post jenkins start
+- open then install plugins 
+- open jenkins dashbord - user name -ram,password- ramesh@915454,email-rameshmuddappagri@gmail.com,
+- jenkins dashbord 
+
+step-3
+- vim /etc/passwd --open - instact -edit flase/bash ecs,shift:wq enter
+- cat /etc/passwd
+- jenkins user add autometic
+- control+l =clear
+- passwd jenkins
+- set a password ram915454
+- visudo -sudo power add in jenkins
+- root    ALL=(ALL)       ALL copy and post 
+- jenkins All=(ALL)   NOPASSWD:  ALL
+- vim /etc/ssh/sshd_config ---passwordauthentication-no change to yes
+- systemctl restart sshd ,systemctl status sshd --check status sshd active
+
+step-4
+- create a instance slave1 and open mobaxterm 
+- sudo -i 
+- useradd jenkins
+- passwd jenkins , ram915454 update passwd
+- visudo --root    ALL=(ALL)       ALL changes jenkins ALL=(ALL)  NOPASSWD:ALL
+-vim /etc/ssh/sshd_config -- passwordauthentication-no change to yes
+- systemctl restart sshd 
+- systemctl status sshd  --active
+- 
+step -5
+- master server(jenkins)
+- su - jenkins
+- ssh-keygen
+- to install the keygen -- /var/lib/jenkins/.ssh/id_rsa.pub
+
+- to find the ssh.keygen ssh-keygen -t rsa -b 4096 -C "rameshmuddappagri@gmail.com"
+-enter,enter,enter--- generat the ssh keygen -- Your public key has been saved in /var/lib/jenkins/.ssh/id_rsa.pub
+- ssh-copy-id jenkins@localhost ,yes ssh 'jenkins@localhost' copy and post 
+- then connect with localhost with localhost
+- hostname -i enter host i
+- exit connection to localhost closed.
+-  
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDmRHjRCGiMgeQ1jaJ5adSehlU4jPZQDOeu8Nkbiy31ZVnvkKPLGcM3JZHtgKmog59vBAKhpvnT+36Iy9s/BWRGEQBw+SCQcjzWqVX9iZ+Y/QrGv/qg+CCveM3uLBPWUKaMp+WMf/gKncfW6CuG8moQ9zSmdiO2WFezK+9glOaU9gw+K00hmL8uJ4sUbD36wOZaIWASMB5in5lPrdsI682ws8OsIFZslE2ATd8YbboUxJdH6NDHdl54/Hph91sRUf9cXjylH6xUF+cvjBvfWWlk6WxfRjGsfnDKMEBRRw7GBVcWaQJ1kcKdFnqM0dm4DqCGcGiUUKrjISiufm1ehYUOHLWFoI3eQ3JulRdU8QoIKtGQy4Deza88O+IkWfLzOjSeQlKx+x97y3HYYtKSbj7QbDHIOc0Xj5pDxaMQYaw9MSMj+RvCbq76IFu4N9U8+LrG/2y8OJbOhJ7QixF30WHejrDoFUn26TyhuPNEF7pZHNF/GIDMg51W2yWX0dqD1bQciB/O62dKFfm560XedIn2NFwlPrEoOXw8cZtScgd2rrp/gmPj/j0OEyunKNgF657wt/Z4mcSl1EpFbZl2ZGMOlWkIhXtLqfbC3GSBl4sH7Z2K1reor9GeeFiCS8bo1e8jqrzdb15TvmxVB80mJFDt10P4kqOxCElTD47D7QtyWQ== rameshmuddappagari@gmail.com
+
+
+
+- bash-5.2$ history
+    1  hostname -i
+    2  exit
+    3  ssh-keygen
+    4  cat /var/lib/jenkins/.ssh/id_rsa.pub
+    5  ssh-copy-id jenkins@44.208.22.24
+    6  hostaname
+    7  hostname
+    8  ssh 'jenkins@44.208.22.24'
+
+master to slave connectoin 
+- slave-1 server create
+- sudo -i
+- useradd jenkins
+- passwd jenkins 
+- set new pass-ram915454
+-visudo enter open --- root    ALL=(ALL)       ALL
+jenkins    ALL=(ALL)    NOPASSWD: ALL
+-vim /etc/ssh/sshd_config - password -yes ,yes
+systemctl restart sshd
+systemctl status sshd
+----------------------------------
+master server
+
+- su jenkins 
+- hostname -i
+-host ip address fe80::1062:9dff:feae:9245%enX0 10.40.1.68
+- su jenkins
+-  ssh-copy-id jenkins@35.171.3.116
+- yes
+- enter the password-ram915454
+- ssh-copy-id jenkins@35.171.3.116 copy and post
+- 
