@@ -1,0 +1,50 @@
+                           Architecture of Linux
+
+---------------------------------------------------------------------------------------
+1)Hardware Layer
+2)Kernel Layer                           
+3)Shell 
+4)Utilities
+----------------------------------------------------------------------------------------
+                           1)Hardware Layer
+                           ==================
+
+It is the core of the linux .It consist of all peripheral device                           
+- peripheral device-eg: RAM, HDD
+*)The Physical Componets present in the computer
+
+ -----------------------------------------------------------------------------------------------
+
+                           2)Kernel Layer
+                           ~~~~~~~~~~~~~~~~
+
+A Collection of routines. It is loaded into memory when system is booted and communicates directly with Hardware
+Eg:   memory management, schedule process,priority ,Resources
+*)Kernel is Interface b/w Shell and HardWare 
+  - Kernel heart of O.S
+  - Kernel core part of O.S
+  - Kernel central part of O.S 
+  - Low level Programming (Machine level Languge)  
+  -  Diverfile Available  - BootStrap Program(Kernel)    
+
+------------------------------------------------------------------------------------------------------------------
+
+                           3)Shell
+                           ........
+
+It is a User Interface that helps a user to Interact with Linux O.S
+*) Shell is Command line Interpreter
+- The Shell is Interface b/w User and Kernel
+- Shell Means Collection of Commands eg: cat,rm,cp,cd,mv,grep,pwd,ls ....etc
+- Shell is High level Programming
+- Shell Convert Lowlevel Programming Languge to Highlevel Programming Languges 
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+                           4)Utilities & Application Programs & Users
+                           ````````````````````````````````````````````
+
+-Text Editor, Document processors,Email services
+- Web Browsers,Image Editors,Database
+- Languge compilers, Design Tools, GVI 
+                                             
