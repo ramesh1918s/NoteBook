@@ -1,0 +1,137 @@
+                                         Static Code Analysis Tools
+-----------------------------------------------------------------------------------------------------------------------------
+  Type of Static Code Analysis Tools
+  
+  - Sonarqube
+  - coverity
+  - raxis
+  - veracode
+  - codescene
+
+
+
+------------------------------------------------------------------------------------------------------------------------------
+Development Face
+what is code quality ?
+
+- Is it a bug free ?
+- Is secure ?
+- Duplications avoided?
+- Tested Properly?
+- Complex Code? 
+
+----------------------------------------------------------------------------------------------------------------------------------
+1) Sonarqube
+ - Its act as "Quality Management Tool"
+ - Code Analysis
+ - Test Reports
+ - Cover Coverage
+
+Componente of Sonarqube
+i) Sonarqube Server
+ - Rules
+ - DateBase
+ - Web InterFace
+ - Engine
+ii) SonarScanner
+ - SourceCode  eg:java,python ....etc
+ - SonarScanner collects required info from source code 
+ --------------------------------------------------------------------------------------------------------------------------------------------
+ Sonarqube
+
+ - sonar is a platform designed to check or inspect the code quality continuously
+
+ -Scanner
+ -Sonarqube Server
+ -DateBase
+ - Engine
+ - Seach
+
+ Scanner 
+- scan the code and check the code based on the Rules
+
+ DateBase (H2  DateBase) 
+  By default Sonarqube has set of rules for each programming language purpose 
+  - 2000 set of rules present inthe DateBase
+   - Python rules
+   - Java rules
+   - html rules
+   - go language rules
+   
+Base on the rules will be applied   to check the code quality
+
+- If the source code is java  --java rules
+- If the source code is in python --python rules
+
+Rules = check list
+
+Engine 
+- Engine is check the input Reports to pass the Sonarqube Server 
+
+---------------------------------------------------------------------------------------------------------------------------------
+Setup Sonarqube inside the Linux
+Step -1
+
+-requirements
+- t3.medium
+- 2cpu 4GB RAM Server
+- 30 GB dis space
+- Insatll on Java 17 version
+- Sonarqube potno -9000
+- sudo apt install openjdk-17-jdk
+- Install Docker 
+- --------------------------------------------
+ 1  sudo apt-get update
+    2  sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+    3  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    4  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    5  sudo apt-get update
+    6  sudo apt-get install docker-ce docker-ce-cli containerd.io
+    7  sudo systemctl status docker
+    8  docker --version
+    9  sudo apt install openjdk-17-jdk
+   10  docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
+   11  echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]"     https://pkg.jenkins.io/debian-stable binary/ | sudo tee     /etc/apt/sources.list.d/jenkins.list > /dev/null
+   12  cat /var/lib/jenkins/secrets/initialAdminPassword
+   13  docker images
+   14  docker ps
+ ----------------------------------------------------------------------------------------------------
+ jenkins server open
+ - plugs -install sonarqube and jdk
+
+ - pipeline {
+    agent any
+    environment {
+        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64' // Path to OpenJDK
+        PATH = "${JAVA_HOME}/bin:${PATH}"
+    }
+    tools {
+        maven 'maven3'
+    }
+
+    stages {
+        stage('Git Checkout') {
+            steps {
+                git branch: 'main', 
+                    changelog: false, 
+                    poll: false, 
+                    url: 'https://github.com/jaiswaladi246/Petclinic.git'
+            }
+        }
+        
+        stage('Sonar Analysis') {
+            steps {
+                sh "mvn clean package"
+                sh '''
+                    mvn sonar:sonar \
+                    -Dsonar.url=http://54.158.104.12:9000/ \
+                    -Dsonar.login=squ_629f843133b0988a7f863207a401dd116be89058 \
+                    -Dsonar.projectName=Petclinic \
+                    -Dsonar.java.binaries=. \
+                    -Dsonar.projectKey=Petclinic
+                '''
+            }
+        }
+    }
+}
+
