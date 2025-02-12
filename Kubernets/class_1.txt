@@ -1,0 +1,160 @@
+    
+                                            kubernates 
+=========================================================================================================================================================
+-pod -- A pod encapsulates one or more containers, storage resources, network configurations, 
+and other options required to run a specific set of container together
+*)pod
+*)deploy
+*)replicasets
+
+
+-------------------------------------------------commands-------------------------------------------------------------------
+
+- kubectl apply -f <mainfest.yml> -eg - kubectl apply -f .\sample.pod.yml
+- kubectl get
+- kubectl describe pod my-pods
+- kubectl describe deploy my-deployments
+- kubectl describe rs my-replicasets
+- kubectl delete deployment
+-   -- -----------
+   1 gcloud container clusters get-credentials cluster-2 --zone us-centr...
+   2 kubectl get nodes
+   3 gcloud components install kubectl
+   4 kubectl version --client
+   5 gcloud container clusters get-credentials cluster-2 --zone us-centr...
+   6 kubectl get nodes
+   7 get clone https://github.com/nextopsvideos/kubernetesyt.git
+   8 kubectl get clone https://github.com/nextopsvideos/kubernetesyt.git
+   9 kubectl get all -a
+  10 kubectl get all -a
+  11 mkdir Mainfest_Example
+  12 code .
+  13 kubectl get pods
+  14 kubectl get deployments
+  15 kubectl get replicasets
+  16 kubectl apply -f .\sample.pod.yml
+  17 kubectl apply -f .\sample.deploy.yml
+  18 kubectl get pods
+  19 kubectl describe pod my-pod
+  20 kubectl get deploy
+  21 kubectl get replicaset
+  22 kubectl describe deploy my-deployment
+  23 kubectl describe rs my-replicasets
+  24 kubectl apply -f .\sample.rs.yml
+  25 kubectl describe rs my-replicasets
+  26 kubectl edit deployment my-deployment
+  27 kubectl edit deployment
+  28 kubectl get deployment
+  29 kubectl get pods
+  30 kubectl delete pod my-deployment-c76577d55-5gxlb
+  31 kubectl get pods
+---------------------------------------------------------------------------------------------------------------------
+
+                                                                  services
+==========================================================================================================================================================================================
+- Services = In kubernetes a service is an abstraction that provides a consistent way to access and 
+  communicate with a set of Pods.
+- it acts as a stable network endpoint for accessing the pods, enavling inter-pod communication
+ and load balancing.
+
+
+
+-------------------------------------------------------------- Types of services ---------------------------------------
+
+
+- clusterIP --
+- NodePort
+- LoadBalancer
+- ExternalName
+-  
+
+
+------------------------------------------------------------------secret ---------------------------------------
+error ip address ping get username password 
+- $usernameBase64 = kubectl get secret mongodb-secret -o jsonpath='{.data.mongo-web-username}'
+$passwordBase64 = kubectl get secret mongodb-secret -o jsonpath='{.data.mongo-web-password}'
+
+
+- $username = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($usernameBase64))
+$password = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($passwordBase64))
+
+Write-Output "Username: $username"
+Write-Output "Password: $password"
+ 
+
+
+- 
+PS C:\Users\91915\AppData\Local\Google\Cloud SDK\configmap> $usernameBase64 = kubectl get secret mongodb-secret -o jsonpath='{.data.mongo-web-username}'
+PS C:\Users\91915\AppData\Local\Google\Cloud SDK\configmap> $passwordBase64 = kubectl get secret mongodb-secret -o jsonpath='{.data.mongo-web-password}'
+PS C:\Users\91915\AppData\Local\Google\Cloud SDK\configmap> $username = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($usernameBase64))
+PS C:\Users\91915\AppData\Local\Google\Cloud SDK\configmap> $password = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($passwordBase64))
+PS C:\Users\91915\AppData\Local\Google\Cloud SDK\configmap>
+PS C:\Users\91915\AppData\Local\Google\Cloud SDK\configmap> Write-Output "Username: $username"
+Username: admin
+PS C:\Users\91915\AppData\Local\Google\Cloud SDK\configmap> Write-Output "Password: $password"
+Password: admin12345678910
+PS C:\Users\91915\AppData\Local\Google\Cloud SDK\configmap>
+
+
+ 2 gcloud container clusters get-credentials cluster-2 --zone us-central1-c --project crested-display-430615-u6
+   3 cd configmap
+   4 ll
+   5 kubectl apply -f .
+   6 ls
+   7 kubectl get pods
+   8 kubectl get deploy
+   9 kubectl get svc
+  10 code .
+  11 kubectl get configmap
+  12 kubectl describe cm mongodb-configmap
+  13 kubectl get secret
+  14 kubectl describe secret
+  15 kubectl get pods
+  16 kubectl exec mongo-express-77b48977-hgb24 env
+  17 kubectl get secrets
+  18 kubectl describe secret mongodb-secret
+  19 # Get the secret in JSON format and decode the username and password
+  20 kubectl get secret mongodb-secret -o jsonpath='{.data.mongo-web-username}' | base64 --decode
+  21 kubectl get secret mongodb-secret -o jsonpath='{.data.mongo-web-password}' | base64 --decode
+  22 kubectl get secret mongodb-secret -o jsonpath='{.data.mongo-web-username}' | base64 --decode
+  23 kubectl get secret mongodb-secret -o ymalpath .\mongo_express.yaml | base64 --decode
+  24 kubectl get secret mongodb-secret -o .\mongo_express.yaml | base64 --decode
+  25 kubectl get secret mongodb-secret -o jsonpath='{mongo-web-username}' | base64 --decod
+  26 $usernameBase64 = kubectl get secret mongodb-secret -o jsonpath='{.data.mongo-web-username}'
+  27 $passwordBase64 = kubectl get secret mongodb-secret -o jsonpath='{.data.mongo-web-password}'
+  28 $username = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($usernameBase64))
+  29 $password = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($passwordBase64))
+  30 Write-Output "Username: $username"
+  31 Write-Output "Password: $password"
+  32 kubectl get namespace
+  33 kubectl get all -n kube-system
+  34 kubectl get all -n kube-public
+  35 kubectl get all -n default
+  36 kubectl create namespace my-namespace
+  37 kubectl get namespace
+
+---------------------------------aws eks------------------------------------------------------------------------------------------
+ - install kubectl 
+-  sudo yum update -y
+    2  sudo yum install -y curl
+    3  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    4  chmod +x ./kubectl
+    5  sudo mv ./kubectl /usr/local/bin/kubectl
+    6  kubectl version --client
+    7  history
+--install eksctl -----------------
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+step -1
+control plane - 10cents 1 hours
+--name -awsb27--
+--version 1.18\
+without -nodegroup
+
+
+
+AmazonEKSClusterPolicy
+AmazonEKSServicePolicy
+AmazonEC2FullAccess
+IAMFullAccess
+AWSCloudFormationFullAccess
