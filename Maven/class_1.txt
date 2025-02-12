@@ -1,0 +1,136 @@
+
+
+
+
+
+
+
+
+
+
+
+                                        Maven
+=======================================================================================
+1)create a instances amg-linux ,sudo -i
+-https://dlcdn ---maven--maven3/3.8.6 copy link wget -- https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
+- [root@ip-10-40-1-143 ~]# ll
+total 8104
+- rw-r--r--. 1 root root 8296049 Mar  8  2023 apache-maven-3.8.8-bin.tar.gz
+file is tar forment untar file cheyali
+- tar -zxvf file name -- tar -zxvf apache-maven-3.8.8-bin.tar.gz
+- ll -tar file un tar file
+- [root@ip-10-40-1-143 ~]# ll
+total 8104
+drwxr-xr-x. 6 root root      99 Jul 27 09:43 apache-maven-3.8.8
+-rw-r--r--. 1 root root 8296049 Mar  8  2023 apache-maven-3.8.8-bin.tar.gz
+- cd apache-maven-3.8.8/
+- ll
+- install java and maven 
+- sudo amazon-linux-extras install java-openjdk11 is working this command use the sudo amazon-linux-extras install java-openjdk11 -y
+
+- 1  wget https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
+    2  ll
+    3  tar -zxvf apache-maven-3.8.8-bin.tar.gz
+    4  ll
+    5  cd apache-maven-3.8.8
+    6  /
+    7  ll
+    8  sudo amazon-linux-extras install java-openjdk11
+    9  sudo amazon-linux-extras install java-openjdk11 -y
+   10  sudo yum install java-11-openjdk-devel -y
+   11  cat /etc/os-release
+   12  sudo yum install java-11-openjdk-devel -y
+   13  sudo yum install epel-release -y
+   14  sudo yum install java-11-openjdk -y
+   15  wget https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz
+   16  tar -xzf openjdk-11.0.2_linux-x64_bin.tar.gz
+   17  sudo amazon-linux-extras enable corretto11
+   18  java -version
+   19  wget https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz
+   20  wget https://corretto.aws/downloads/latest/amazon-corretto-11-x64-linux-jdk.tar.gz
+   21  java -version
+   22  tar -xzf amazon-corretto-11-x64-linux-jdk.tar.gz
+   23  sudo mv amazon-corretto-11.0.* /usr/local/amazon-corretto-11
+   24  sudo tee /etc/profile.d/corretto11.sh <<EOF
+export JAVA_HOME=/usr/local/amazon-corretto-11
+export PATH=\$JAVA_HOME/bin:\$PATH
+EOF
+
+   25  source /etc/profile.d/corretto11.sh
+   26  java -version
+   27  history
+
+
+- yum install maven -y
+- mvn archetype:generate
+-enter ,enter,batch devops ,enter ,enter,enter, y
+- package batch;
+
+/**
+ * Hello world!
+ *
+ */
+public class App
+{
+    public static void main( String[] args )
+    {
+        System.out.println( "Hello World!" );
+    }
+}
+ -- cd devops
+
+
+   25  source /etc/profile.d/corretto11.sh
+   26  java -version
+   27  history
+   28  cl
+   29  Cl
+   30  cl
+   31  clear
+   32  yum install maven -y
+   33  java -version
+   34  mvn archetype:generate
+   35  ll
+   36  cd devops
+   37  ll
+   38  cd src
+   39  cd
+   40  ll
+   41  cd apache-maven-3.8.8
+   42  cd devops
+   43  ll
+   44  ls
+   37  ll
+   38  cd src
+   39  cd
+   40  ll
+   41  cd apache-maven-3.8.8
+   42  cd devops
+   43  ll
+   44  ls
+   45  ls src/
+   46  ls src/main/
+   47  ls src/main/java
+   48  ls src/main/java/batch
+   49  cat App.java
+   50  cd src/main/java/batch/
+   51  cat App.java
+   52  history
+-------------------------------------------
+------ compile java file ---
+- mvn compile
+- ll, target file , ls target
+- ls target/classes, ls target/classes/batch/
+-----java file test cheyali ------
+- mvn test
+- --------create a jar file -----------
+- mvn packege
+- eg--[INFO] Building jar: /root/apache-maven-3.8.8/devops/target/devops-1.0-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+--jar.file local repo lo stroge------ 
+-mvn instal
+- 
+---git install ---
+- yum install git -y
+-  
