@@ -48,3 +48,14 @@ It is a User Interface that helps a user to Interact with Linux O.S
 - Web Browsers,Image Editors,Database
 - Languge compilers, Design Tools, GVI 
                                              
+                                             Operating system
+                                             ------------------
+An Operating System (OS) is system software that manages computer hardware and software resources, 
+providing a user interface and enabling applications to run. 
+Here's a more detailed explanation:
+What it does:
+The OS acts as an interface between the user and the computer's hardware,
+handling tasks like file management, memory management, process management, input/output handling,
+and controlling peripheral devices. 
+
+https://jaro-website.s3.ap-south-1.amazonaws.com/2023/10/Functions-of-Operating-System.jpg
