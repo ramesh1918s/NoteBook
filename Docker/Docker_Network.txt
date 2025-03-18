@@ -1,0 +1,735 @@
+Docker_Network
+--------------------------------------------------------------------------------------------------------------------------
+
+- create a one instances
+- install docker
+ - curl https://get.docker.com/ | bash
+
+-  ifconfig
+docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        ether 7e:9c:e6:5b:89:79  txqueuelen 0  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+enX0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 9001
+        inet 192.40.2.38  netmask 255.255.255.0  broadcast 192.40.2.255
+        inet6 fe80::8ff:e7ff:fe04:3e9b  prefixlen 64  scopeid 0x20<link>
+        ether 0a:ff:e7:04:3e:9b  txqueuelen 1000  (Ethernet)
+        RX packets 110486  bytes 159249225 (159.2 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 7247  bytes 667389 (667.3 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 194  bytes 24331 (24.3 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 194  bytes 24331 (24.3 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+root@ip-192-40-2-38:/home/ubuntu# 
+
+
+-------docker Docker_Network
+
+- docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+51c19fcbd7a8   bridge    bridge    local
+14a4b2bb3a47   host      host      local
+440b7dfbf473   none      null      local
+root@ip-192-40-2-38:/home/ubuntu# 
+
+--docker network inspect bridge 
+[
+    {
+        "Name": "bridge",
+        "Id": "51c19fcbd7a8b8fc2a7aae1975fb751413e603dc1a8ba8bda6744693068a8269",
+        "Created": "2025-03-10T05:59:57.97709256Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {
+            "com.docker.network.bridge.default_bridge": "true",
+            "com.docker.network.bridge.enable_icc": "true",
+            "com.docker.network.bridge.enable_ip_masquerade": "true",
+            "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0",
+            "com.docker.network.bridge.name": "docker0",
+            "com.docker.network.driver.mtu": "1500"
+        },
+        "Labels": {}
+    }
+]
+root@ip-192-40-2-38:/home/ubuntu# docker network inspect host 
+[
+    {
+        "Name": "host",
+        "Id": "14a4b2bb3a47277d1ecdf95081fc7e83ed9e04b86cb94bc8390dd7010109c76a",
+        "Created": "2025-03-10T05:59:57.969671109Z",
+        "Scope": "local",
+        "Driver": "host",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": null
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {},
+        "Labels": {}
+    }
+]
+root@ip-192-40-2-38:/home/ubuntu# docker network inspect null
+[]
+Error response from daemon: network null not found
+root@ip-192-40-2-38:/home/ubuntu# docker run --rm -dit sreeharshv/utils 
+Unable to find image 'sreeharshv/utils:latest' locally
+docker: Error response from daemon: pull access denied for sreeharshv/utils, repository does not exist or may require 'docker login': denied: requested access to the resource is denied
+
+Run 'docker run --help' for more information
+root@ip-192-40-2-38:/home/ubuntu# docker run --rm -dit sreeharshav/utils 
+Unable to find image 'sreeharshav/utils:latest' locally
+latest: Pulling from sreeharshav/utils
+171857c49d0f: Pull complete 
+419640447d26: Pull complete 
+61e52f862619: Pull complete 
+78a19a6c959a: Pull complete 
+60967de56c4c: Pull complete 
+56a967db6e41: Pull complete 
+c8b1454d39d1: Pull complete 
+88eba6dadadd: Pull complete 
+f3bc3aa8b626: Pull complete 
+70c3609ec292: Pull complete 
+cbd12a390544: Pull complete 
+8db040f432b1: Pull complete 
+4db74f7c22ef: Pull complete 
+c11eb9b9792b: Pull complete 
+Digest: sha256:b30ef49139a7191c59b26d23c7564c930ecd119d23781ddb902c7256a6db82fc
+Status: Downloaded newer image for sreeharshav/utils:latest
+3aa1a0a6af434d3cdda9a8a00e54c12cb6076c3040d6f442abb6ff369148856e
+root@ip-192-40-2-38:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE               COMMAND                  CREATED         STATUS         PORTS      NAMES
+3aa1a0a6af43   sreeharshav/utils   "nginx -g 'daemon of…"   2 minutes ago   Up 2 minutes   8888/tcp   tender_leavitt
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it 3aa1a0a6af43
+docker: 'docker exec' requires at least 2 arguments
+
+Usage:  docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+
+See 'docker exec --help' for more information
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it 3aa1a0a6af43 bash
+root@3aa1a0a6af43:/# ifconfig
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.17.0.2  netmask 255.255.0.0  broadcast 172.17.255.255
+        ether da:c7:ac:24:fa:7d  txqueuelen 0  (Ethernet)
+        RX packets 16  bytes 1392 (1.3 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 3  bytes 126 (126.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+root@3aa1a0a6af43:/# 
+
+
+
+-----------------create 4 continer using shellscript ---------------
+
+ for C in {2..5}
+> do
+> docker run --rm -dit --name Ram$C sreeharshav/utils 
+> sleep 1
+> done
+be3d5dc2b69e24f9f5a17cdd8f0c8353af899250808cbe843b07d56571324f9b
+d30231420c478f8d2215bc06b1b3e39fd3a4d093f8a64d8603c07181e11e6d25
+b31e983c10143a01930ad178a3a52d7975e1ba68ae44a6b8054595707c9b1317
+34dc2251a317e7e3d4b3ebb677c0730f5b37adea4c4366118f66719154f2fbc7
+root@ip-192-40-2-38:/home/ubuntu# 
+
+
+ docker ps
+CONTAINER ID   IMAGE               COMMAND                  CREATED              STATUS              PORTS      NAMES
+34dc2251a317   sreeharshav/utils   "nginx -g 'daemon of…"   About a minute ago   Up About a minute   8888/tcp   Ram5
+b31e983c1014   sreeharshav/utils   "nginx -g 'daemon of…"   About a minute ago   Up About a minute   8888/tcp   Ram4
+d30231420c47   sreeharshav/utils   "nginx -g 'daemon of…"   About a minute ago   Up About a minute   8888/tcp   Ram3
+be3d5dc2b69e   sreeharshav/utils   "nginx -g 'daemon of…"   About a minute ago   Up About a minute   8888/tcp   Ram2
+3aa1a0a6af43   sreeharshav/utils   "nginx -g 'daemon of…"   7 minutes ago        Up 7 minutes        8888/tcp   tender_leavitt
+root@ip-192-40-2-38:/home/ubuntu# 
+root@ip-192-40-2-38:/home/ubuntu# 
+root@ip-192-40-2-38:/home/ubuntu# docker ps -aq
+34dc2251a317
+b31e983c1014
+d30231420c47
+be3d5dc2b69e
+3aa1a0a6af43
+
+
+
+ docker inspect 34dc2251a317 | grep -i "IPAddress"
+            "SecondaryIPAddresses": null,
+            "IPAddress": "172.17.0.6",
+                    "IPAddress": "172.17.0.6",
+root@ip-192-40-2-38:/home/ubuntu# for C in $(docker ps -aq); do docker inspect $C | grep -i "IPAddress"; done
+            "SecondaryIPAddresses": null,
+            "IPAddress": "172.17.0.6",
+                    "IPAddress": "172.17.0.6",
+            "SecondaryIPAddresses": null,
+            "IPAddress": "172.17.0.5",
+                    "IPAddress": "172.17.0.5",
+            "SecondaryIPAddresses": null,
+            "IPAddress": "172.17.0.4",
+                    "IPAddress": "172.17.0.4",
+            "SecondaryIPAddresses": null,
+            "IPAddress": "172.17.0.3",
+                    "IPAddress": "172.17.0.3",
+            "SecondaryIPAddresses": null,
+            "IPAddress": "172.17.0.2",
+                    "IPAddress": "172.17.0.2",
+root@ip-192-40-2-38:/home/ubuntu# 
+
+
+
+top $(docker ps -aq)
+34dc2251a317
+b31e983c1014
+d30231420c47
+be3d5dc2b69e
+3aa1a0a6af43
+root@ip-192-40-2-38:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@ip-192-40-2-38:/home/ubuntu# docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@ip-192-40-2-38:/home/ubuntu# docker run --rm -dit --name Outside --hostname Insidename --network host sreeharshav/utils
+7b5821563493682e04b0d049b5f711073c698ef39be6ed712f883830025f4bad
+root@ip-192-40-2-38:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE               COMMAND                  CREATED         STATUS         PORTS     NAMES
+7b5821563493   sreeharshav/utils   "nginx -g 'daemon of…"   7 seconds ago   Up 6 seconds             Outside
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it  Outside bash
+root@Insidename:/# docker ifconfig
+docker: 'ifconfig' is not a docker command.
+See 'docker --help'
+root@Insidename:/# ifconfig
+docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        inet6 fe80::7c9c:e6ff:fe5b:8979  prefixlen 64  scopeid 0x20<link>
+        ether 7e:9c:e6:5b:89:79  txqueuelen 0  (Ethernet)
+        RX packets 17  bytes 476 (476.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 5  bytes 526 (526.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+enX0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 9001
+        inet 192.40.2.38  netmask 255.255.255.0  broadcast 192.40.2.255
+        inet6 fe80::8ff:e7ff:fe04:3e9b  prefixlen 64  scopeid 0x20<link>
+        ether 0a:ff:e7:04:3e:9b  txqueuelen 1000  (Ethernet)
+        RX packets 531958  bytes 760650111 (760.6 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 32057  bytes 2355058 (2.3 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 346  bytes 47539 (47.5 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 346  bytes 47539 (47.5 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+
+---------none network -----------
+
+docker run --rm  -dit --name Insidename --hostname Outsidename --network null sreeharshav/utils
+f9a380e7643c342cb8db0cc08f70fc5cacee7718201a28f772123e1cc4e26351
+docker: Error response from daemon: failed to set up container networking: network null not found
+
+Run 'docker run --help' for more information
+root@ip-192-40-2-38:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@ip-192-40-2-38:/home/ubuntu# docker networks ps
+docker: unknown command: docker networks
+
+Run 'docker --help' for more information
+root@ip-192-40-2-38:/home/ubuntu# docker networks ls
+docker: unknown command: docker networks
+
+Run 'docker --help' for more information
+root@ip-192-40-2-38:/home/ubuntu# docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+51c19fcbd7a8   bridge    bridge    local
+14a4b2bb3a47   host      host      local
+440b7dfbf473   none      null      local
+root@ip-192-40-2-38:/home/ubuntu# docker run --rm  -dit --name Insidename --hostname Outsidename --network none sreeharshav/utils
+d65bbfca4e37c9b2de2c8f330b6985972092db3be1a12f5faa1e8098a2af9a3a
+root@ip-192-40-2-38:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE               COMMAND                  CREATED         STATUS         PORTS     NAMES
+d65bbfca4e37   sreeharshav/utils   "nginx -g 'daemon of…"   4 seconds ago   Up 4 seconds             Insidename
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it Insidename
+docker: 'docker exec' requires at least 2 arguments
+
+Usage:  docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+
+See 'docker exec --help' for more information
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it Insidenamebash
+docker: 'docker exec' requires at least 2 arguments
+
+Usage:  docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+
+See 'docker exec --help' for more information
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it Insidename bash
+root@Outsidename:/# ifconfig
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+-------------------------------------create a network  ---------------------------
+
+
+# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@ip-192-40-2-38:/home/ubuntu# docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+51c19fcbd7a8   bridge    bridge    local
+14a4b2bb3a47   host      host      local
+440b7dfbf473   none      null      local
+root@ip-192-40-2-38:/home/ubuntu# docker network create test1 
+bd49b2c99bcb448044ad7e42f849c2ad3dc1070dbb0b62a681a486c4df8ac11d
+root@ip-192-40-2-38:/home/ubuntu# docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+51c19fcbd7a8   bridge    bridge    local
+14a4b2bb3a47   host      host      local
+440b7dfbf473   none      null      local
+bd49b2c99bcb   test1     bridge    local
+root@ip-192-40-2-38:/home/ubuntu# 
+
+---------------------------------------------hostname reveloution is ping --------
+
+root@ip-192-40-2-38:/home/ubuntu# docker network create ts1
+df479525b6750b26b8874788c5a045d00e3adb155055fa39cd4d9cbc56461cf1
+root@ip-192-40-2-38:/home/ubuntu# for C in {1..5}; do docker run --rm -dit --name Ram$C --network ts1 sreeharshav/utils; sleep 1; done
+ab39f42d8587578db841eb83d676ccb4dde40a70805c3e63579c5717507ec7e9
+f8bed79f17e0b922b9eccaa5503e9fb4202157db59a8644c5cb1cb415836bfbf
+eddfd7dcd6f4c7298de31a03b5569fcf72d10dfae3b13e0ceb9de545a2bccac4
+cd89e5b79af90018fa29943c8282687eb6afca507bc3136efd5aba4fe8772f01
+67571c4121e7824e108aaf5378a03deab62bfd879847cc0671c29cf251df69b1
+root@ip-192-40-2-38:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE               COMMAND                  CREATED          STATUS          PORTS      NAMES
+67571c4121e7   sreeharshav/utils   "nginx -g 'daemon of…"   6 seconds ago    Up 5 seconds    8888/tcp   Ram5
+cd89e5b79af9   sreeharshav/utils   "nginx -g 'daemon of…"   7 seconds ago    Up 6 seconds    8888/tcp   Ram4
+eddfd7dcd6f4   sreeharshav/utils   "nginx -g 'daemon of…"   8 seconds ago    Up 8 seconds    8888/tcp   Ram3
+f8bed79f17e0   sreeharshav/utils   "nginx -g 'daemon of…"   10 seconds ago   Up 9 seconds    8888/tcp   Ram2
+ab39f42d8587   sreeharshav/utils   "nginx -g 'daemon of…"   11 seconds ago   Up 10 seconds   8888/tcp   Ram1
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it  Ram5 bash
+root@67571c4121e7:/# ifconfig    
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.19.0.6  netmask 255.255.0.0  broadcast 172.19.255.255
+        ether 6a:38:31:41:63:71  txqueuelen 0  (Ethernet)
+        RX packets 17  bytes 1258 (1.2 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 3  bytes 126 (126.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+root@67571c4121e7:/# docker network ping Ram3
+
+Usage:  docker network COMMAND
+
+Manage networks
+
+Commands:
+  connect     Connect a container to a network
+  create      Create a network
+  disconnect  Disconnect a container from a network
+  inspect     Display detailed information on one or more networks
+  ls          List networks
+  prune       Remove all unused networks
+  rm          Remove one or more networks
+
+Run 'docker network COMMAND --help' for more information on a command.
+root@67571c4121e7:/# ping Ram3
+PING Ram3 (172.19.0.4) 56(84) bytes of data.
+64 bytes from Ram3.ts1 (172.19.0.4): icmp_seq=1 ttl=64 time=0.050 ms
+64 bytes from Ram3.ts1 (172.19.0.4): icmp_seq=2 ttl=64 time=0.051 ms
+64 bytes from Ram3.ts1 (172.19.0.4): icmp_seq=3 ttl=64 time=0.045 ms
+64 bytes from Ram3.ts1 (172.19.0.4): icmp_seq=4 ttl=64 time=0.044 ms
+64 bytes from Ram3.ts1 (172.19.0.4): icmp_seq=5 ttl=64 time=0.045 ms
+64 bytes from Ram3.ts1 (172.19.0.4): icmp_seq=6 ttl=64 time=0.045 ms
+64 bytes from Ram3.ts1 (172.19.0.4): icmp_seq=7 ttl=64 time=0.043 ms
+64 bytes from Ram3.ts1 (172.19.0.4): icmp_seq=8 ttl=64 time=0.044 ms
+64 bytes from Ram3.ts1 (172.19.0.4): icmp_seq=9 ttl=64 time=0.051 ms
+64 bytes from Ram3.ts1 (172.19.0.4): icmp_seq=10 ttl=64 time=0.046 ms
+64 bytes from Ram3.ts1 (172.19.0.4): icmp_seq=11 ttl=64 time=0.047 ms
+64 bytes from Ram3.ts1 (172.19.0.4): icmp_seq=12 ttl=64 time=0.047 ms
+^C
+--- Ram3 ping statistics ---
+12 packets transmitted, 12 received, 0% packet loss, time 11296ms
+rtt min/avg/max/mdev = 0.043/0.046/0.051/0.007 ms
+root@67571c4121e7:/# ping Ram2
+PING Ram2 (172.19.0.3) 56(84) bytes of data.
+64 bytes from Ram2.ts1 (172.19.0.3): icmp_seq=1 ttl=64 time=0.104 ms
+64 bytes from Ram2.ts1 (172.19.0.3): icmp_seq=2 ttl=64 time=0.059 ms
+64 bytes from Ram2.ts1 (172.19.0.3): icmp_seq=3 ttl=64 time=0.044 ms
+64 bytes from Ram2.ts1 (172.19.0.3): icmp_seq=4 ttl=64 time=0.048 ms
+^C
+--- Ram2 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3062ms
+rtt min/avg/max/mdev = 0.044/0.063/0.104/0.025 ms
+root@67571c4121e7:/# ping Ram1
+PING Ram1 (172.19.0.2) 56(84) bytes of data.
+64 bytes from Ram1.ts1 (172.19.0.2): icmp_seq=1 ttl=64 time=0.063 ms
+64 bytes from Ram1.ts1 (172.19.0.2): icmp_seq=2 ttl=64 time=0.048 ms
+64 bytes from Ram1.ts1 (172.19.0.2): icmp_seq=3 ttl=64 time=0.044 ms
+64 bytes from Ram1.ts1 (172.19.0.2): icmp_seq=4 ttl=64 time=0.046 ms
+^C
+--- Ram1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3104ms
+rtt min/avg/max/mdev = 0.044/0.050/0.063/0.009 ms
+root@67571c4121e7:/# ping Ram4
+PING Ram4 (172.19.0.5) 56(84) bytes of data.
+64 bytes from Ram4.ts1 (172.19.0.5): icmp_seq=1 ttl=64 time=0.491 ms
+64 bytes from Ram4.ts1 (172.19.0.5): icmp_seq=2 ttl=64 time=0.045 ms
+64 bytes from Ram4.ts1 (172.19.0.5): icmp_seq=3 ttl=64 time=0.048 ms
+64 bytes from Ram4.ts1 (172.19.0.5): icmp_seq=4 ttl=64 time=0.042 ms
+64 bytes from Ram4.ts1 (172.19.0.5): icmp_seq=5 ttl=64 time=0.043 ms
+^C
+--- Ram4 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4124ms
+rtt min/avg/max/mdev = 0.042/0.133/0.491/0.179 ms
+root@67571c4121e7:/# ping Ram5
+PING Ram5 (172.19.0.6) 56(84) bytes of data.
+64 bytes from 67571c4121e7 (172.19.0.6): icmp_seq=1 ttl=64 time=0.023 ms
+64 bytes from 67571c4121e7 (172.19.0.6): icmp_seq=2 ttl=64 time=0.035 ms
+64 bytes from 67571c4121e7 (172.19.0.6): icmp_seq=3 ttl=64 time=0.032 ms
+64 bytes from 67571c4121e7 (172.19.0.6): icmp_seq=4 ttl=64 time=0.033 ms
+^C
+--- Ram5 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3071ms
+rtt min/avg/max/mdev = 0.023/0.030/0.035/0.008 ms
+root@67571c4121e7:/# 
+root@67571c4121e7:/# 
+root@67571c4121e7:/# 
+root@67571c4121e7:/# 
+root@67571c4121e7:/# exit
+exit
+root@ip-192-40-2-38:/home/ubuntu# 
+
+
+-------------------------------
+
+
+u# docker network  ls
+NETWORK ID     NAME      DRIVER    SCOPE
+51c19fcbd7a8   bridge    bridge    local
+14a4b2bb3a47   host      host      local
+440b7dfbf473   none      null      local
+bd49b2c99bcb   test1     bridge    local
+df479525b675   ts1       bridge    local
+root@ip-192-40-2-38:/home/ubuntu# docker network connect ts1 default1 default2 default3 
+docker: 'docker network connect' requires 2 arguments
+
+Usage:  docker network connect [OPTIONS] NETWORK CONTAINER
+
+Run 'docker network connect --help' for more information
+root@ip-192-40-2-38:/home/ubuntu# docker network connect ts1 default1 
+root@ip-192-40-2-38:/home/ubuntu# docker network connect ts1 default12
+Error response from daemon: No such container: default12
+root@ip-192-40-2-38:/home/ubuntu# docker network connect ts1 default2
+root@ip-192-40-2-38:/home/ubuntu# docker network connect ts1 default3
+root@ip-192-40-2-38:/home/ubuntu# docker exec -t default1
+docker: 'docker exec' requires at least 2 arguments
+
+Usage:  docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+
+See 'docker exec --help' for more information
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it default1
+docker: 'docker exec' requires at least 2 arguments
+
+Usage:  docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+
+See 'docker exec --help' for more information
+root@ip-192-40-2-38:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE               COMMAND                  CREATED         STATUS         PORTS      NAMES
+afdc2f8dc13a   sreeharshav/utils   "nginx -g 'daemon of…"   6 minutes ago   Up 6 minutes   8888/tcp   default5
+70d7a8ac4c56   sreeharshav/utils   "nginx -g 'daemon of…"   6 minutes ago   Up 6 minutes   8888/tcp   default4
+49f7a27cae14   sreeharshav/utils   "nginx -g 'daemon of…"   6 minutes ago   Up 6 minutes   8888/tcp   default3
+016c4509b3d1   sreeharshav/utils   "nginx -g 'daemon of…"   6 minutes ago   Up 6 minutes   8888/tcp   default2
+71052401a7fc   sreeharshav/utils   "nginx -g 'daemon of…"   6 minutes ago   Up 6 minutes   8888/tcp   default1
+67571c4121e7   sreeharshav/utils   "nginx -g 'daemon of…"   2 hours ago     Up 2 hours     8888/tcp   Ram5
+cd89e5b79af9   sreeharshav/utils   "nginx -g 'daemon of…"   2 hours ago     Up 2 hours     8888/tcp   Ram4
+eddfd7dcd6f4   sreeharshav/utils   "nginx -g 'daemon of…"   2 hours ago     Up 2 hours     8888/tcp   Ram3
+f8bed79f17e0   sreeharshav/utils   "nginx -g 'daemon of…"   2 hours ago     Up 2 hours     8888/tcp   Ram2
+ab39f42d8587   sreeharshav/utils   "nginx -g 'daemon of…"   2 hours ago     Up 2 hours     8888/tcp   Ram1
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it default1
+docker: 'docker exec' requires at least 2 arguments
+
+Usage:  docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+
+See 'docker exec --help' for more information
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it default1 bash
+root@71052401a7fc:/# ifconfig
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.17.0.2  netmask 255.255.0.0  broadcast 172.17.255.255
+        ether 46:da:59:e9:1c:7f  txqueuelen 0  (Ethernet)
+        RX packets 26  bytes 1660 (1.6 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 3  bytes 126 (126.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.19.0.7  netmask 255.255.0.0  broadcast 172.19.255.255
+        ether c6:ec:d2:9c:c4:cd  txqueuelen 0  (Ethernet)
+        RX packets 17  bytes 1118 (1.1 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 3  bytes 126 (126.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+root@71052401a7fc:/# 
+
+
+------------------
+
+exit
+exit
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it Ram1 ping default1
+PING default1 (172.19.0.7) 56(84) bytes of data.
+64 bytes from default1.ts1 (172.19.0.7): icmp_seq=1 ttl=64 time=0.074 ms
+64 bytes from default1.ts1 (172.19.0.7): icmp_seq=2 ttl=64 time=0.043 ms
+64 bytes from default1.ts1 (172.19.0.7): icmp_seq=3 ttl=64 time=0.047 ms
+64 bytes from default1.ts1 (172.19.0.7): icmp_seq=4 ttl=64 time=0.049 ms
+64 bytes from default1.ts1 (172.19.0.7): icmp_seq=5 ttl=64 time=0.044 ms
+^C
+--- default1 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4122ms
+rtt min/avg/max/mdev = 0.043/0.051/0.074/0.013 ms
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it Ram1 ping default2
+PING default2 (172.19.0.8) 56(84) bytes of data.
+64 bytes from default2.ts1 (172.19.0.8): icmp_seq=1 ttl=64 time=0.083 ms
+64 bytes from default2.ts1 (172.19.0.8): icmp_seq=2 ttl=64 time=0.049 ms
+64 bytes from default2.ts1 (172.19.0.8): icmp_seq=3 ttl=64 time=0.045 ms
+^C
+--- default2 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2072ms
+rtt min/avg/max/mdev = 0.045/0.059/0.083/0.017 ms
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it Ram1 ping default3
+PING default3 (172.19.0.9) 56(84) bytes of data.
+64 bytes from default3.ts1 (172.19.0.9): icmp_seq=1 ttl=64 time=0.067 ms
+64 bytes from default3.ts1 (172.19.0.9): icmp_seq=2 ttl=64 time=0.045 ms
+64 bytes from default3.ts1 (172.19.0.9): icmp_seq=3 ttl=64 time=0.045 ms
+^C
+--- default3 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2060ms
+rtt min/avg/max/mdev = 0.045/0.052/0.067/0.011 ms
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it Ram1 ping default4
+ping: default4: Temporary failure in name resolution
+root@ip-192-40-2-38:/home/ubuntu# ^C
+
+
+----------------------------------------------
+
+
+
+-----mysql01 password  
+
+
+
+-  YgI526&?3_4%TGa7xt;^gTiB6gT^0Y?k  
+
+- Ramesh@915454
+
+YgI526&?3_4%TGa7xt;^gTiB6gT^0Y?k
+
+
+
+
+
+-----
+
+
+docker run --name=mysql01 --network ts1 -d mysql/mysql-server:latest
+c7dc0d445014fd0314637f95dedc519562590b12b7615aaf6cd045558e167c00
+root@ip-192-40-2-38:/home/ubuntu# docker logs mysql
+Error response from daemon: No such container: mysql
+root@ip-192-40-2-38:/home/ubuntu# docker logs mysql01
+[Entrypoint] MySQL Docker Image 8.0.32-1.2.11-server
+[Entrypoint] No password option specified for new database.
+[Entrypoint]   A random onetime password will be generated.
+[Entrypoint] Initializing database
+2025-03-10T09:56:12.459100Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2025-03-10T09:56:12.460251Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.0.32) initializing of server in progress as process 17
+2025-03-10T09:56:12.470783Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-03-10T09:56:13.012072Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-03-10T09:56:14.504188Z 6 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
+[Entrypoint] Database initialized
+2025-03-10T09:56:19.638063Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2025-03-10T09:56:19.640547Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.32) starting as process 56
+2025-03-10T09:56:19.660642Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-03-10T09:56:19.891022Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-03-10T09:56:20.310218Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2025-03-10T09:56:20.310415Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2025-03-10T09:56:20.363605Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.32'  socket: '/var/lib/mysql/mysql.sock'  port: 0  MySQL Community Server - GPL.
+2025-03-10T09:56:20.363684Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Socket: /var/run/mysqld/mysqlx.sock
+Warning: Unable to load '/usr/share/zoneinfo/iso3166.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/leapseconds' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/tzdata.zi' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone1970.tab' as time zone. Skipping it.
+[Entrypoint] GENERATED ROOT PASSWORD: YgI526&?3_4%TGa7xt;^gTiB6gT^0Y?k
+
+[Entrypoint] ignoring /docker-entrypoint-initdb.d/*
+
+2025-03-10T09:56:21.922918Z 11 [System] [MY-013172] [Server] Received SHUTDOWN from user root. Shutting down mysqld (Version: 8.0.32).
+2025-03-10T09:56:23.416580Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.0.32)  MySQL Community Server - GPL.
+[Entrypoint] Server shut down
+[Entrypoint] Setting root user as expired. Password will need to be changed before database can be used.
+
+[Entrypoint] MySQL init process done. Ready for start up.
+
+[Entrypoint] Starting MySQL 8.0.32-1.2.11-server
+2025-03-10T09:56:24.223669Z 0 [Warning] [MY-011068] [Server] The syntax '--skip-host-cache' is deprecated and will be removed in a future release. Please use SET GLOBAL host_cache_size=0 instead.
+2025-03-10T09:56:24.225285Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.0.32) starting as process 1
+2025-03-10T09:56:24.244883Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-03-10T09:56:24.454291Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-03-10T09:56:24.693444Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2025-03-10T09:56:24.693603Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2025-03-10T09:56:24.724860Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+2025-03-10T09:56:24.725276Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.32'  socket: '/var/lib/mysql/mysql.sock'  port: 3306  MySQL Community Server - GPL.
+root@ip-192-40-2-38:/home/ubuntu# 
+root@ip-192-40-2-38:/home/ubuntu# 
+root@ip-192-40-2-38:/home/ubuntu# docker exex -it mysql01 bash
+unknown shorthand flag: 'i' in -it
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+root@ip-192-40-2-38:/home/ubuntu# docker exec -it mysql01 bash
+bash-4.4# mysql
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+bash-4.4# mysql -u root -p 
+Enter password: 
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+bash-4.4# mysql -u root -p 
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 23
+Server version: 8.0.32
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> -- Step 1: Create Database
+mysql> CREATE DATABASE IF NOT EXISTS movie_db;
+ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.
+mysql> USE movie_db;
+No connection. Trying to reconnect...
+Connection id:    38
+Current database: * NONE *
+
+ERROR 1820 (HY000): You must reset your password using ALTER USER statement before executing this statement.
+mysql> 
+mysql> -- Step 2: Create Movies Table
+mysql> CREATE TABLE IF NOT EXISTS movies (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     name VARCHAR(255) NOT NULL,
+    ->     genre VARCHAR(100),
+    ->     release_date DATE,
+    ->     director VARCHAR(255),
+    ->     rating DECIMAL(3,1),
+    ->     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    -> );
+ERROR 1046 (3D000): No database selected
+mysql> 
+mysql> -- Step 3: Insert Sample Data
+mysql> INSERT INTO movies (name, genre, release_date, director, rating) VALUES
+    -> ('Inception', 'Sci-Fi', '2010-07-16', 'Christopher Nolan', 8.8),
+    -> ('Titanic', 'Romance', '1997-12-19', 'James Cameron', 7.9),
+    -> ('The Dark Knight', 'Action', '2008-07-18', 'Christopher Nolan', 9.0),
+    -> ('Interstellar', 'Sci-Fi', '2014-11-07', 'Christopher Nolan', 8.6),
+    -> ('Avatar', 'Sci-Fi', '2009-12-18', 'James Cameron', 8.0);
+ERROR 1046 (3D000): No database selected
+mysql> 
+mysql> -- Step 4: Fetch All Movies
+mysql> SELECT * FROM movies;
+ERROR 1046 (3D000): No database selected
+mysql> 
+mysql> -- Step 5: Get Movies Released After 2010
+mysql> SELECT name, release_date FROM movies WHERE release_date > '2010-01-01';
+ERROR 1046 (3D000): No database selected
+mysql> 
+mysql> -- Step 6: Get Movies Sorted by Release Date
+mysql> SELECT * FROM movies ORDER BY release_date DESC;
+ERROR 1046 (3D000): No database selected
+mysql> 
+mysql> 
+mysql> 
+mysql> 
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'YourNewPassword';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.01 sec)

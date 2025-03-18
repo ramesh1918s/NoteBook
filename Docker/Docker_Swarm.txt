@@ -1,0 +1,340 @@
+create a 3 instances 
+
+
+- master
+- worker_node1
+- worker_node2
+
+
+
+root@ip-192-40-2-132:/home/ubuntu# curl https://get.docker.com/  | bash
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 22592  100 22592    0     0   547k      0 --:--:-- --:--:-- --:--:--  538k
+# Executing docker install script, commit: 4c94a56999e10efcf48c5b8e3f6afea464f9108e
++ sh -c 'apt-get -qq update >/dev/null'
++ sh -c 'DEBIAN_FRONTEND=noninteractive apt-get -y -qq install ca-certificates curl >/dev/null'
++ sh -c 'install -m 0755 -d /etc/apt/keyrings'
++ sh -c 'curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" -o /etc/apt/keyrings/docker.asc'
++ sh -c 'chmod a+r /etc/apt/keyrings/docker.asc'
++ sh -c 'echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu noble stable" > /etc/apt/sources.list.d/docker.list'
++ sh -c 'apt-get -qq update >/dev/null'
++ sh -c 'DEBIAN_FRONTEND=noninteractive apt-get -y -qq install docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-ce-rootless-extras docker-buildx-plugin >/dev/null'
+Scanning processes...                                                                                                                                                                                                                                                                                                         
+Scanning linux images...                                                                                                                                                                                                                                                                                                      
++ sh -c 'docker version'
+Client: Docker Engine - Community
+ Version:           28.0.1
+ API version:       1.48
+ Go version:        go1.23.6
+ Git commit:        068a01e
+ Built:             Wed Feb 26 10:41:12 2025
+ OS/Arch:           linux/amd64
+ Context:           default
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          28.0.1
+  API version:      1.48 (minimum version 1.24)
+  Go version:       go1.23.6
+  Git commit:       bbd0a17
+  Built:            Wed Feb 26 10:41:12 2025
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.7.25
+  GitCommit:        bcc810d6b9066471b0b6fa75f557a15a1cbf31bb
+ runc:
+  Version:          1.2.4
+  GitCommit:        v1.2.4-0-g6c52b3f
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+
+================================================================================
+
+To run Docker as a non-privileged user, consider setting up the
+Docker daemon in rootless mode for your user:
+
+    dockerd-rootless-setuptool.sh install
+
+Visit https://docs.docker.com/go/rootless/ to learn about rootless mode.
+
+
+To run the Docker daemon as a fully privileged service, but granting non-root
+users access, refer to https://docs.docker.com/go/daemon-access/
+
+WARNING: Access to the remote API on a privileged Docker daemon is equivalent
+         to root access on the host. Refer to the 'Docker daemon attack surface'
+         documentation for details: https://docs.docker.com/go/attack-surface/
+
+================================================================================
+
+root@ip-192-40-2-132:/home/ubuntu# docker version
+Client: Docker Engine - Community
+ Version:           28.0.1
+ API version:       1.48
+ Go version:        go1.23.6
+ Git commit:        068a01e
+ Built:             Wed Feb 26 10:41:12 2025
+ OS/Arch:           linux/amd64
+ Context:           default
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          28.0.1
+  API version:      1.48 (minimum version 1.24)
+  Go version:       go1.23.6
+  Git commit:       bbd0a17
+  Built:            Wed Feb 26 10:41:12 2025
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.7.25
+  GitCommit:        bcc810d6b9066471b0b6fa75f557a15a1cbf31bb
+ runc:
+  Version:          1.2.4
+  GitCommit:        v1.2.4-0-g6c52b3f
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+root@ip-192-40-2-132:/home/ubuntu# docker swarm
+Usage:  docker swarm COMMAND
+
+Manage Swarm
+
+Commands:
+  init        Initialize a swarm
+  join        Join a swarm as a node and/or manager
+
+Run 'docker swarm COMMAND --help' for more information on a command.
+root@ip-192-40-2-132:/home/ubuntu# docker swarm init 
+Swarm initialized: current node (fyulstx8tsfzea9pxl89kx64t) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-4azmu7txtkhotmi8lbbc90batbhw8d6imh1pvwfk0pl97xwo6d-d3qruemr3yv9j389bfm8w3t6p 192.40.2.132:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+root@ip-192-40-2-132:/home/ubuntu# 
+root@ip-192-40-2-132:/home/ubuntu# 
+root@ip-192-40-2-132:/home/ubuntu# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@ip-192-40-2-132:/home/ubuntu# 
+root@ip-192-40-2-132:/home/ubuntu# 
+root@ip-192-40-2-132:/home/ubuntu# docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+root@ip-192-40-2-132:/home/ubuntu# docker node  ls
+ID                            HOSTNAME          STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+oyvxlfs4pzdem7lzzvhxorp6d     ip-192-40-2-33    Ready     Active                          28.0.1
+p0a7jnq93c5okt7vx6thq40xf     ip-192-40-2-63    Ready     Active                          28.0.1
+fyulstx8tsfzea9pxl89kx64t *   ip-192-40-2-132   Ready     Active         Leader           28.0.1
+root@ip-192-40-2-132:/home/ubuntu# 
+
+
+
+-----------------------------------------worker-node1-------------------------
+
+
+# curl https://get.docker.com/  | bash
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 22592  100 22592    0     0   553k      0 --:--:-- --:--:-- --:--:--  565k
+# Executing docker install script, commit: 4c94a56999e10efcf48c5b8e3f6afea464f9108e
++ sh -c 'apt-get -qq update >/dev/null'
++ sh -c 'DEBIAN_FRONTEND=noninteractive apt-get -y -qq install ca-certificates curl >/dev/null'
++ sh -c 'install -m 0755 -d /etc/apt/keyrings'
++ sh -c 'curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" -o /etc/apt/keyrings/docker.asc'
++ sh -c 'chmod a+r /etc/apt/keyrings/docker.asc'
++ sh -c 'echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu noble stable" > /etc/apt/sources.list.d/docker.list'
++ sh -c 'apt-get -qq update >/dev/null'
++ sh -c 'DEBIAN_FRONTEND=noninteractive apt-get -y -qq install docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-ce-rootless-extras docker-buildx-plugin >/dev/null'
+Scanning processes...                                                                                                                                                                                                                                                                                                         
+Scanning linux images...                                                                                                                                                                                                                                                                                                      
++ sh -c 'docker version'
+Client: Docker Engine - Community
+ Version:           28.0.1
+ API version:       1.48
+ Go version:        go1.23.6
+ Git commit:        068a01e
+ Built:             Wed Feb 26 10:41:12 2025
+ OS/Arch:           linux/amd64
+ Context:           default
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          28.0.1
+  API version:      1.48 (minimum version 1.24)
+  Go version:       go1.23.6
+  Git commit:       bbd0a17
+  Built:            Wed Feb 26 10:41:12 2025
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.7.25
+  GitCommit:        bcc810d6b9066471b0b6fa75f557a15a1cbf31bb
+ runc:
+  Version:          1.2.4
+  GitCommit:        v1.2.4-0-g6c52b3f
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+
+================================================================================
+
+To run Docker as a non-privileged user, consider setting up the
+Docker daemon in rootless mode for your user:
+
+    dockerd-rootless-setuptool.sh install
+
+Visit https://docs.docker.com/go/rootless/ to learn about rootless mode.
+
+
+To run the Docker daemon as a fully privileged service, but granting non-root
+users access, refer to https://docs.docker.com/go/daemon-access/
+
+WARNING: Access to the remote API on a privileged Docker daemon is equivalent
+         to root access on the host. Refer to the 'Docker daemon attack surface'
+         documentation for details: https://docs.docker.com/go/attack-surface/
+
+================================================================================
+
+root@ip-192-40-2-63:/home/ubuntu# docker swarm join --token SWMTKN-1-4azmu7txtkhotmi8lbbc90batbhw8d6imh1pvwfk0pl97xwo6d-d3qruemr3yv9j389bfm8w3t6p 192.40.2.132:2377
+This node joined a swarm as a worker.
+root@ip-192-40-2-63:/home/ubuntu# docker swarm init
+Error response from daemon: This node is already part of a swarm. Use "docker swarm leave" to leave this swarm and join another one.
+root@ip-192-40-2-63:/home/ubuntu# 
+
+
+
+--------------------------------woker_node2------------------------
+
+--- docker install 
+-- # docker swarm join --token SWMTKN-1-4azmu7txtkhotmi8lbbc90batbhw8d6imh1pvwfk0pl97xwo6d-d3qruemr3yv9j389bfm8w3t6p 192.40.2.132:2377
+This node joined a swarm as a worker.
+root@ip-192-40-2-33:/home/ubuntu# 
+
+
+-------------------------------------master_node--------------------
+
+
+
+ubuntu# git clone https://github.com/dockersamples/docker-swarm-visualizer.git
+Cloning into 'docker-swarm-visualizer'...
+remote: Enumerating objects: 880, done.
+remote: Counting objects: 100% (56/56), done.
+remote: Compressing objects: 100% (28/28), done.
+remote: Total 880 (delta 47), reused 28 (delta 28), pack-reused 824 (from 3)
+Receiving objects: 100% (880/880), 2.26 MiB | 23.40 MiB/s, done.
+Resolving deltas: 100% (467/467), done.
+root@ip-192-40-2-132:/home/ubuntu# ls
+docker-swarm-visualizer  index.html  index.html.1
+root@ip-192-40-2-132:/home/ubuntu# cd docker-swarm-visualizer
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# ls
+CONTRIBUTING.md  Dockerfile  Dockerfile.windows  LICENSE  README.md  cfg  create-index.js  docker-compose.yml  healthcheck.js  index.tpl  karma.conf.js  nodes.png  package-lock.json  package.json  samplenode.png  server-dev.js  server.js  src  webpack.config.js
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# $ docker service create \
+  --name=viz \
+  --publish=8080:8080/tcp \
+  --constraint=node.role==manager \
+  --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+  dockersamples/visualizer
+$: command not found
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# $ docker run -it -d -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock dockersamples/visualizer
+$: command not found
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer#  docker run -it -d -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock dockersamples/visualizer
+Unable to find image 'dockersamples/visualizer:latest' locally
+latest: Pulling from dockersamples/visualizer
+ddad3d7c1e96: Pull complete 
+3a8370f05d5d: Pull complete 
+71a8563b7fea: Pull complete 
+119c7e14957d: Pull complete 
+28bdf67d9c0d: Pull complete 
+12571b9c0c9e: Pull complete 
+e1bd03793962: Pull complete 
+3ab99c5ebb8e: Pull complete 
+94993ebc295c: Pull complete 
+021a328e5f7b: Pull complete 
+Digest: sha256:530c863672e7830d7560483df66beb4cbbcd375a9f3ec174ff5376616686a619
+Status: Downloaded newer image for dockersamples/visualizer:latest
+cf621fbcc1b49265a71de045e197a55948a3c8dd05f120e607c5ae75f66160d7
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker service create \
+  --name=viz \
+  --publish=8080:8080/tcp \
+  --constraint=node.role==manager \
+  --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+  dockersamples/visualizer
+jz59jcq6fwukciu997076unvh
+overall progress: 1 out of 1 tasks 
+1/1: running   [==================================================>] 
+verify: Service jz59jcq6fwukciu997076unvh converged 
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# 
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# 
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker ps
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS                   PORTS                                         NAMES
+76308ba2b635   dockersamples/visualizer:latest   "/sbin/tini -- node …"   5 minutes ago    Up 5 minutes (healthy)   8080/tcp                                      viz.1.4dr7r7mp010b80jx9af6vv9lx
+cf621fbcc1b4   dockersamples/visualizer          "/sbin/tini -- node …"   5 minutes ago    Up 5 minutes (healthy)   0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp   trusting_euclid
+ede8dbd65a1f   shivaram1918/netflix:latest       "nginx -g 'daemon of…"   37 minutes ago   Up 37 minutes            80/tcp                                        myapp2.1.wkd8kp8i72i4iuc0sybref9bg
+6e08a25cafc9   shivaram1918/netflix:latest       "nginx -g 'daemon of…"   43 minutes ago   Up 43 minutes            80/tcp                                        myapp.1.lok0tecojaotzg3aguhphgngh
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# 
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# 
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker services scale myapp=2
+docker: unknown command: docker services
+
+Run 'docker --help' for more information
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker service scale myapp=2
+myapp scaled to 2
+overall progress: 2 out of 2 tasks 
+1/2: running   [==================================================>] 
+2/2: running   [==================================================>] 
+verify: Service myapp converged 
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker ps
+CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS                    PORTS                                         NAMES
+76308ba2b635   dockersamples/visualizer:latest   "/sbin/tini -- node …"   10 minutes ago   Up 10 minutes (healthy)   8080/tcp                                      viz.1.4dr7r7mp010b80jx9af6vv9lx
+cf621fbcc1b4   dockersamples/visualizer          "/sbin/tini -- node …"   10 minutes ago   Up 10 minutes (healthy)   0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp   trusting_euclid
+ede8dbd65a1f   shivaram1918/netflix:latest       "nginx -g 'daemon of…"   42 minutes ago   Up 42 minutes             80/tcp                                        myapp2.1.wkd8kp8i72i4iuc0sybref9bg
+6e08a25cafc9   shivaram1918/netflix:latest       "nginx -g 'daemon of…"   48 minutes ago   Up 48 minutes             80/tcp                                        myapp.1.lok0tecojaotzg3aguhphgngh
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# 
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# 
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker service ls
+ID             NAME      MODE         REPLICAS   IMAGE                             PORTS
+k0fjry0exrg4   myapp     replicated   2/2        shivaram1918/netflix:latest       *:8200->80/tcp
+stfs9bo2hw4s   myapp1    replicated   1/1        shivaram1918/netflix:latest       *:8300->80/tcp
+ylpspjt7vccg   myapp2    replicated   1/1        shivaram1918/netflix:latest       *:8100->80/tcp
+06zwzv4phzh4   myapp3    replicated   1/1        shivaram1918/netflix:latest       *:8400->80/tcp
+jz59jcq6fwuk   viz       replicated   1/1        dockersamples/visualizer:latest   *:8080->8080/tcp
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker service ps myapp
+ID             NAME      IMAGE                         NODE              DESIRED STATE   CURRENT STATE            ERROR     PORTS
+lok0tecojaot   myapp.1   shivaram1918/netflix:latest   ip-192-40-2-132   Running         Running 57 minutes ago             
+09svfd3nhnh0   myapp.2   shivaram1918/netflix:latest   ip-192-40-2-63    Running         Running 9 minutes ago              
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker service ps myapp1
+ID             NAME           IMAGE                         NODE             DESIRED STATE   CURRENT STATE             ERROR     PORTS
+mz0f369gwl8p   myapp1.1       shivaram1918/netflix:latest   ip-192-40-2-33   Running         Running 46 minutes ago              
+atrn0bt9ros9    \_ myapp1.1   shivaram1918/netflix:latest   ip-192-40-2-63   Shutdown        Shutdown 46 minutes ago             
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker service ps myapp3
+ID             NAME       IMAGE                         NODE             DESIRED STATE   CURRENT STATE            ERROR     PORTS
+sv102i72exem   myapp3.1   shivaram1918/netflix:latest   ip-192-40-2-33   Running         Running 54 minutes ago             
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker service ps viz
+ID             NAME      IMAGE                             NODE              DESIRED STATE   CURRENT STATE            ERROR     PORTS
+4dr7r7mp010b   viz.1     dockersamples/visualizer:latest   ip-192-40-2-132   Running         Running 20 minutes ago             
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker stop myapp
+Error response from daemon: No such container: myapp
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker stop k0fjry0exrg4 stfs9bo2hw4s
+Error response from daemon: No such container: k0fjry0exrg4
+Error response from daemon: No such container: stfs9bo2hw4s
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker stop  stfs9bo2hw4s
+Error response from daemon: No such container: stfs9bo2hw4s
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker service ps myapp
+ID             NAME      IMAGE                         NODE              DESIRED STATE   CURRENT STATE               ERROR     PORTS
+lok0tecojaot   myapp.1   shivaram1918/netflix:latest   ip-192-40-2-132   Running         Running about an hour ago             
+09svfd3nhnh0   myapp.2   shivaram1918/netflix:latest   ip-192-40-2-63    Running         Running 12 minutes ago                
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker service ps myapp3
+ID             NAME       IMAGE                         NODE             DESIRED STATE   CURRENT STATE            ERROR     PORTS
+sv102i72exem   myapp3.1   shivaram1918/netflix:latest   ip-192-40-2-33   Running         Running 57 minutes ago             
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker service ps myapp1
+ID             NAME           IMAGE                         NODE             DESIRED STATE   CURRENT STATE             ERROR     PORTS
+mz0f369gwl8p   myapp1.1       shivaram1918/netflix:latest   ip-192-40-2-33   Running         Running 49 minutes ago              
+atrn0bt9ros9    \_ myapp1.1   shivaram1918/netflix:latest   ip-192-40-2-63   Shutdown        Shutdown 49 minutes ago             
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer# docker service ps myapp2
+ID             NAME       IMAGE                         NODE              DESIRED STATE   CURRENT STATE            ERROR     PORTS
+wkd8kp8i72i4   myapp2.1   shivaram1918/netflix:latest   ip-192-40-2-132   Running         Running 55 minutes ago             
+root@ip-192-40-2-132:/home/ubuntu/docker-swarm-visualizer#
