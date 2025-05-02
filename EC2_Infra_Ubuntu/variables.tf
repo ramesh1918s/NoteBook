@@ -7,3 +7,4 @@ variable "subnet2b_cidr" {}
 variable "subnet3c_cidr" {}
 variable "ami_id" {}
 variable  "instance_type" {}
+variable "key_name" {}

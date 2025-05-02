@@ -97,11 +97,12 @@ resource "aws_security_group" "RM_SG" {
 }
 
 resource "aws_instance" "My_Server" {
-  count                     = 3
+  count                     = 1
   ami                       = var.ami_id
   instance_type             = var.instance_type
   subnet_id                 = aws_subnet.RM_Sub1a.id
   vpc_security_group_ids    = [aws_security_group.RM_SG.id]
+  key_name                  = "Qalb_Key"
   associate_public_ip_address = true
 
   user_data = <<-EOF
