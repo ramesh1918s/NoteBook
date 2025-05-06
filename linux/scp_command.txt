@@ -1,0 +1,3 @@
+ scp -i "C:\Users\91915\Downloads\Qalb_Key (1).pem" .\CYBERFICTION-SOURCE-CODE-main.zip ubuntu@54.234.93.74:/var/www/html
+CYBERFICTION-SOURCE-CODE-main.zip                                                     100%   70MB 600.2KB/s   01:59
+PS C:\Users\91915\Downloads>
