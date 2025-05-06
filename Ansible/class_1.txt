@@ -103,7 +103,7 @@ Step-5
 }
 
 
--------------------------------------------------------successfull connecting all servers---------------------------------------------------
+---------------------------------------------------successfull connecting all servers---------------------------------------------------
 Step-6
 - Add-Hoc Commands & playbook
 - GoBack server-1

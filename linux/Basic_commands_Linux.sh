@@ -71,7 +71,7 @@ bugs
 ---------------------------------------------------06/06/2024------------------------
 								linux commands
 								..............
-1) pwd = print working directry
+1) pwd = present working directry
 2) ls =list
 3) ls -al =all lists
 4) cd = change directry
@@ -89,7 +89,7 @@ bugs
 16) nano = edit the file write in the file msg eg:nano filename (nano rs)
 17) echo = print of the date
 18) less = to read less date
-19) man  = helping commands eg: man man ,man more, man CPU ALLOC----CPU commands details
+19) man  = helping commands eg: man man ,man more, man CPU ALLOC----CPU commands details (eg- man netstat)
  
 20)tar = tar folder create( tar -cvf ramesh1918.tar ramesh1918 )
 21) grep = hightlit grep the msg eg: cat filename | grep -i telugu (cat rs | grep -i telugu)
@@ -232,7 +232,9 @@ env       -  The env command in Linux is used to print or set environment variab
 curl        curl command is curl https://www.tutorialspoint.com/unix/unix-getting-started.htm searching the web page
 
 wget       same searching the webpage
- 
+lsof --list of open files
+netstat -- networking status
+top =  
 
  # curl https://www.tutorialspoint.com/unix/unix-getting-started.htm
  # curl https://bjpcjp.github.io/pdfs/devops/linux-commands-handbook.pdf
@@ -858,9 +860,6 @@ sudo service amazon-ssm-agent start
 
 
 
-
-Activation Code   FXRlL5dKocixAolCkGQi
-Activation ID   08793e4e-cbdb-4539-9e5a-52884926f14a
 
 
 mkdir /tmp/ssm
