@@ -1,0 +1,36 @@
+git init 
+ 
+git clone
+
+git config --global user.name "ramesh1918s"
+git config --global user.email "shivaram915454@gmail.com"
+
+git branch - M main
+ 
+
+git add .
+
+git add <file name>
+
+ex: git add test.txt
+
+
+git commit -m " add one test.txt"
+
+git remote -v 
+
+git remote add origin <github url>
+
+git push origin main
+
+
+ 
+git add .; git commit -m "added all files"; git push origin main 
+
+
+
+git checkout  branchname 
+
+git checkout -b 
+
+
