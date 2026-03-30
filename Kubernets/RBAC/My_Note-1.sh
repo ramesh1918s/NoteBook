@@ -1,18 +1,22 @@
 Kubernetes RBAC – Full Understanding (Step by Step)
-🧠 1. RBAC ante enti?
+ 1. RBAC ante enti?
 
 RBAC = Role-Based Access Control
 
-👉 Simple ga:
+Simple ga:
 
 “Evaru (User/Service) → Emi (Resources) → Ela (Actions) cheyyalo control cheyadam”
 
-🧩 2. RBAC Main Components
-1️⃣ Subject (Evaru?)
+ 2. RBAC Main Components
+
+1️ Subject (Evaru?)
 User
 Group
 ServiceAccount (very important in DevOps)
-2️⃣ Resource (Emi?)
+
+
+
+2️ Resource (Emi?)
 
 Examples:
 
@@ -21,18 +25,22 @@ deployments
 services
 configmaps
 secrets
-3️⃣ Verbs (Actions – Ela?)
+
+3 Verbs (Actions – Ela?)
 get → read
 list → list all
 watch → continuous monitoring
 create
 update
 delete
-4️⃣ Role / ClusterRole (Permissions define chestundi)
+
+4 Role / ClusterRole (Permissions define chestundi)
 Type	Scope
 Role	Namespace level
 ClusterRole	Cluster level
-5️⃣ RoleBinding / ClusterRoleBinding (Linking)
+
+
+5️ RoleBinding / ClusterRoleBinding (Linking)
 Type	Purpose
 RoleBinding	Role → User (namespace lo)
 ClusterRoleBinding	ClusterRole → User (cluster wide)
@@ -196,19 +204,19 @@ Go to
 👉 Amazon Web Services
 Navigate:
 IAM → Users → Create user
-🧾 Details Fill:
+ Details Fill:
 User name: eks-admin
 Select:
-✅ Provide user access to AWS Management Console
+ Provide user access to AWS Management Console
 Password:
-👉 Auto generate or custom
-🪪 Permissions Set
+ Auto generate or custom
+ Permissions Set
 
-👉 Next step lo:
+Next step lo:
 
 Select:
 
-✅ Attach policies directly
+ Attach policies directly
 
 Add this policy:
 
@@ -432,10 +440,176 @@ kubectl get configmap aws-auth -n kube-system -o yaml
 ----------------------map the
 
 
------------------------------------------------------------------------------------------
+---------------------------apply the files --------------------------------------------------------------
 
 
+kubectl apply -f namespace.yml
+kubectl apply -f rbac.yml
+kubectl apply -f aws-auth.yml
 
+------------------------- check the access for pod ---------------
+
+kubectl auth can-i list pods -n expense
+
+-----------(showing )------------------
+
+yes (access undi)
+
+no (access ledu)
+
+
+------------checking the access --------------------------------
+
+Basic Check (already chesav)
+kubectl auth can-i list pods -n expense
+
+👉 simple check ✅
+
+🔥 2. Real User Simulation (BEST PRACTICE)
+
+👉 ippudu idi use cheyyi (most important):
+
+kubectl auth can-i list pods \
+  --as=dev-raghu \
+  --as-group=expense-pod-reader \
+  -n expense
+🎯 Meaning
+--as → user simulate
+--as-group → group simulate
+-n expense → namespace
+🔥 3. Full Permissions List (POWER COMMAND)
+
+👉 idi run cheyyi:
+
+kubectl auth can-i --list \
+  --as=dev-raghu \
+  --as-group=expense-pod-reader \
+  -n expense
+👉 Output lo chudali:
+
+✔️ pods → get, list, watch
+❌ delete undakudadhu
+
+🔍 4. Specific Resource Checks
+👉 Pod delete check
+kubectl auth can-i delete pods \
+  --as=dev-raghu \
+  --as-group=expense-pod-reader \
+  -n expense
+
+👉 expected:
+
+no
+👉 Secrets access check
+kubectl auth can-i get secrets \
+  --as=dev-raghu
+
+👉 expected:
+✔️ yes (because ClusterRole icham)
+
+🧪 5. Real-Time Debug Scenario
+
+👉 Suppose error vachindi:
+
+Error from server (Forbidden)
+
+👉 appudu:
+
+Step 1:
+kubectl auth can-i <action> <resource> --as=USER -n NAMESPACE
+Step 2:
+
+Check:
+
+aws-auth
+RoleBinding
+namespace
+🔥 6. Namespace-wise Validation
+
+👉 test cheyyi:
+
+kubectl auth can-i list pods \
+  --as=dev-raghu \
+  --as-group=expense-pod-reader \
+  -n default
+
+👉 expected:
+
+no
+
+👉 endukante:
+👉 Role only expense namespace lo undi
+
+🧠 7. Cluster-level Check
+kubectl auth can-i list nodes \
+  --as=dev-raghu
+
+👉 expected:
+✔️ yes (ClusterRole valla)
+
+🎯 Final Checklist (Real DevOps)
+
+Nuvvu ee questions ki answer cheyyagalithe → perfect:
+
+Pods list cheyacha?
+Pods delete cheyacha?
+Secrets access unda?
+Vere namespace lo access unda?
+Nodes chudagalava?
+🚀 Challenge for You 🔥
+
+👉 Nuvvu try cheyyi and output cheppu:
+
+kubectl auth can-i create pods --as=dev-raghu -n expense
+kubectl auth can-i get secrets --as=dev-raghu
+kubectl auth can-i list pods --as=dev-raghu -n default
+
+👉 Outputs share cheyyi Bujji 😎
+👉 Next nenu HPA (auto scaling live demo style) start chestha 🔥
+
+no
+yes
+no
+
+Super Bujji 🔥🔥 — nee outputs perfect ga match ayyayi 💯
+👉 Idi confirm chestundi nee RBAC setup 100% correct ga work avutundi
+
+✅ Nee Results Analysis
+👉 1. create pods
+kubectl auth can-i create pods --as=dev-raghu -n expense
+
+➡️ Output: no ❌
+
+✔️ Correct — endukante:
+
+Role lo only get, list, watch
+create permission ivvaledu
+👉 2. get secrets
+kubectl auth can-i get secrets --as=dev-raghu
+
+➡️ Output: yes ✅
+
+✔️ Correct — endukante:
+
+ClusterRole lo secrets ki access icham
+👉 3. default namespace access
+kubectl auth can-i list pods --as=dev-raghu -n default
+
+➡️ Output: no ❌
+
+✔️ Correct — endukante:
+
+Role only expense namespace lo undi
+default lo access ledu
+🧠 Final Understanding (IMPORTANT 🔥)
+
+👉 Nee setup exactly ila behave avutundi:
+
+Action	Result	Reason
+create pod	❌ no	no permission
+get secrets	✅ yes	ClusterRole
+expense namespace	✅ yes	Role
+default namespace	❌ no	no Role
 
 
 
