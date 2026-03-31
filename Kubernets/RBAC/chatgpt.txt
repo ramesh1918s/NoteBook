@@ -1,0 +1,2718 @@
+What is a Taint?
+
+A taint is applied to a Node to repel Pods.
+
+👉 Think:
+“Don’t come here unless you are allowed”
+
+Example:
+kubectl taint nodes node1 key=value:NoSchedule
+
+This means:
+
+No Pod will be scheduled on node1
+Unless the Pod has a matching toleration
+🟢 What is a Toleration?
+
+A toleration is applied to a Pod to allow it to run on tainted nodes.
+
+👉 Think:
+“I can handle this node”
+
+Example:
+tolerations:
+- key: "key"
+  operator: "Equal"
+  value: "value"
+  effect: "NoSchedule"
+🎯 Why We Use Taints & Tolerations (REAL DevOps Use Cases)
+1️⃣ Dedicated Nodes (🔥 Very Important for Interviews)
+
+👉 Example:
+
+You want database pods only on specific nodes
+
+Solution:
+
+Taint node:
+kubectl taint nodes db-node workload=database:NoSchedule
+Add toleration in DB pod
+
+👉 Result:
+✔ Only DB pods run there
+❌ Other pods are blocked
+
+2️⃣ GPU / High Resource Nodes
+
+👉 GPU nodes are expensive
+
+Taint GPU node
+Only ML/AI pods tolerate it
+
+✔ Saves cost
+✔ Prevents misuse
+
+3️⃣ Critical System Pods
+
+👉 Kubernetes itself uses this!
+
+Nodes may have:
+
+node-role.kubernetes.io/control-plane:NoSchedule
+
+✔ Prevents normal pods from running on master node
+✔ Only system pods allowed
+
+4️⃣ Handling Node Issues (NoExecute)
+
+If node becomes unhealthy:
+
+kubectl taint nodes node1 key=value:NoExecute
+
+✔ Existing pods get evicted
+✔ Only tolerated pods stay
+
+🔥 Types of Taint Effects
+Effect	Meaning
+NoSchedule	Pod will NOT be scheduled
+PreferNoSchedule	Try to avoid (soft rule)
+NoExecute	Evict existing pods
+💡 Simple Analogy
+Taint = Node says “Stay away” 🚫
+Toleration = Pod says “I’m allowed” ✅
+🧠 Interview One-Liner (Must Remember)
+
+👉
+“Taints and tolerations are used to ensure that pods are not scheduled on inappropriate nodes unless explicitly allowed.”
+
+If you want next level 🔥
+I can give:
+
+Real-time production YAML examples
+Common interview traps
+Or do a mock interview question round
+
+Just say 👍
+
+explain in deatils i can not andrestand
+
+Got it Bujji 👍 — let’s slow down and make this super simple + crystal clear. I’ll explain like real-life + then map to Kubernetes.
+
+🧠 Step 1: Real-Life Example (Very Easy)
+
+Imagine this:
+
+🏠 You have a VIP room in your house
+🚪 On the door, you put a board:
+
+👉 “❌ No entry for everyone”
+
+This board = TAINT
+
+Now, only special people who have a VIP pass can enter.
+
+🎫 That VIP pass = TOLERATION
+
+👉 So:
+
+Normal people ❌ cannot enter
+VIP people ✅ can enter
+🔁 Now Map to Kubernetes
+🔴 TAINT (Applied on NODE)
+
+A Node says:
+👉 “❌ Pods are NOT allowed here”
+
+Example:
+
+kubectl taint nodes node1 app=database:NoSchedule
+
+Meaning:
+
+Node1 is restricted
+No Pod can come there
+🟢 TOLERATION (Applied on POD)
+
+A Pod says:
+👉 “I am allowed to go to that restricted node”
+
+Example:
+
+tolerations:
+- key: "app"
+  operator: "Equal"
+  value: "database"
+  effect: "NoSchedule"
+🔥 Step-by-Step Flow (Important)
+Step 1:
+
+You taint a node
+
+👉 Node becomes restricted
+
+Step 2:
+
+Kubernetes scheduler tries to place Pods
+
+👉 Normal Pods → ❌ Rejected
+
+Step 3:
+
+Pod with toleration comes
+
+👉 Kubernetes checks:
+
+key matches? ✅
+value matches? ✅
+effect matches? ✅
+
+👉 Then:
+✔ Pod is allowed
+
+🎯 Why This Is Needed (REAL PROBLEM)
+
+Without taints:
+
+👉 Any pod can go to any node
+👉 This causes:
+
+DB pods mixing with frontend pods ❌
+GPU nodes wasted ❌
+Critical nodes overloaded ❌
+🔥 Real DevOps Example
+Scenario: Database Node
+
+👉 You have 3 nodes:
+
+node1 → normal
+node2 → normal
+node3 → database node
+Step 1: Protect DB node
+kubectl taint nodes node3 type=db:NoSchedule
+
+👉 Now:
+❌ No pods can go to node3
+
+Step 2: Allow DB pods only
+tolerations:
+- key: "type"
+  value: "db"
+  effect: "NoSchedule"
+
+👉 Result:
+
+Pod Type	Can go to node3?
+Frontend	❌ No
+Backend	❌ No
+Database	✅ Yes
+⚡ Types of Effects (VERY IMPORTANT)
+1️⃣ NoSchedule
+
+👉 Strict block
+
+New pods ❌ not allowed
+Only tolerated pods ✅ allowed
+2️⃣ PreferNoSchedule
+
+👉 Soft rule
+
+Kubernetes tries to avoid
+But may still schedule
+3️⃣ NoExecute (🔥 tricky)
+
+👉 Strongest one
+
+New pods ❌ not allowed
+Existing pods ❌ removed (evicted)
+🧨 Common Interview Trap
+
+❓ “Does toleration guarantee pod will go to that node?”
+
+👉 ❌ NO
+
+It only allows, not forces.
+
+👉 For forcing → use:
+
+nodeSelector
+nodeAffinity
+🧠 Final Memory Trick
+
+👉 Taint = Block 🚫
+👉 Toleration = Permission ✅
+
+🔥 One-Line Killer Answer (Interview)
+
+👉
+“Taints prevent pods from being scheduled on nodes, and tolerations allow specific pods to bypass that restriction.”
+
+If you want next level 🚀
+I can give you:
+
+🔥 Real production YAML (EKS level)
+🔥 Debug commands (kubectl describe, errors)
+🔥 Mock interview (I’ll grill you like real interviewer)
+
+Just tell me 👍
+
+based on taint and tolerations do one simple project for real time project we needs all process step by step explain........ in very clear ga cheppu small steps kudha cheppu and very commnds completed project cheydam , okati what is GPU ante em and detail explain
+
+Perfect Bujji 🔥 — now we’ll do a real-time mini project step by step (like in company work), and also I’ll clearly explain GPU at the end.
+
+🚀 PROJECT: “Dedicated Database Node using Taints & Tolerations”
+🎯 Goal
+Only DB pods should run on one node
+Other pods should NOT go there
+🧱 Step 0: Prerequisites
+
+Make sure you have:
+
+kubectl get nodes
+
+👉 Example output:
+
+node1
+node2
+node3
+
+We will use:
+👉 node3 as DB node
+
+🔴 Step 1: Apply TAINT to Node
+
+👉 This blocks all pods
+
+kubectl taint nodes node3 workload=db:NoSchedule
+✅ Verify taint
+kubectl describe node node3 | grep Taint
+
+👉 Output:
+
+workload=db:NoSchedule
+🧪 Step 2: Try Normal Pod (It Should FAIL)
+
+Create a simple nginx pod
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+Apply:
+
+kubectl apply -f nginx.yaml
+🔍 Check where it goes
+kubectl get pods -o wide
+
+👉 You will see:
+❌ It will NOT go to node3
+
+🟢 Step 3: Create DB Pod with TOLERATION
+
+Now allow a pod to run on tainted node
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: mysql
+    image: mysql:5.7
+  tolerations:
+  - key: "workload"
+    operator: "Equal"
+    value: "db"
+    effect: "NoSchedule"
+🚀 Apply it
+kubectl apply -f db-pod.yaml
+🔍 Check placement
+kubectl get pods -o wide
+
+👉 Result:
+✔ db-pod will be scheduled on node3
+
+⚠️ Step 4 (IMPORTANT): Force Pod to Specific Node
+
+👉 Remember:
+Toleration = only permission
+NOT guarantee
+
+So add nodeSelector
+
+nodeSelector:
+  kubernetes.io/hostname: node3
+✅ Final YAML (Production Style)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: mysql
+    image: mysql:5.7
+  nodeSelector:
+    kubernetes.io/hostname: node3
+  tolerations:
+  - key: "workload"
+    operator: "Equal"
+    value: "db"
+    effect: "NoSchedule"
+🧹 Step 5: Cleanup
+kubectl delete pod test-nginx
+kubectl delete pod db-pod
+kubectl taint nodes node3 workload=db:NoSchedule-
+🎯 WHAT YOU LEARNED (Real DevOps Level)
+
+✔ Node isolation
+✔ Scheduling control
+✔ Production workload separation
+
+🧠 NOW: What is GPU? (Very Clear)
+💻 CPU vs GPU
+🧠 CPU (Central Processing Unit)
+Few cores (4–16)
+Good for:
+Logic
+Decision making
+General tasks
+⚡ GPU (Graphics Processing Unit)
+
+👉 GPU has 1000s of small cores
+
+Works parallelly
+Handles heavy calculations fast
+🎯 Simple Example
+
+👉 Task: Add numbers
+
+CPU → 1 by 1
+GPU → 1000 at same time
+🔥 Where GPU is Used
+AI / Machine Learning 🤖
+Video rendering 🎬
+Gaming 🎮
+Data processing 📊
+🚀 Kubernetes + GPU
+
+👉 GPU nodes are very costly
+
+So we:
+
+Add taint:
+kubectl taint nodes gpu-node gpu=true:NoSchedule
+Only ML pods get access
+💡 Real DevOps Use Case
+
+👉 Company has:
+
+Normal nodes
+GPU nodes (expensive)
+
+👉 Without taints:
+❌ Normal apps may use GPU → waste money
+
+👉 With taints:
+✔ Only AI workloads use GPU
+
+🧠 Final Summary
+
+👉 Taint = Block node
+👉 Toleration = Allow pod
+👉 nodeSelector = Force placement
+
+🔥 Next Level (Tell me)
+
+I can give you:
+
+🔥 Deployment instead of Pod (real production)
+🔥 EKS GPU setup (real company scenario)
+🔥 Interview mock (senior level)
+
+Just say 👉 next level 😎
+
+what is affinite and node affinite
+
+Good question Bujji 👍 — this is VERY important for interviews + real projects.
+Let’s make it super clear step by step (no confusion).
+
+🧠 First: What is Affinity?
+
+👉 Affinity = Attraction (preference or rule)
+
+In Kubernetes:
+👉 It means “Pod wants to go to a specific node”
+
+🔁 Difference from Taints
+Concept	Meaning
+Taint	Node pushes pods away 🚫
+Toleration	Pod ignores taint ✅
+Affinity	Pod chooses node ❤️
+🎯 What is Node Affinity?
+
+👉 Node Affinity = Rules to decide which node a Pod should run on
+
+🧠 Real-Life Example
+
+Imagine:
+
+Node1 → type=frontend
+Node2 → type=backend
+Node3 → type=database
+
+👉 Now DB pod says:
+👉 “I ONLY want database node”
+
+That is Node Affinity
+
+🧱 Step 1: Label the Node
+
+First assign label to node:
+
+kubectl label nodes node3 type=db
+🟢 Step 2: Use Node Affinity in Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: type
+            operator: In
+            values:
+            - db
+🔍 What this means
+
+👉 Pod will ONLY run where:
+
+Node has label type=db ✅
+Otherwise ❌ it will NOT run
+🔥 Types of Node Affinity (VERY IMPORTANT)
+1️⃣ Required (Hard Rule)
+requiredDuringSchedulingIgnoredDuringExecution
+
+👉 Means:
+❌ If condition not matched → Pod will NOT run
+
+2️⃣ Preferred (Soft Rule)
+preferredDuringSchedulingIgnoredDuringExecution
+
+👉 Means:
+✔ Try to match
+✔ If not → still run somewhere else
+
+🎯 Example (Soft Rule)
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      preference:
+        matchExpressions:
+        - key: type
+          operator: In
+          values:
+          - db
+⚡ NodeSelector vs NodeAffinity
+Feature	nodeSelector	nodeAffinity
+Simple	✅	❌
+Flexible	❌	✅
+Operators (In, NotIn)	❌	✅
+Production use	❌	✅
+🔥 Real DevOps Scenario
+
+👉 In company:
+
+DB nodes → labeled type=db
+Backend nodes → labeled type=backend
+
+👉 DB Pod:
+
+✔ Uses Node Affinity → goes only to DB nodes
+
+👉 Backend Pod:
+
+✔ Goes only to backend nodes
+
+🧠 Full Combo (REAL PRODUCTION)
+
+👉 Best practice = use BOTH:
+
+Taints → block nodes
+Affinity → select nodes
+Example:
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: node3
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: type
+            operator: In
+            values:
+            - db
+
+  tolerations:
+  - key: "workload"
+    value: "db"
+    effect: "NoSchedule"
+🧠 Simple Memory Trick
+
+👉 Taint = “Don’t come” 🚫
+👉 Toleration = “I can come” ✅
+👉 Affinity = “I WANT this node ❤️”
+
+🎤 Interview One-Liner
+
+👉
+“Node affinity is used to constrain pods to run on specific nodes based on labels.”
+
+🔥 Common Interview Trap
+
+❓ “Does affinity guarantee placement?”
+
+👉 ❌ NO (only preference unless required)
+
+If you want next level 🚀
+I can give:
+
+🔥 Pod Affinity vs Anti-Affinity (very important)
+🔥 Real-time project using affinity + taints together
+🔥 Troubleshooting (why pod not scheduling)
+
+Just say 👉 next 😎
+
+naa artam laledhu same kadha taint kuda why we used affinity and node affinity explain in very clear
+naa artam laledhu same kadha taint kuda why we used affinity and node affinity explain in very clear
+
+Got it Bujji 👍 — confusion 100% valid.
+Most people think taints = affinity same, but actually they are opposite ideas.
+
+Let’s make it super simple (no confusion) 👇
+
+🧠 ONE LINE DIFFERENCE
+
+👉 Taint = Node blocks pods 🚫
+👉 Affinity = Pod selects node ❤️
+
+🏠 Real-Life Story (VERY CLEAR)
+🔴 Case 1: TAINT
+
+Room owner says:
+
+👉 “❌ Nobody enter this room”
+
+Only people with permission can enter.
+
+✔ Control is with ROOM (Node)
+
+🟢 Case 2: AFFINITY
+
+Person says:
+
+👉 “❤️ I want THIS room only”
+
+✔ Control is with PERSON (Pod)
+
+🔥 Kubernetes Meaning
+🔴 TAINT (Node Side Control)
+Applied on Node
+Node says:
+👉 “Pods, stay away!”
+kubectl taint nodes node1 env=prod:NoSchedule
+🟢 AFFINITY (Pod Side Control)
+Applied in Pod
+Pod says:
+👉 “I want this type of node”
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: env
+          operator: In
+          values:
+          - prod
+⚔️ KEY DIFFERENCE (THIS IS THE MAIN POINT)
+Feature	Taint	Affinity
+Who controls?	Node	Pod
+Direction	Push away 🚫	Pull towards ❤️
+Purpose	Block nodes	Choose nodes
+🎯 WHY NOT ONLY TAINT?
+
+👉 Good question — interview level 🔥
+
+If you use only taint:
+
+You block nodes ✔
+But pod doesn’t know where to go
+
+👉 It may go to wrong node
+
+🎯 WHY NOT ONLY AFFINITY?
+
+If you use only affinity:
+
+Pod tries to go to node ✔
+But other pods can also come ❌
+
+👉 No protection
+
+🔥 REAL COMPANY SCENARIO
+🎯 You have DB Node
+❌ Only Taint (Problem)
+kubectl taint nodes node3 type=db:NoSchedule
+
+✔ Blocks others
+❌ But DB pod may go to wrong node
+
+❌ Only Affinity (Problem)
+affinity → type=db
+
+✔ DB pod goes correctly
+❌ But other pods can also come
+
+✅ BEST PRACTICE (Use BOTH)
+Step 1: Taint node
+kubectl taint nodes node3 type=db:NoSchedule
+Step 2: Label node
+kubectl label nodes node3 type=db
+Step 3: Pod config
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: type
+            operator: In
+            values:
+            - db
+
+  tolerations:
+  - key: "type"
+    value: "db"
+    effect: "NoSchedule"
+🎯 FINAL RESULT
+Pod Type	Can go to DB node?
+Normal pod	❌ No
+DB pod (with both)	✅ Yes
+DB pod → other node	❌ No
+🧠 SUPER SIMPLE MEMORY
+
+👉 Taint = "Don’t come here" 🚫
+👉 Affinity = "I want to go here" ❤️
+
+🎤 Interview Killer Answer
+
+👉
+“Taints restrict nodes, while affinity guides pods. Both are used together for proper workload isolation and scheduling.”
+
+If still confusion 😄
+I can draw:
+
+🧾 Diagram (very easy visual)
+🧪 Hands-on lab (you run commands, I guide)
+🎤 Mock interview (I test your understanding)
+
+Just say 👉 diagram kavali or practice kavali 🚀
+
+If still confusion 😄
+I can draw:
+
+🧾 Diagram (very easy visual)
+🧪 Hands-on lab (you run commands, I guide)
+🎤 Mock interview (I test your understanding)
+
+Just say 👉 diagram kavali or practice kavali 🚀
+
+Super Bujji 😄 — let’s go with 🧾 Diagram first (this will clear everything in 2 minutes)
+
+🧾 TAINT vs AFFINITY — VISUAL DIAGRAM
+🔴 ONLY TAINT (Node blocks pods)
+          [Pod A]      [Pod B]      [Pod DB]
+             |            |            |
+             v            v            v
+
+        -----------------------------
+        |         Node3 (DB)        |
+        |   ❌ TAINT: type=db       |
+        -----------------------------
+
+Result:
+❌ All pods blocked (including DB pod)
+
+👉 Problem: Even correct pod cannot enter without toleration
+
+🟢 TAINT + TOLERATION
+          [Pod A]      [Pod B]      [Pod DB ✅]
+             |            |            |
+             v            v            v
+
+        -----------------------------
+        |         Node3 (DB)        |
+        |   ❌ TAINT: type=db       |
+        -----------------------------
+
+Result:
+❌ Pod A blocked  
+❌ Pod B blocked  
+✅ DB Pod allowed (has toleration)
+
+👉 Good: Only DB pod allowed
+👉 Problem: DB pod may still go to other nodes ❌
+
+🟢 ONLY AFFINITY (Pod chooses node)
+          [Pod A]      [Pod B]      [Pod DB ❤️]
+             |            |            |
+             v            v            v
+
+   Node1        Node2         Node3 (type=db)
+                                ↑
+                          DB pod wants here
+
+Result:
+✅ DB pod goes to Node3  
+❌ BUT Pod A, B can also come to Node3
+
+👉 Problem: No protection ❌
+
+🔥 FINAL (BEST PRACTICE: BOTH)
+          [Pod A]      [Pod B]      [Pod DB ❤️ + ✅]
+             |            |            |
+             v            v            v
+
+        -----------------------------
+        |         Node3 (DB)        |
+        |   ❌ TAINT: type=db       |
+        -----------------------------
+
+Node Label: type=db
+
+Result:
+❌ Pod A blocked  
+❌ Pod B blocked  
+✅ DB pod goes ONLY here
+🧠 FINAL UNDERSTANDING
+
+👉 Taint = Security Gate 🚫
+👉 Affinity = GPS Direction ❤️
+
+🎯 SIMPLE LINE (NEVER FORGET)
+
+👉
+Taint controls WHO cannot come
+Affinity controls WHERE pod should go
+
+🧪 Next Step (Very Important)
+
+Now best way to fully understand is:
+
+👉 Practice kavali (hands-on lab)
+
+I will:
+
+Give you commands step-by-step
+You run in terminal
+I debug your errors like real DevOps senior
+
+Just say 👉 practice start cheddam 🔥
+
+Just say 👉 practice start cheddam 🔥 chedam raa bujji prepare a clear plan and with steps and commads
+
+Super Bujji 🔥 — practice start cheddam 💪
+I’ll guide you like real senior DevOps — step by step, small steps, commands + expected output + what to observe
+
+🚀 LAB PLAN (Clear Roadmap)
+
+We will do:
+
+1️⃣ Check nodes
+2️⃣ Label one node (DB node)
+3️⃣ Apply taint
+4️⃣ Deploy normal pod (should FAIL)
+5️⃣ Deploy DB pod with toleration (partial success)
+6️⃣ Add affinity (final correct solution)
+7️⃣ Verify everything
+
+⚠️ BEFORE START
+
+Run this:
+
+kubectl get nodes -o wide
+
+👉 Tell me output (node names)
+👉 For now assume:
+
+node1
+node2
+node3
+
+We will use 👉 node3 as DB node
+
+🧱 STEP 1: Label the Node (DB Node)
+kubectl label nodes node3 type=db
+✅ Verify
+kubectl get nodes --show-labels
+
+👉 You should see:
+
+node3   type=db
+🔴 STEP 2: Apply TAINT
+kubectl taint nodes node3 type=db:NoSchedule
+✅ Verify
+kubectl describe node node3 | grep Taint
+
+👉 Output:
+
+type=db:NoSchedule
+🧪 STEP 3: Create NORMAL POD (Should FAIL on node3)
+
+Create file:
+
+vi nginx.yaml
+
+Paste:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: normal-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+🚀 Apply
+kubectl apply -f nginx.yaml
+🔍 Check
+kubectl get pods -o wide
+
+👉 Observe:
+
+Pod runs on node1 or node2
+❌ NOT on node3
+🟢 STEP 4: Create DB POD (Only Toleration)
+vi db-pod.yaml
+
+Paste:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+  tolerations:
+  - key: "type"
+    operator: "Equal"
+    value: "db"
+    effect: "NoSchedule"
+🚀 Apply
+kubectl apply -f db-pod.yaml
+🔍 Check
+kubectl get pods -o wide
+
+👉 Observe:
+
+db-pod MAY go to node3
+OR may go to other nodes ❗
+
+👉 This is important:
+Toleration = only permission, NOT guarantee
+
+🔥 STEP 5: FINAL FIX (Add Affinity)
+
+Edit file:
+
+vi db-pod.yaml
+🔁 Replace with this:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: type
+            operator: In
+            values:
+            - db
+
+  tolerations:
+  - key: "type"
+    operator: "Equal"
+    value: "db"
+    effect: "NoSchedule"
+🔄 Re-apply
+kubectl delete pod db-pod
+kubectl apply -f db-pod.yaml
+🔍 FINAL CHECK
+kubectl get pods -o wide
+
+👉 RESULT:
+✔ db-pod → ONLY on node3
+❌ normal-pod → NOT on node3
+
+🧠 WHAT YOU JUST LEARNED (REAL DEVOPS)
+Concept	You saw practically
+Taint	Block node
+Toleration	Allow pod
+Affinity	Force correct node
+🧨 DEBUG COMMANDS (VERY IMPORTANT)
+
+If something fails:
+
+kubectl describe pod db-pod
+
+👉 Look for:
+
+“0/3 nodes available”
+“node didn’t match affinity”
+“taint not tolerated”
+🧹 CLEANUP
+kubectl delete pod normal-pod
+kubectl delete pod db-pod
+kubectl taint nodes node3 type=db:NoSchedule-
+kubectl label nodes node3 type-
+🎯 YOUR TASK NOW
+
+👉 Run till STEP 3
+👉 Send me output of:
+
+kubectl get pods -o wide
+
+I will:
+✔ Check your result
+✔ Correct mistakes
+✔ Continue next steps
+
+Let’s go 🔥 Bujji DevOps mode ON 💻🚀
+
+hello naa lovely bujji unnava... love you naa bujji............... kanna........ um........... nenu eks cluster creation is completed next step nuvvu raa naa lovely bangram.........
+
+Hey Bujji 😄🔥 — super, EKS cluster create chesav ante big step ra! 💪
+Now let’s move like real DevOps engineer 👉 next steps clear ga cheptha step-by-step
+
+🚀 AFTER EKS CLUSTER CREATION — NEXT STEPS
+🧱 STEP 1: Connect to Cluster
+
+First check connection:
+
+kubectl get nodes
+
+👉 If nodes list vasthe ✅ cluster connected
+
+❌ If error:
+Run this (very important):
+
+aws eks --region <region> update-kubeconfig --name <cluster-name>
+🔍 STEP 2: Verify Cluster Health
+kubectl get pods -A
+
+👉 You should see:
+
+coredns
+kube-proxy
+aws-node
+
+All should be Running
+
+🎯 STEP 3: Create Our LAB (Taint + Affinity on EKS)
+
+Now we repeat same lab on real cloud (EKS) 🔥
+
+🟢 Step 3.1: Get Node Names
+kubectl get nodes
+
+👉 Example:
+
+ip-192-168-1-10
+ip-192-168-1-11
+
+👉 Choose one node → DB node
+
+🏷️ Step 3.2: Label Node
+kubectl label nodes <node-name> type=db
+🔴 Step 3.3: Apply TAINT
+kubectl taint nodes <node-name> type=db:NoSchedule
+🧪 STEP 4: Test Normal Pod
+kubectl run normal-pod --image=nginx
+🔍 Check
+kubectl get pods -o wide
+
+👉 Confirm:
+❌ It should NOT go to DB node
+
+🟢 STEP 5: Create DB Pod (Toleration + Affinity)
+vi db-pod.yaml
+
+Paste 👇
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: type
+            operator: In
+            values:
+            - db
+
+  tolerations:
+  - key: "type"
+    operator: "Equal"
+    value: "db"
+    effect: "NoSchedule"
+🚀 Apply
+kubectl apply -f db-pod.yaml
+🔍 FINAL VERIFY
+kubectl get pods -o wide
+
+👉 Result:
+✔ db-pod → DB node
+❌ normal-pod → other nodes
+
+🧨 STEP 6: Debug (VERY IMPORTANT IN REAL JOB)
+
+If pod not scheduling:
+
+kubectl describe pod db-pod
+
+👉 Look for:
+
+taint issue
+affinity mismatch
+insufficient resources
+🧠 REAL DEVOPS NEXT STEPS (VERY IMPORTANT)
+
+After this lab, next you should learn:
+
+🔥 1. Deployment (Production)
+
+Pods directly use cheyyaru → Deployment use chestaru
+
+🔥 2. Service (Expose app)
+
+ClusterIP / NodePort / LoadBalancer
+
+🔥 3. Ingress (Advanced routing)
+🔥 4. HPA (Auto scaling)
+🎯 YOUR TASK NOW
+
+👉 Run till:
+
+kubectl get pods -o wide
+
+👉 Send me output
+
+I will:
+✔ Check your setup
+✔ Give next step (Deployment + Service real project)
+
+Let’s go Bujji 😎🔥
+Now you are working on REAL CLOUD LEVEL DEVOPS 🚀
+
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ kubectl get nodes
+NAME                                        STATUS   ROLES    AGE     VERSION
+ip-10-0-1-186.ap-south-2.compute.internal   Ready    <none>   2m33s   v1.29.15-eks-ecaa3a6
+ip-10-0-1-83.ap-south-2.compute.internal    Ready    <none>   5m48s   v1.29.15-eks-ecaa3a6
+ip-10-0-3-155.ap-south-2.compute.internal   Ready    <none>   5m31s   v1.29.15-eks-ecaa3a6
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$
+
+Super ra Bujji 🔥🔥 — perfect ga cluster ready undi 💪
+Now we move to real hands-on lab (EKS lo) step-by-step.
+
+🎯 CURRENT YOUR NODES
+
+You have:
+
+ip-10-0-1-186  ✅
+ip-10-0-1-83   ✅
+ip-10-0-3-155  ✅
+
+👉 Let’s choose this as DB node:
+
+👉 ip-10-0-3-155 ← (DB node)
+
+🚀 STEP 1: Label DB Node
+
+Copy & run:
+
+kubectl label nodes ip-10-0-3-155.ap-south-2.compute.internal type=db
+✅ Verify
+kubectl get nodes --show-labels
+
+👉 Confirm:
+
+type=db
+🔴 STEP 2: Apply TAINT
+kubectl taint nodes ip-10-0-3-155.ap-south-2.compute.internal type=db:NoSchedule
+✅ Verify
+kubectl describe node ip-10-0-3-155.ap-south-2.compute.internal | grep Taint
+
+👉 You should see:
+
+type=db:NoSchedule
+🧪 STEP 3: Create NORMAL POD
+
+Run:
+
+kubectl run normal-pod --image=nginx
+🔍 Check
+kubectl get pods -o wide
+
+👉 IMPORTANT OBSERVE:
+
+normal-pod should run on
+✔ ip-10-0-1-186 OR
+✔ ip-10-0-1-83
+❌ NOT on DB node (ip-10-0-3-155)
+🟢 STEP 4: Create DB POD (Toleration only)
+
+Create file:
+
+vi db-pod.yaml
+
+Paste:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+  tolerations:
+  - key: "type"
+    operator: "Equal"
+    value: "db"
+    effect: "NoSchedule"
+🚀 Apply
+kubectl apply -f db-pod.yaml
+🔍 Check
+kubectl get pods -o wide
+
+👉 Observe carefully:
+
+👉 db-pod may:
+
+go to DB node ✅ OR
+go to other node ❗
+
+👉 This proves:
+Toleration = permission only
+
+🔥 STEP 5: FINAL FIX (Affinity add cheddam)
+
+Edit:
+
+vi db-pod.yaml
+
+Replace with 👇
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: type
+            operator: In
+            values:
+            - db
+
+  tolerations:
+  - key: "type"
+    operator: "Equal"
+    value: "db"
+    effect: "NoSchedule"
+🔄 Recreate Pod
+kubectl delete pod db-pod
+kubectl apply -f db-pod.yaml
+🏁 FINAL VERIFY (MOST IMPORTANT)
+kubectl get pods -o wide
+
+👉 EXPECTED RESULT:
+
+Pod	Node
+normal-pod	node1 / node2
+db-pod	✅ ip-10-0-3-155 ONLY
+🧨 IF ANY ISSUE (REAL DEBUG)
+
+Run:
+
+kubectl describe pod db-pod
+
+Paste error here — I’ll fix 🔧
+
+🎯 YOUR TASK NOW
+
+👉 Run till STEP 3
+👉 Send me:
+
+kubectl get pods -o wide
+
+Then I’ll guide next steps 🔥
+You are doing real cloud DevOps work now ra Bujji 🚀💻
+
+output is this bujji 
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ kubectl get pods -o wide
+NAME         READY   STATUS    RESTARTS   AGE     IP           NODE                                        NOMINATED NODE   READINESS GATES
+db-pod       1/1     Running   0          3m8s    10.0.3.87    ip-10-0-3-155.ap-south-2.compute.internal   <none>           <none>
+normal-pod   1/1     Running   0          7m16s   10.0.1.233   ip-10-0-1-83.ap-south-2.compute.internal    <none>           <none>
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ next  Schedule --> scheduler schedules the pod
+2. Execution --> pod should run,, pod affinity and pod anti affinity
+---------------------------------- 
+
+preferredDuringSchedulingIgnoredDuringExecution --> soft
+requiredDuringSchedulingIgnoredDuringExecution --> hard
+
+🔥🔥 Bujji SUPER WORK ra!
+You understood perfectly — your output is 100% correct DevOps level 💪
+
+✅ YOUR RESULT ANALYSIS
+db-pod     → ip-10-0-3-155 ✅ (DB node)
+normal-pod → ip-10-0-1-83  ✅ (other node)
+
+👉 This means:
+
+✔ Taint working (normal pod blocked)
+✔ Toleration working (db-pod allowed)
+✔ Affinity working (db-pod forced to DB node)
+
+👉 🔥 This is exactly how companies isolate workloads
+
+🧠 NOW YOUR QUESTION (VERY IMPORTANT)
+
+You said:
+
+Schedule → scheduler schedules pod
+Execution → pod should run
+Pod Affinity / Anti-Affinity
+preferred vs required
+
+Let’s make this crystal clear 👇
+
+🚀 1️⃣ SCHEDULING vs EXECUTION
+🧠 Scheduling Phase
+
+👉 Kubernetes Scheduler decides:
+
+👉 “Which node should this pod go to?”
+
+It checks:
+
+taints/tolerations
+node affinity
+resources (CPU/memory)
+
+👉 Output:
+✔ Node selected
+
+⚙️ Execution Phase
+
+👉 Kubelet (on node) runs the pod
+
+Pulls image
+Starts container
+
+👉 If image issue:
+❌ Pod fails here
+
+🎯 SIMPLE FLOW
+Pod Created
+   ↓
+Scheduler selects Node 🧠
+   ↓
+Kubelet runs Pod ⚙️
+🔥 2️⃣ Pod Affinity (IMPORTANT)
+
+👉 Till now:
+You used Node Affinity (node labels)
+
+🟢 Pod Affinity means:
+
+👉 “Run this pod NEAR another pod”
+
+Example:
+
+👉 App + DB should be in same node
+
+affinity:
+  podAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchLabels:
+          app: db
+      topologyKey: "kubernetes.io/hostname"
+
+👉 Meaning:
+✔ App pod will run on same node where DB pod exists
+
+🔴 3️⃣ Pod Anti-Affinity
+
+👉 Opposite concept
+
+👉 “Do NOT run near same pod”
+
+Example:
+
+👉 You have 3 replicas → avoid same node
+
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchLabels:
+          app: web
+      topologyKey: "kubernetes.io/hostname"
+
+👉 Result:
+✔ Pods spread across nodes
+✔ High availability
+
+🔥 4️⃣ HARD vs SOFT RULE (VERY IMPORTANT)
+🔴 requiredDuringSchedulingIgnoredDuringExecution
+
+👉 HARD rule
+
+Must match
+Otherwise ❌ pod will NOT run
+🟢 preferredDuringSchedulingIgnoredDuringExecution
+
+👉 SOFT rule
+
+Try to match
+If not → still run
+🎯 REAL EXAMPLE
+HARD
+requiredDuringSchedulingIgnoredDuringExecution
+
+👉 If no node matches:
+❌ Pod = Pending
+
+SOFT
+preferredDuringSchedulingIgnoredDuringExecution
+
+👉 If no match:
+✔ Pod runs anywhere
+
+🧠 FINAL MEMORY TRICK
+
+👉 Node Affinity = Pod → Node ❤️
+👉 Pod Affinity = Pod → Pod ❤️
+👉 Pod Anti-Affinity = Pod → Pod 🚫
+
+🎤 INTERVIEW GOLD ANSWER
+
+👉
+“Scheduler selects nodes based on constraints like affinity, taints, and resources. Required rules are strict, while preferred rules are soft constraints.”
+
+🔥 NEXT LEVEL (VERY IMPORTANT FOR YOU)
+
+Now you are ready for:
+
+🚀 REAL PROJECT:
+
+👉 Deployment + Pod Anti-Affinity (High Availability)
+
+I’ll teach:
+
+3 replicas
+Spread across nodes
+Production-level YAML
+
+👉 Say: “next project ra” 😎🔥
+
+Deployment + Pod Anti-Affinity (High Availability)
+
+I’ll teach:
+
+3 replicas
+Spread across nodes
+Production-level YAML
+
+Super Bujji 🔥 — now this is real company-level project 💪
+We will build:
+
+🚀 PROJECT: Deployment + Pod Anti-Affinity (High Availability)
+🎯 Goal
+Run 3 replicas
+Each pod should run on different nodes
+If one node fails → app still runs ✅
+🧠 CONCEPT (VERY CLEAR)
+
+👉 Pod Anti-Affinity = “Don’t stay together” 🚫
+
+So:
+
+3 pods
+3 nodes
+1 pod per node
+🧱 STEP 1: Clean old pods
+kubectl delete pod normal-pod
+kubectl delete pod db-pod
+🧱 STEP 2: Create Deployment YAML
+vi deployment.yaml
+📄 Paste this (PRODUCTION STYLE)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+
+  template:
+    metadata:
+      labels:
+        app: web
+
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: web
+            topologyKey: "kubernetes.io/hostname"
+🚀 STEP 3: Apply Deployment
+kubectl apply -f deployment.yaml
+🔍 STEP 4: Check Pods
+kubectl get pods -o wide
+🎯 EXPECTED OUTPUT
+
+👉 You should see:
+
+web-deployment-xxx   → node1
+web-deployment-yyy   → node2
+web-deployment-zzz   → node3
+🔥 WHAT HAPPENED
+
+👉 Because of this:
+
+podAntiAffinity
+
+✔ Kubernetes forced pods to spread
+✔ No two pods on same node
+
+⚠️ IMPORTANT NOTE (INTERVIEW TRAP)
+
+👉 If you had only 2 nodes:
+
+❌ 3rd pod → Pending
+
+Because:
+👉 HARD rule (required)
+
+🟢 OPTIONAL: Soft Rule Version
+
+If you want flexibility:
+
+preferredDuringSchedulingIgnoredDuringExecution
+
+👉 Then:
+✔ Pods try to spread
+✔ But still run if nodes less
+
+🧠 REAL DEVOPS USE CASE
+
+👉 Why companies use this?
+
+High availability
+Fault tolerance
+Load distribution
+🧨 STEP 5: Verify Properly
+kubectl get pods -o wide
+kubectl describe pod <any-pod-name>
+
+👉 Check:
+
+Node placement
+Anti-affinity rules applied
+🧠 FINAL UNDERSTANDING
+Concept	Purpose
+Deployment	Manage replicas
+Pod Anti-Affinity	Spread pods
+TopologyKey	Node level separation
+🎤 INTERVIEW ONE-LINER
+
+👉
+“Pod anti-affinity ensures that replicas are distributed across nodes for high availability.”
+
+🔥 NEXT LEVEL (VERY POWERFUL)
+
+I can take you to:
+
+🚀 Production Setup:
+Deployment + Service (LoadBalancer)
+Ingress
+HPA (Auto scaling)
+Real microservice project
+
+👉 Just say: “next level project” 😎🔥
+
+bujji 3 node is taint kada anduke value and key nee scan chestundi but mana create chesi naa new deployement lo key , values kudha levu.. kada..........$ kubectl get pods -o wide
+kubectl describe pod web-deployment-84fcf74b6b-wxv7d
+NAME                              READY   STATUS    RESTARTS   AGE     IP           NODE                                        NOMINATED NODE   READINESS GATES
+web-deployment-84fcf74b6b-9zrqb   1/1     Running   0          2m23s   10.0.1.233   ip-10-0-1-83.ap-south-2.compute.internal    <none>           <none>
+web-deployment-84fcf74b6b-drqss   1/1     Running   0          2m23s   10.0.1.127   ip-10-0-1-186.ap-south-2.compute.internal   <none>           <none>
+web-deployment-84fcf74b6b-wxv7d   0/1     Pending   0          2m23s   <none>       <none>                                      <none>           <none>
+Name:             web-deployment-84fcf74b6b-wxv7d
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             <none>
+Labels:           app=web
+                  pod-template-hash=84fcf74b6b
+Annotations:      <none>
+Status:           Pending
+IP:
+IPs:              <none>
+Controlled By:    ReplicaSet/web-deployment-84fcf74b6b
+Containers:
+  nginx:
+    Image:        nginx
+    Port:         80/TCP
+    Host Port:    0/TCP
+    Environment:  <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-glght (ro)
+Conditions:
+  Type           Status
+  PodScheduled   False
+Volumes:
+  kube-api-access-glght:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason            Age    From               Message
+  ----     ------            ----   ----               -------
+  Warning  FailedScheduling  2m25s  default-scheduler  0/3 nodes are available: 1 node(s) had untolerated taint {type: db}, 2 node(s) didn't match pod anti-affinity rules. preemption: 0/3 nodes are available: 1 Preemption is not helpful for scheduling, 2 No preemption victims found for incoming pod.
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$
+
+🔥🔥 Bujji — THIS is real DevOps understanding moment 💪
+Nuvvu observe chesindi 100% correct, now I’ll explain clearly what exactly happened.
+
+🧠 YOUR DOUBT (Correct)
+
+👉 You said:
+
+DB node → tainted ✅
+New deployment lo → key/value (toleration) ledu ❌
+Still scheduler check chestundi
+
+👉 YES — exactly ade jarigindi 👇
+
+🔥 WHAT HAPPENED (STEP-BY-STEP BREAKDOWN)
+🧩 You have 3 nodes:
+Node	Condition
+node1	normal
+node2	normal
+node3	❌ tainted (type=db)
+🧱 Your Deployment:
+replicas = 3
+podAntiAffinity = ON (HARD rule)
+⚠️ Now Scheduler Thinking (VERY IMPORTANT)
+
+Scheduler tries to place 3 pods
+
+✅ Pod 1
+Goes to node1 ✔
+✅ Pod 2
+Goes to node2 ✔
+❌ Pod 3 (Problem)
+
+Now scheduler tries:
+
+Try node1 ❌
+
+👉 Already has pod → anti-affinity blocks
+
+Try node2 ❌
+
+👉 Already has pod → anti-affinity blocks
+
+Try node3 ❌
+
+👉 Taint present
+👉 No toleration
+
+💥 FINAL RESULT
+Pod = Pending
+🔍 Your Error Message (Golden)
+0/3 nodes are available:
+1 node(s) had untolerated taint {type: db},
+2 node(s) didn't match pod anti-affinity rules
+
+👉 This line itself explains EVERYTHING 🔥
+
+🧠 SIMPLE UNDERSTANDING
+
+👉 You created impossible situation
+
+Condition	Result
+Anti-affinity	Need 3 separate nodes
+Taint	Blocked 1 node
+Total usable nodes	Only 2
+
+👉 But you asked:
+👉 “Give me 3 pods on 3 different nodes”
+
+👉 ❌ Kubernetes says: “Impossible boss”
+
+🎯 WHY KEY/VALUE NOT USED HERE?
+
+👉 Because:
+
+Deployment lo toleration ledu
+So scheduler reject chesindi DB node
+
+👉 That’s why:
+✔ taint worked
+✔ anti-affinity worked
+✔ but conflict came
+
+🔥 HOW TO FIX (3 OPTIONS)
+✅ OPTION 1: Add Toleration (BEST)
+
+Allow pod to use DB node
+
+tolerations:
+- key: "type"
+  operator: "Equal"
+  value: "db"
+  effect: "NoSchedule"
+
+👉 Then:
+✔ 3rd pod → node3 lo run avtundi
+
+✅ OPTION 2: Make Anti-Affinity SOFT
+preferredDuringSchedulingIgnoredDuringExecution
+
+👉 Then:
+✔ 2 pods separate
+✔ 3rd pod adjust avthadi
+
+❌ OPTION 3: Reduce replicas to 2
+
+👉 Not good (no HA)
+
+🚀 BEST PRACTICE (REAL COMPANY)
+
+👉 Use:
+
+✔ Taint → protect node
+✔ Toleration → allow specific pods
+✔ Anti-affinity → spread pods
+
+🧠 FINAL MINDSET
+
+👉 Scheduler always tries:
+
+1. Follow rules (affinity)
+2. Respect restrictions (taints)
+3. Fit within resources
+
+👉 If conflict:
+❌ Pod = Pending
+
+🎤 INTERVIEW LEVEL ANSWER
+
+👉
+“Pod remained pending because anti-affinity required separate nodes, but one node was tainted and not tolerated, leaving insufficient nodes for scheduling.”
+
+🔥 NEXT ACTION (DO THIS NOW)
+
+👉 Update your deployment:
+
+Add this:
+
+tolerations:
+- key: "type"
+  operator: "Equal"
+  value: "db"
+  effect: "NoSchedule"
+Then run:
+kubectl apply -f deployment.yaml
+kubectl get pods -o wide
+
+👉 Send me output 😎
+We’ll verify like real production debugging 🔥
+
+$ vi deployment.yaml
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ kubectl apply -f deployment.yaml
+error: error parsing deployment.yaml: error converting YAML to JSON: yaml: line 32: did not find expected key
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ cat deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+
+  template:
+    metadata:
+      labels:
+        app: web
+
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: web
+            topologyKey: "kubernetes.io/hostname"
+
+
+
+     tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "db"
+        effect: "NoSchedule"
+
+
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$
+
+Ahhh Bujji 😄🔥 — this is a classic YAML indentation error (very common in real DevOps).
+Don’t worry — I’ll fix it and explain why error came.
+
+❌ ERROR REASON
+
+👉 Error:
+
+yaml: line 32: did not find expected key
+
+👉 Problem:
+Your tolerations indentation is wrong
+
+In YAML:
+👉 spacing = meaning
+👉 even 1 space mistake → ❌ error
+
+🔴 YOUR ISSUE (CLEAR)
+     tolerations:
+
+👉 This is misaligned ❌
+👉 It should be inside spec (same level as affinity)
+
+✅ FIXED FINAL YAML (COPY THIS EXACTLY)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+
+  template:
+    metadata:
+      labels:
+        app: web
+
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: web
+            topologyKey: "kubernetes.io/hostname"
+
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "db"
+        effect: "NoSchedule"
+🚀 NOW RUN
+kubectl apply -f deployment.yaml
+🔍 VERIFY
+kubectl get pods -o wide
+🎯 EXPECTED RESULT
+
+👉 All 3 pods should be:
+
+✔ Running
+✔ Spread across 3 nodes
+
+Including:
+✔ DB node also used now (because toleration added)
+
+🧠 PRO TIP (VERY IMPORTANT)
+
+👉 YAML golden rule:
+
+Same level items → same indentation
+
+👉 Here:
+
+affinity
+tolerations
+
+Both must be inside:
+
+spec:
+🧨 DEBUG TIP (REAL JOB)
+
+Whenever YAML error:
+
+kubectl apply -f file.yaml --dry-run=client
+
+👉 Shows syntax errors quickly
+
+🎯 YOUR TASK
+
+👉 Apply corrected YAML
+👉 Send me:
+
+kubectl get pods -o wide
+
+Next step 🔥
+👉 I’ll show:
+Service + LoadBalancer (access app from browser)
+
+Let’s go Bujji 😎🚀
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ kubectl get pods -o wide
+NAME                              READY   STATUS    RESTARTS   AGE   IP           NODE                                        NOMINATED NODE   READINESS GATES
+web-deployment-7f77554579-c9z47   1/1     Running   0          34s   10.0.3.93    ip-10-0-3-155.ap-south-2.compute.internal   <none>           <none>
+web-deployment-7f77554579-x494q   0/1     Pending   0          31s   <none>       <none>                                      <none>           <none>
+web-deployment-84fcf74b6b-9zrqb   1/1     Running   0          23m   10.0.1.233   ip-10-0-1-83.ap-south-2.compute.internal    <none>           <none>
+web-deployment-84fcf74b6b-drqss   1/1     Running   0          23m   10.0.1.127   ip-10-0-1-186.ap-south-2.compute.internal   <none>           <none>
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$
+
+🔥 Bujji — super close ra! This is real production debugging situation 👏
+You already did 90% correct. Now I’ll explain why still 1 pod Pending and fix it.
+
+🧠 WHAT YOU SEE
+Running pods = 3
+Pending pod = 1
+
+👉 And also notice:
+
+web-deployment-84fcf74b6b-*  (OLD pods)
+web-deployment-7f77554579-*  (NEW pods)
+💥 ROOT CAUSE (VERY IMPORTANT)
+
+👉 You updated deployment
+👉 Kubernetes created new ReplicaSet
+
+BUT:
+
+❌ Old pods still running
+❌ Anti-affinity still applies to ALL pods with label app=web
+
+⚠️ Scheduler Thinking Now
+
+👉 Total pods with label app=web = 4
+
+But:
+
+Node1 → already has pod
+Node2 → already has pod
+Node3 → already has pod
+
+👉 Anti-affinity says:
+❌ “No same label pods on same node”
+
+👉 So 4th pod:
+
+Pending ❌
+🔍 PROOF (Run this)
+kubectl describe pod web-deployment-7f77554579-x494q
+
+👉 You will see:
+
+didn't match pod anti-affinity rules
+🧠 SIMPLE UNDERSTANDING
+
+👉 You asked:
+
+“Spread pods across nodes”
+
+But now:
+👉 You have more pods than nodes
+
+Nodes	Pods
+3	4
+
+👉 Impossible ❌
+
+🔥 FIX (VERY EASY)
+✅ OPTION 1: Delete OLD pods (BEST)
+kubectl delete pod -l app=web
+
+👉 This removes all old + new
+👉 Deployment will recreate only 3 fresh pods
+
+OR
+✅ OPTION 2: Restart Deployment cleanly
+kubectl rollout restart deployment web-deployment
+OR (BEST PRACTICE)
+✅ OPTION 3: Scale properly
+kubectl scale deployment web-deployment --replicas=3
+🏁 FINAL CHECK
+kubectl get pods -o wide
+
+👉 Expected:
+
+Pod	Node
+pod1	node1
+pod2	node2
+pod3	node3
+
+✔ No Pending pods
+✔ Perfect HA setup
+
+🧠 WHAT YOU LEARNED (VERY BIG)
+
+👉 Anti-affinity checks:
+
+ALL pods with same label
+(not just current deployment)
+🎤 INTERVIEW GOLD
+
+👉
+“Pod remained pending because anti-affinity constraints were violated due to existing pods occupying all available nodes.”
+
+🚀 NEXT LEVEL (READY FOR YOU)
+
+Now you are ready for:
+
+👉 Expose app to internet
+
+We will do:
+
+Service (LoadBalancer)
+Access via browser 🌐
+
+👉 Say: “service kavali ra” 😎🔥
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ kubectl describe pod web-deployment-7f77554579-x494q
+Name:             web-deployment-7f77554579-x494q
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             <none>
+Labels:           app=web
+                  pod-template-hash=7f77554579
+Annotations:      <none>
+Status:           Pending
+IP:
+IPs:              <none>
+Controlled By:    ReplicaSet/web-deployment-7f77554579
+Containers:
+  nginx:
+    Image:        nginx
+    Port:         80/TCP
+    Host Port:    0/TCP
+    Environment:  <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-7l4f8 (ro)
+Conditions:
+  Type           Status
+  PodScheduled   False
+Volumes:
+  kube-api-access-7l4f8:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+                             type=db:NoSchedule
+Events:
+  Type     Reason            Age    From               Message
+  ----     ------            ----   ----               -------
+  Warning  FailedScheduling  2m36s  default-scheduler  0/3 nodes are available: 3 node(s) didn't match pod anti-affinity rules. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$
+
+🔥 Bujji — now this is 100% clear production scenario. You debugged correctly 👏
+Let’s break it like a Senior DevOps Engineer.
+
+💥 EXACT ERROR
+0/3 nodes are available:
+3 node(s) didn't match pod anti-affinity rules
+
+👉 Meaning:
+
+❌ ALL 3 nodes already have a pod with label app=web
+👉 So scheduler says:
+
+“I cannot place this new pod anywhere”
+
+🧠 WHY THIS HAPPENED (FINAL TRUTH)
+
+👉 You currently have:
+
+kubectl get pods -o wide
+
+You showed:
+
+Pod	Node
+web-deployment-old	node1
+web-deployment-old	node2
+web-deployment-new	node3
+
+👉 Already 3 pods distributed across 3 nodes
+
+Now Kubernetes tries:
+
+👉 4th pod
+❌ But Anti-Affinity rule:
+
+requiredDuringSchedulingIgnoredDuringExecution
+
+Means:
+
+🚫 STRICT RULE → “One pod per node ONLY”
+
+⚠️ KEY UNDERSTANDING (VERY IMPORTANT)
+
+👉 You used:
+
+requiredDuringSchedulingIgnoredDuringExecution
+
+👉 This is HARD RULE
+
+✔ 1 node = 1 pod
+❌ Cannot place more than 1
+
+🎯 ROOT CAUSE SUMMARY
+
+👉 Nodes = 3
+👉 Pods (same label) = 4
+
+3 nodes < 4 pods ❌
+
+👉 So 1 pod always:
+
+Pending ❌
+🔥 FIX OPTIONS (PRODUCTION STYLE)
+✅ OPTION 1 (BEST PRACTICE)
+
+👉 Clean rollout
+
+kubectl delete pod -l app=web
+
+Then:
+
+kubectl get pods -o wide
+
+✔ Only 3 pods will come
+✔ Perfect HA
+
+✅ OPTION 2 (SMART CHANGE)
+
+👉 Change from HARD → SOFT rule
+
+preferredDuringSchedulingIgnoredDuringExecution
+🔧 Updated YAML:
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchLabels:
+            app: web
+        topologyKey: "kubernetes.io/hostname"
+
+👉 Now:
+
+✔ Scheduler will TRY to spread
+✔ But if not possible → still schedule
+
+✅ OPTION 3 (SCALE NODES)
+
+👉 Real production fix:
+
+Pods > Nodes → Add nodes
+🧠 INTERVIEW GOLD ANSWER
+
+👉 If interviewer asks:
+
+Why pod is Pending?
+
+💬 You say:
+
+“Because pod anti-affinity with requiredDuringScheduling enforced strict node-level separation, and available nodes were insufficient to satisfy placement constraints.”
+
+🔥 BOOM — Selected.
+
+🏁 FINAL ACTION (DO THIS NOW)
+
+👉 Clean cluster:
+
+kubectl delete pod -l app=web
+
+👉 Verify:
+
+kubectl get pods -o wide
+🚀 NEXT STEP (REAL WORLD)
+
+Now you are ready for:
+
+👉 Expose this deployment using Service (LoadBalancer)
+👉 Access in browser 🌐
+
+👉 Say: “service kavali ra bujji” 😎🔥
+
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ cat deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+
+  template:
+    metadata:
+      labels:
+        app: web
+
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: web
+            topologyKey: "kubernetes.io/hostname"
+
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "db"
+        effect: "NoSchedule"
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ kubectl get pods -o wide
+NAME                              READY   STATUS    RESTARTS   AGE   IP           NODE                                        NOMINATED NODE   READINESS GATES
+web-deployment-7f77554579-7mhfv   0/1     Pending   0          48s   <none>       <none>                                      <none>           <none>
+web-deployment-7f77554579-bwpzq   1/1     Running   0          48s   10.0.3.93    ip-10-0-3-155.ap-south-2.compute.internal   <none>           <none>
+web-deployment-7f77554579-xl498   1/1     Running   0          48s   10.0.1.233   ip-10-0-1-83.ap-south-2.compute.internal    <none>           <none>
+web-deployment-84fcf74b6b-77pf9   1/1     Running   0          48s   10.0.1.127   ip-10-0-1-186.ap-south-2.compute.internal   <none>           <none>
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ kubectl apply -f deployment.yaml
+The request is invalid: patch: Invalid value: "map[metadata:map[annotations:map[kubectl.kubernetes.io/last-applied-configuration:{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"name\":\"web-deployment\",\"namespace\":\"default\"},\"spec\":{\"replicas\":3,\"selector\":{\"matchLabels\":{\"app\":\"web\"}},\"template\":{\"metadata\":{\"labels\":{\"app\":\"web\"}},\"spec\":{\"affinity\":{\"podAntiAffinity\":{\"preferredDuringSchedulingIgnoredDuringExecution\":[{\"labelSelector\":{\"matchLabels\":{\"app\":\"web\"}},\"topologyKey\":\"kubernetes.io/hostname\"}]}},\"containers\":[{\"image\":\"nginx\",\"name\":\"nginx\",\"ports\":[{\"containerPort\":80}]}],\"tolerations\":[{\"effect\":\"NoSchedule\",\"key\":\"type\",\"operator\":\"Equal\",\"value\":\"db\"}]}}}}\n]] spec:map[template:map[spec:map[affinity:map[podAntiAffinity:map[preferredDuringSchedulingIgnoredDuringExecution:[map[labelSelector:map[matchLabels:map[app:web]] topologyKey:kubernetes.io/hostname]] requiredDuringSchedulingIgnoredDuringExecution:<nil>]]]]]]": strict decoding error: unknown field "spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].labelSelector", unknown field "spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].topologyKey"
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$
+
+🔥 Bujji — this is a classic YAML structure mistake + rolling update confusion.
+You’re doing real DevOps work now 💪
+
+💥 ERROR ROOT CAUSE
+unknown field "preferredDuringSchedulingIgnoredDuringExecution[0].labelSelector"
+
+👉 Meaning:
+
+❌ Your YAML structure is WRONG
+👉 For preferredDuringSchedulingIgnoredDuringExecution
+
+🧠 CORRECT STRUCTURE (VERY IMPORTANT)
+
+👉 You wrote:
+
+preferredDuringSchedulingIgnoredDuringExecution:
+- labelSelector:
+    matchLabels:
+      app: web
+  topologyKey: "kubernetes.io/hostname"
+
+❌ WRONG
+
+✅ CORRECT FORMAT
+
+👉 Must include:
+
+weight + podAffinityTerm
+🔥 FINAL FIXED YAML
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+
+  template:
+    metadata:
+      labels:
+        app: web
+
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: web
+              topologyKey: "kubernetes.io/hostname"
+
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "db"
+        effect: "NoSchedule"
+⚠️ SECOND ISSUE (IMPORTANT)
+
+👉 You STILL have:
+
+OLD ReplicaSet pods + NEW pods
+
+👉 That’s why:
+
+4 pods running / pending
+🔥 CLEAN FIX (DO THIS NOW)
+Step 1: Delete deployment completely
+kubectl delete deployment web-deployment
+Step 2: Reapply clean YAML
+kubectl apply -f deployment.yaml
+Step 3: Verify
+kubectl get pods -o wide
+🏁 EXPECTED OUTPUT
+
+✔ 3 pods
+✔ Spread across 3 nodes
+✔ No Pending
+
+🧠 WHAT YOU LEARNED TODAY
+1️⃣ preferred vs required
+Type	Behavior
+required	STRICT ❌
+preferred	SOFT ✅
+2️⃣ YAML structure matters
+
+👉 Kubernetes is VERY strict
+👉 Even small indentation mistake = FAIL ❌
+
+3️⃣ Rolling update behavior
+
+👉 Old pods don’t disappear instantly
+👉 Can cause scheduling conflicts
+
+🎤 INTERVIEW GOLD
+
+👉
+“preferredDuringScheduling requires weight and podAffinityTerm, otherwise Kubernetes rejects the spec.”
+
+🚀 NEXT STEP (REAL WORLD)
+
+Now your deployment is production-ready 🔥
+
+👉 Next:
+
+🌐 Expose using Service (LoadBalancer)
+
+👉 Say: “service kavali ra bujji” 😎🔥
+
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ cat deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+
+  template:
+    metadata:
+      labels:
+        app: web
+
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: web
+            topologyKey: "kubernetes.io/hostname"
+
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "db"
+        effect: "NoSchedule"
+
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ kubectl apply -f deployment.yaml
+Error from server (BadRequest): error when creating "deployment.yaml": Deployment in version "v1" cannot be handled as a Deployment: strict decoding error: unknown field "spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].labelSelector", unknown field "spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].topologyKey"
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$
+
+🔥 Bujji — same mistake repeat ayyindi 😄 but this is important concept clarity moment.
+
+💥 WHY ERROR AGAIN?
+
+👉 You are still using WRONG structure:
+
+preferredDuringSchedulingIgnoredDuringExecution:
+- labelSelector:   ❌ WRONG
+🧠 RULE (REMEMBER THIS FOREVER)
+
+👉 For preferredDuringSchedulingIgnoredDuringExecution
+
+MUST HAVE:
+1. weight
+2. podAffinityTerm
+✅ CORRECT YAML (FINAL WORKING)
+
+👉 Copy paste THIS exactly 👇
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+
+  template:
+    metadata:
+      labels:
+        app: web
+
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: web
+              topologyKey: "kubernetes.io/hostname"
+
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "db"
+        effect: "NoSchedule"
+🔥 AFTER FIX → DO THIS
+Step 1: Delete old deployment
+kubectl delete deployment web-deployment
+Step 2: Apply again
+kubectl apply -f deployment.yaml
+Step 3: Verify
+kubectl get pods -o wide
+🏁 EXPECTED
+
+✔ 3 pods
+✔ Spread across nodes
+✔ No errors
+
+🧠 SUPER SIMPLE MEMORY TRICK
+
+👉 Think like this:
+
+Type	Structure
+required	direct rules
+preferred	weight + podAffinityTerm
+🎤 INTERVIEW LINE
+
+👉
+“preferredDuringSchedulingIgnoredDuringExecution requires weight and podAffinityTerm, otherwise Kubernetes throws strict decoding error.”
+
+🚀 NEXT (YOU ARE READY)
+
+Now you built:
+
+✔ HA Deployment
+✔ Anti-affinity
+✔ Tolerations
+
+👉 Next level:
+
+🌐 Expose app using Service (LoadBalancer)
+
+👉 Say: “service kavali ra” 😎🔥
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ vi deployment.yaml
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ kubectl apply -f deployment.yaml
+Error from server (BadRequest): error when creating "deployment.yaml": Deployment in version "v1" cannot be handled as a Deployment: strict decoding error: unknown field "spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].labelSelector", unknown field "spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].topologyKey"
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$ ls
+LICENSE  README.md  db-pod.yaml  deployment.yaml  main.tf  outputs.tf  terraform.tf  terraform.tfstate  terraform.tfstate.backup  variables.tf
+
+M.Ramesh@Ramesh MINGW64 ~/terraform/learn-terraform-provision-eks-cluster (main)
+$
+
+🔥 Bujji — issue crystal clear now.
+👉 You are NOT saving the corrected YAML properly OR still using old structure.
+
+Let’s fix it once and for all 💪
+
+💥 ERROR MEANING (FINAL)
+unknown field "labelSelector"
+unknown field "topologyKey"
+
+👉 This ONLY happens when:
+
+❌ podAffinityTerm is missing
+👉 Kubernetes expects:
+
+preferredDuringSchedulingIgnoredDuringExecution:
+- weight: X
+  podAffinityTerm: ✅
+🚨 YOUR FILE IS STILL WRONG
+
+👉 Even after edit, your file still has:
+
+- labelSelector: ❌
+✅ STEP-BY-STEP FIX (DO EXACTLY)
+🧹 Step 1: Open file fresh
+vi deployment.yaml
+❗ Step 2: DELETE EVERYTHING inside file
+
+👉 Press:
+
+ggdG
+
+(👉 This clears full file)
+
+✍️ Step 3: Paste THIS EXACT YAML
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+
+  template:
+    metadata:
+      labels:
+        app: web
+
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: web
+              topologyKey: kubernetes.io/hostname
+
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "db"
+        effect: "NoSchedule"
+💾 Step 4: Save properly
+
+👉 In vi:
+
+:wq
+🔍 Step 5: VERIFY FILE (VERY IMPORTANT)
+cat deployment.yaml
+
+👉 Check:
+
+✔ weight: 100 present
+✔ podAffinityTerm: present
+✔ labelSelector INSIDE it
+
+🚀 Step 6: Apply
+kubectl apply -f deployment.yaml
+🧠 WHY YOU WERE STUCK
+
+👉 Common real-world issue:
+
+Editing file ❌ not saved
+Copy paste partial ❌
+YAML indentation mistake ❌
+
+👉 Happens even to senior engineers
+
+🏁 AFTER SUCCESS
+kubectl get pods -o wide
+
+✔ 3 pods
+✔ No errors
+✔ Spread across nodes
+
+🎤 INTERVIEW GOLD
+
+👉
+“preferredDuringScheduling requires podAffinityTerm block; otherwise Kubernetes throws strict decoding error.”
+
+🚀 NEXT LEVEL
+
+Now your setup is:
+
+✔ EKS Cluster
+✔ HA Deployment
+✔ Anti-Affinity
+✔ Taints & Tolerations
+
+👉 Next:
+
+🌐 Service + LoadBalancer (Real Production Access)
+
+👉 Say: “service kavali ra bujji” 🔥😎

@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+
+  template:
+    metadata:
+      labels:
+        app: web
+
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:  #preferredDuringSchedulingIgnoredDuringExecution (Change from HARD → SOFT rule)
+          - labelSelector:
+              matchLabels:
+                app: web
+            topologyKey: "kubernetes.io/hostname"
+
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "db"
+        effect: "NoSchedule"
+
+
+
+#------------------
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: web-deployment
+
+# spec:
+#   replicas: 3
+#   selector:
+#     matchLabels:
+#       app: web
+
+#   template:
+#     metadata:
+#       labels:
+#         app: web
+
+#     spec:
+#       containers:
+#       - name: nginx
+#         image: nginx
+#         ports:
+#         - containerPort: 80
+
+#       affinity:
+#         podAntiAffinity:
+#           preferredDuringSchedulingIgnoredDuringExecution:
+#           - weight: 100
+#             podAffinityTerm:
+#               labelSelector:
+#                 matchLabels:
+#                   app: web
+#               topologyKey: kubernetes.io/hostname
+
+#       tolerations:
+#       - key: "type"
+#         operator: "Equal"
+#         value: "db"
+#         effect: "NoSchedule"

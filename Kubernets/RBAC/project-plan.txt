@@ -1,0 +1,188 @@
+# 🚀 DevOps End-to-End Project Documentation (EKS Production Setup)
+
+## 📌 Project Overview
+
+This project demonstrates a complete real-time DevOps implementation using AWS EKS (Elastic Kubernetes Service). It covers infrastructure provisioning, application deployment, scaling, networking, security, and packaging using industry best practices.
+
+---
+
+## 🎯 Objectives
+
+* Deploy a highly available application on Kubernetes
+* Implement scaling and load balancing
+* Secure application using TLS
+* Manage configuration and secrets
+* Use Helm for production-grade deployments
+
+---
+
+## 🏗️ Architecture
+
+User → DNS → Ingress → Service → Pods → ConfigMap/Secrets → Storage
+
+---
+
+## 🛠️ Tools & Technologies
+
+* AWS EKS
+* Terraform
+* Kubernetes (kubectl)
+* Docker
+* Helm
+* Ingress NGINX Controller
+* cert-manager
+
+---
+
+## 📅 Implementation Steps
+
+### 🔹 Step 1: Infrastructure Setup (Terraform)
+
+* Created EKS cluster using Terraform
+* Configured VPC, subnets, and node groups
+
+Commands:
+
+```
+terraform init
+terraform apply
+```
+
+---
+
+### 🔹 Step 2: Cluster Connection
+
+```
+aws eks update-kubeconfig --region ap-south-2 --name <cluster-name>
+kubectl get nodes
+```
+
+---
+
+### 🔹 Step 3: Deployment (High Availability)
+
+* Created Deployment with 3 replicas
+* Implemented Pod Anti-Affinity
+* Used Taints & Tolerations
+
+Key Features:
+
+* High Availability
+* Node distribution
+
+---
+
+### 🔹 Step 4: Service Creation
+
+* Exposed application using LoadBalancer
+
+```
+kubectl apply -f service.yaml
+kubectl get svc
+```
+
+---
+
+### 🔹 Step 5: Ingress Setup
+
+* Installed NGINX Ingress Controller
+* Configured routing rules
+
+```
+kubectl apply -f ingress.yaml
+```
+
+---
+
+### 🔹 Step 6: DNS Configuration
+
+* Mapped domain to LoadBalancer using Route53
+
+---
+
+### 🔹 Step 7: ConfigMap & Secrets
+
+* Managed environment variables
+* Stored sensitive data securely
+
+---
+
+### 🔹 Step 8: Persistent Storage
+
+* Created PVC
+* Mounted volume to pods
+
+---
+
+### 🔹 Step 9: Auto Scaling (HPA)
+
+* Installed Metrics Server
+* Configured HPA based on CPU
+
+```
+kubectl autoscale deployment web-deployment --cpu-percent=50 --min=2 --max=5
+```
+
+---
+
+### 🔹 Step 10: Helm Implementation
+
+* Created Helm chart
+* Deployed using Helm
+
+```
+helm create myapp
+helm install myapp ./myapp
+```
+
+---
+
+### 🔹 Step 11: HTTPS Setup
+
+* Installed cert-manager
+* Configured TLS certificates
+
+---
+
+## 📊 Key Features Implemented
+
+* High Availability Deployment
+* Load Balancing using Service & Ingress
+* Domain Routing
+* Auto Scaling (HPA)
+* Secure Secrets Management
+* Persistent Storage
+* Helm-based deployment
+
+---
+
+## ⚠️ Challenges Faced
+
+* Ingress LoadBalancer pending issue (resolved via subnet tagging)
+* YAML syntax errors
+* Pod scheduling issues due to anti-affinity
+
+---
+
+## 🧠 Learnings
+
+* Importance of proper YAML structure
+* Understanding Kubernetes scheduling
+* Real-world debugging of EKS issues
+* Infrastructure as Code using Terraform
+
+---
+
+## 🎤 Interview Explanation
+
+“I designed and implemented a production-grade Kubernetes deployment on AWS EKS. I used Terraform for infrastructure provisioning, deployed a highly available application with anti-affinity rules, exposed it using Ingress with domain routing and TLS, implemented auto-scaling using HPA, managed configurations using ConfigMaps and Secrets, and packaged deployments using Helm.”
+
+---
+
+## 🏁 Conclusion
+
+This project demonstrates real-world DevOps practices including scalability, security, and automation, making it suitable for production environments.
+
+---
+
+🔥 End of Document
