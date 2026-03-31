@@ -1,0 +1,1018 @@
+
+
+why we use taint and tolerations
+
+In Kubernetes, taints and tolerations are used to control which Pods can run on which Nodes — mainly for node isolation and workload control.
+
+🔴 What is a Taint?
+A taint is applied to a Node to repel Pods.
+
+👉 Think:
+“Don’t come here unless you are allowed”
+
+Example:
+kubectl taint nodes node1 key=value:NoSchedule
+This means:
+
+No Pod will be scheduled on node1
+
+Unless the Pod has a matching toleration
+
+🟢 What is a Toleration?
+A toleration is applied to a Pod to allow it to run on tainted nodes.
+
+👉 Think:
+“I can handle this node”
+
+Example:
+tolerations:
+- key: "key"
+  operator: "Equal"
+  value: "value"
+  effect: "NoSchedule"
+🎯 Why We Use Taints & Tolerations (REAL DevOps Use Cases)
+1️⃣ Dedicated Nodes (🔥 Very Important for Interviews)
+👉 Example:
+
+You want database pods only on specific nodes
+
+Solution:
+
+Taint node:
+
+kubectl taint nodes db-node workload=database:NoSchedule
+Add toleration in DB pod
+
+👉 Result:
+✔ Only DB pods run there
+❌ Other pods are blocked
+
+2️⃣ GPU / High Resource Nodes
+👉 GPU nodes are expensive
+
+Taint GPU node
+
+Only ML/AI pods tolerate it
+
+✔ Saves cost
+✔ Prevents misuse
+
+3️⃣ Critical System Pods
+👉 Kubernetes itself uses this!
+
+Nodes may have:
+
+node-role.kubernetes.io/control-plane:NoSchedule
+✔ Prevents normal pods from running on master node
+✔ Only system pods allowed
+
+4️⃣ Handling Node Issues (NoExecute)
+If node becomes unhealthy:
+
+kubectl taint nodes node1 key=value:NoExecute
+✔ Existing pods get evicted
+✔ Only tolerated pods stay
+
+🔥 Types of Taint Effects
+Effect	Meaning
+NoSchedule	Pod will NOT be scheduled
+PreferNoSchedule	Try to avoid (soft rule)
+NoExecute	Evict existing pods
+💡 Simple Analogy
+Taint = Node says “Stay away” 🚫
+
+Toleration = Pod says “I’m allowed” ✅
+
+🧠 Interview One-Liner (Must Remember)
+👉
+“Taints and tolerations are used to ensure that pods are not scheduled on inappropriate nodes unless explicitly allowed.”
+
+If you want next level 🔥
+I can give:
+
+Real-time production YAML examples
+
+Common interview traps
+
+Or do a mock interview question round
+
+Just say 👍
+
+
+explain in deatils i can not andrestand
+
+Got it Bujji 👍 — let’s slow down and make this super simple + crystal clear. I’ll explain like real-life + then map to Kubernetes.
+
+🧠 Step 1: Real-Life Example (Very Easy)
+Imagine this:
+
+🏠 You have a VIP room in your house
+🚪 On the door, you put a board:
+
+👉 “❌ No entry for everyone”
+
+This board = TAINT
+
+Now, only special people who have a VIP pass can enter.
+
+🎫 That VIP pass = TOLERATION
+
+👉 So:
+
+Normal people ❌ cannot enter
+
+VIP people ✅ can enter
+
+🔁 Now Map to Kubernetes
+🔴 TAINT (Applied on NODE)
+A Node says:
+👉 “❌ Pods are NOT allowed here”
+
+Example:
+
+kubectl taint nodes node1 app=database:NoSchedule
+Meaning:
+
+Node1 is restricted
+
+No Pod can come there
+
+🟢 TOLERATION (Applied on POD)
+A Pod says:
+👉 “I am allowed to go to that restricted node”
+
+Example:
+
+tolerations:
+- key: "app"
+  operator: "Equal"
+  value: "database"
+  effect: "NoSchedule"
+🔥 Step-by-Step Flow (Important)
+Step 1:
+You taint a node
+
+👉 Node becomes restricted
+
+Step 2:
+Kubernetes scheduler tries to place Pods
+
+👉 Normal Pods → ❌ Rejected
+
+Step 3:
+Pod with toleration comes
+
+👉 Kubernetes checks:
+
+key matches? ✅
+
+value matches? ✅
+
+effect matches? ✅
+
+👉 Then:
+✔ Pod is allowed
+
+🎯 Why This Is Needed (REAL PROBLEM)
+Without taints:
+
+👉 Any pod can go to any node
+👉 This causes:
+
+DB pods mixing with frontend pods ❌
+
+GPU nodes wasted ❌
+
+Critical nodes overloaded ❌
+
+🔥 Real DevOps Example
+Scenario: Database Node
+👉 You have 3 nodes:
+
+node1 → normal
+
+node2 → normal
+
+node3 → database node
+
+Step 1: Protect DB node
+kubectl taint nodes node3 type=db:NoSchedule
+👉 Now:
+❌ No pods can go to node3
+
+Step 2: Allow DB pods only
+tolerations:
+- key: "type"
+  value: "db"
+  effect: "NoSchedule"
+👉 Result:
+
+Pod Type	Can go to node3?
+Frontend	❌ No
+Backend	❌ No
+Database	✅ Yes
+⚡ Types of Effects (VERY IMPORTANT)
+1️⃣ NoSchedule
+👉 Strict block
+
+New pods ❌ not allowed
+
+Only tolerated pods ✅ allowed
+
+2️⃣ PreferNoSchedule
+👉 Soft rule
+
+Kubernetes tries to avoid
+
+But may still schedule
+
+3️⃣ NoExecute (🔥 tricky)
+👉 Strongest one
+
+New pods ❌ not allowed
+
+Existing pods ❌ removed (evicted)
+
+🧨 Common Interview Trap
+❓ “Does toleration guarantee pod will go to that node?”
+
+👉 ❌ NO
+
+It only allows, not forces.
+
+👉 For forcing → use:
+
+nodeSelector
+
+nodeAffinity
+
+🧠 Final Memory Trick
+👉 Taint = Block 🚫
+👉 Toleration = Permission ✅
+
+🔥 One-Line Killer Answer (Interview)
+👉
+“Taints prevent pods from being scheduled on nodes, and tolerations allow specific pods to bypass that restriction.”
+
+If you want next level 🚀
+I can give you:
+
+🔥 Real production YAML (EKS level)
+
+🔥 Debug commands (kubectl describe, errors)
+
+🔥 Mock interview (I’ll grill you like real interviewer)
+
+Just tell me 👍
+
+
+based on taint and tolerations do one simple project for real time project we needs all process step by step explain........ in very clear ga cheppu small steps kudha cheppu and very commnds completed project cheydam , okati what is GPU ante em and detail explain
+
+Perfect Bujji 🔥 — now we’ll do a real-time mini project step by step (like in company work), and also I’ll clearly explain GPU at the end.
+
+🚀 PROJECT: “Dedicated Database Node using Taints & Tolerations”
+🎯 Goal
+Only DB pods should run on one node
+
+Other pods should NOT go there
+
+🧱 Step 0: Prerequisites
+Make sure you have:
+
+kubectl get nodes
+👉 Example output:
+
+node1
+node2
+node3
+We will use:
+👉 node3 as DB node
+
+🔴 Step 1: Apply TAINT to Node
+👉 This blocks all pods
+
+kubectl taint nodes node3 workload=db:NoSchedule
+✅ Verify taint
+kubectl describe node node3 | grep Taint
+👉 Output:
+
+workload=db:NoSchedule
+🧪 Step 2: Try Normal Pod (It Should FAIL)
+Create a simple nginx pod
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+Apply:
+
+kubectl apply -f nginx.yaml
+🔍 Check where it goes
+kubectl get pods -o wide
+👉 You will see:
+❌ It will NOT go to node3
+
+🟢 Step 3: Create DB Pod with TOLERATION
+Now allow a pod to run on tainted node
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: mysql
+    image: mysql:5.7
+  tolerations:
+  - key: "workload"
+    operator: "Equal"
+    value: "db"
+    effect: "NoSchedule"
+🚀 Apply it
+kubectl apply -f db-pod.yaml
+🔍 Check placement
+kubectl get pods -o wide
+👉 Result:
+✔ db-pod will be scheduled on node3
+
+⚠️ Step 4 (IMPORTANT): Force Pod to Specific Node
+👉 Remember:
+Toleration = only permission
+NOT guarantee
+
+So add nodeSelector
+
+nodeSelector:
+  kubernetes.io/hostname: node3
+✅ Final YAML (Production Style)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: mysql
+    image: mysql:5.7
+  nodeSelector:
+    kubernetes.io/hostname: node3
+  tolerations:
+  - key: "workload"
+    operator: "Equal"
+    value: "db"
+    effect: "NoSchedule"
+🧹 Step 5: Cleanup
+kubectl delete pod test-nginx
+kubectl delete pod db-pod
+kubectl taint nodes node3 workload=db:NoSchedule-
+🎯 WHAT YOU LEARNED (Real DevOps Level)
+✔ Node isolation
+✔ Scheduling control
+✔ Production workload separation
+
+🧠 NOW: What is GPU? (Very Clear)
+💻 CPU vs GPU
+🧠 CPU (Central Processing Unit)
+Few cores (4–16)
+
+Good for:
+
+Logic
+
+Decision making
+
+General tasks
+
+⚡ GPU (Graphics Processing Unit)
+👉 GPU has 1000s of small cores
+
+Works parallelly
+
+Handles heavy calculations fast
+
+🎯 Simple Example
+👉 Task: Add numbers
+
+CPU → 1 by 1
+
+GPU → 1000 at same time
+
+🔥 Where GPU is Used
+AI / Machine Learning 🤖
+
+Video rendering 🎬
+
+Gaming 🎮
+
+Data processing 📊
+
+🚀 Kubernetes + GPU
+👉 GPU nodes are very costly
+
+So we:
+
+Add taint:
+
+kubectl taint nodes gpu-node gpu=true:NoSchedule
+Only ML pods get access
+
+💡 Real DevOps Use Case
+👉 Company has:
+
+Normal nodes
+
+GPU nodes (expensive)
+
+👉 Without taints:
+❌ Normal apps may use GPU → waste money
+
+👉 With taints:
+✔ Only AI workloads use GPU
+
+🧠 Final Summary
+👉 Taint = Block node
+👉 Toleration = Allow pod
+👉 nodeSelector = Force placement
+
+🔥 Next Level (Tell me)
+I can give you:
+
+🔥 Deployment instead of Pod (real production)
+
+🔥 EKS GPU setup (real company scenario)
+
+🔥 Interview mock (senior level)
+
+Just say 👉 next level 😎
+
+
+what is affinite and node affinite
+
+Good question Bujji 👍 — this is VERY important for interviews + real projects.
+Let’s make it super clear step by step (no confusion).
+
+🧠 First: What is Affinity?
+👉 Affinity = Attraction (preference or rule)
+
+In Kubernetes:
+👉 It means “Pod wants to go to a specific node”
+
+🔁 Difference from Taints
+Concept	Meaning
+Taint	Node pushes pods away 🚫
+Toleration	Pod ignores taint ✅
+Affinity	Pod chooses node ❤️
+🎯 What is Node Affinity?
+👉 Node Affinity = Rules to decide which node a Pod should run on
+
+🧠 Real-Life Example
+Imagine:
+
+Node1 → type=frontend
+
+Node2 → type=backend
+
+Node3 → type=database
+
+👉 Now DB pod says:
+👉 “I ONLY want database node”
+
+That is Node Affinity
+
+🧱 Step 1: Label the Node
+First assign label to node:
+
+kubectl label nodes node3 type=db
+🟢 Step 2: Use Node Affinity in Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: type
+            operator: In
+            values:
+            - db
+🔍 What this means
+👉 Pod will ONLY run where:
+
+Node has label type=db ✅
+
+Otherwise ❌ it will NOT run
+
+🔥 Types of Node Affinity (VERY IMPORTANT)
+1️⃣ Required (Hard Rule)
+requiredDuringSchedulingIgnoredDuringExecution
+👉 Means:
+❌ If condition not matched → Pod will NOT run
+
+2️⃣ Preferred (Soft Rule)
+preferredDuringSchedulingIgnoredDuringExecution
+👉 Means:
+✔ Try to match
+✔ If not → still run somewhere else
+
+🎯 Example (Soft Rule)
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      preference:
+        matchExpressions:
+        - key: type
+          operator: In
+          values:
+          - db
+⚡ NodeSelector vs NodeAffinity
+Feature	nodeSelector	nodeAffinity
+Simple	✅	❌
+Flexible	❌	✅
+Operators (In, NotIn)	❌	✅
+Production use	❌	✅
+🔥 Real DevOps Scenario
+👉 In company:
+
+DB nodes → labeled type=db
+
+Backend nodes → labeled type=backend
+
+👉 DB Pod:
+
+✔ Uses Node Affinity → goes only to DB nodes
+
+👉 Backend Pod:
+
+✔ Goes only to backend nodes
+
+🧠 Full Combo (REAL PRODUCTION)
+👉 Best practice = use BOTH:
+
+Taints → block nodes
+
+Affinity → select nodes
+
+Example:
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: node3
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: type
+            operator: In
+            values:
+            - db
+
+  tolerations:
+  - key: "workload"
+    value: "db"
+    effect: "NoSchedule"
+🧠 Simple Memory Trick
+👉 Taint = “Don’t come” 🚫
+👉 Toleration = “I can come” ✅
+👉 Affinity = “I WANT this node ❤️”
+
+🎤 Interview One-Liner
+👉
+“Node affinity is used to constrain pods to run on specific nodes based on labels.”
+
+🔥 Common Interview Trap
+❓ “Does affinity guarantee placement?”
+
+👉 ❌ NO (only preference unless required)
+
+If you want next level 🚀
+I can give:
+
+🔥 Pod Affinity vs Anti-Affinity (very important)
+
+🔥 Real-time project using affinity + taints together
+
+🔥 Troubleshooting (why pod not scheduling)
+
+Just say 👉 next 😎
+
+
+naa artam laledhu same kadha taint kuda why we used affinity and node affinity explain in very clear
+naa artam laledhu same kadha taint kuda why we used affinity and node affinity explain in very clear
+
+Got it Bujji 👍 — confusion 100% valid.
+Most people think taints = affinity same, but actually they are opposite ideas.
+
+Let’s make it super simple (no confusion) 👇
+
+🧠 ONE LINE DIFFERENCE
+👉 Taint = Node blocks pods 🚫
+👉 Affinity = Pod selects node ❤️
+
+🏠 Real-Life Story (VERY CLEAR)
+🔴 Case 1: TAINT
+Room owner says:
+
+👉 “❌ Nobody enter this room”
+
+Only people with permission can enter.
+
+✔ Control is with ROOM (Node)
+
+🟢 Case 2: AFFINITY
+Person says:
+
+👉 “❤️ I want THIS room only”
+
+✔ Control is with PERSON (Pod)
+
+🔥 Kubernetes Meaning
+🔴 TAINT (Node Side Control)
+Applied on Node
+
+Node says:
+👉 “Pods, stay away!”
+
+kubectl taint nodes node1 env=prod:NoSchedule
+🟢 AFFINITY (Pod Side Control)
+Applied in Pod
+
+Pod says:
+👉 “I want this type of node”
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: env
+          operator: In
+          values:
+          - prod
+⚔️ KEY DIFFERENCE (THIS IS THE MAIN POINT)
+Feature	Taint	Affinity
+Who controls?	Node	Pod
+Direction	Push away 🚫	Pull towards ❤️
+Purpose	Block nodes	Choose nodes
+🎯 WHY NOT ONLY TAINT?
+👉 Good question — interview level 🔥
+
+If you use only taint:
+
+You block nodes ✔
+
+But pod doesn’t know where to go
+
+👉 It may go to wrong node
+
+🎯 WHY NOT ONLY AFFINITY?
+If you use only affinity:
+
+Pod tries to go to node ✔
+
+But other pods can also come ❌
+
+👉 No protection
+
+🔥 REAL COMPANY SCENARIO
+🎯 You have DB Node
+❌ Only Taint (Problem)
+kubectl taint nodes node3 type=db:NoSchedule
+✔ Blocks others
+❌ But DB pod may go to wrong node
+
+❌ Only Affinity (Problem)
+affinity → type=db
+✔ DB pod goes correctly
+❌ But other pods can also come
+
+✅ BEST PRACTICE (Use BOTH)
+Step 1: Taint node
+kubectl taint nodes node3 type=db:NoSchedule
+Step 2: Label node
+kubectl label nodes node3 type=db
+Step 3: Pod config
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: type
+            operator: In
+            values:
+            - db
+
+  tolerations:
+  - key: "type"
+    value: "db"
+    effect: "NoSchedule"
+🎯 FINAL RESULT
+Pod Type	Can go to DB node?
+Normal pod	❌ No
+DB pod (with both)	✅ Yes
+DB pod → other node	❌ No
+🧠 SUPER SIMPLE MEMORY
+👉 Taint = "Don’t come here" 🚫
+👉 Affinity = "I want to go here" ❤️
+
+🎤 Interview Killer Answer
+👉
+“Taints restrict nodes, while affinity guides pods. Both are used together for proper workload isolation and scheduling.”
+
+If still confusion 😄
+I can draw:
+
+🧾 Diagram (very easy visual)
+
+🧪 Hands-on lab (you run commands, I guide)
+
+🎤 Mock interview (I test your understanding)
+
+Just say 👉 diagram kavali or practice kavali 🚀
+
+
+If still confusion 😄
+I can draw:
+
+🧾 Diagram (very easy visual)
+🧪 Hands-on lab (you run commands, I guide)
+🎤 Mock interview (I test your understanding)
+
+Just say 👉 diagram kavali or practice kavali 🚀
+
+Super Bujji 😄 — let’s go with 🧾 Diagram first (this will clear everything in 2 minutes)
+
+🧾 TAINT vs AFFINITY — VISUAL DIAGRAM
+🔴 ONLY TAINT (Node blocks pods)
+          [Pod A]      [Pod B]      [Pod DB]
+             |            |            |
+             v            v            v
+
+        -----------------------------
+        |         Node3 (DB)        |
+        |   ❌ TAINT: type=db       |
+        -----------------------------
+
+Result:
+❌ All pods blocked (including DB pod)
+👉 Problem: Even correct pod cannot enter without toleration
+
+🟢 TAINT + TOLERATION
+          [Pod A]      [Pod B]      [Pod DB ✅]
+             |            |            |
+             v            v            v
+
+        -----------------------------
+        |         Node3 (DB)        |
+        |   ❌ TAINT: type=db       |
+        -----------------------------
+
+Result:
+❌ Pod A blocked  
+❌ Pod B blocked  
+✅ DB Pod allowed (has toleration)
+👉 Good: Only DB pod allowed
+👉 Problem: DB pod may still go to other nodes ❌
+
+🟢 ONLY AFFINITY (Pod chooses node)
+          [Pod A]      [Pod B]      [Pod DB ❤️]
+             |            |            |
+             v            v            v
+
+   Node1        Node2         Node3 (type=db)
+                                ↑
+                          DB pod wants here
+
+Result:
+✅ DB pod goes to Node3  
+❌ BUT Pod A, B can also come to Node3
+👉 Problem: No protection ❌
+
+🔥 FINAL (BEST PRACTICE: BOTH)
+          [Pod A]      [Pod B]      [Pod DB ❤️ + ✅]
+             |            |            |
+             v            v            v
+
+        -----------------------------
+        |         Node3 (DB)        |
+        |   ❌ TAINT: type=db       |
+        -----------------------------
+
+Node Label: type=db
+
+Result:
+❌ Pod A blocked  
+❌ Pod B blocked  
+✅ DB pod goes ONLY here
+🧠 FINAL UNDERSTANDING
+👉 Taint = Security Gate 🚫
+👉 Affinity = GPS Direction ❤️
+
+🎯 SIMPLE LINE (NEVER FORGET)
+👉
+Taint controls WHO cannot come
+Affinity controls WHERE pod should go
+
+🧪 Next Step (Very Important)
+Now best way to fully understand is:
+
+👉 Practice kavali (hands-on lab)
+
+I will:
+
+Give you commands step-by-step
+
+You run in terminal
+
+I debug your errors like real DevOps senior
+
+Just say 👉 practice start cheddam 🔥
+
+
+Just say 👉 practice start cheddam 🔥 chedam raa bujji prepare a clear plan and with steps and commads
+
+Super Bujji 🔥 — practice start cheddam 💪
+I’ll guide you like real senior DevOps — step by step, small steps, commands + expected output + what to observe
+
+🚀 LAB PLAN (Clear Roadmap)
+We will do:
+
+1️⃣ Check nodes
+2️⃣ Label one node (DB node)
+3️⃣ Apply taint
+4️⃣ Deploy normal pod (should FAIL)
+5️⃣ Deploy DB pod with toleration (partial success)
+6️⃣ Add affinity (final correct solution)
+7️⃣ Verify everything
+
+⚠️ BEFORE START
+Run this:
+
+kubectl get nodes -o wide
+👉 Tell me output (node names)
+👉 For now assume:
+
+node1
+
+node2
+
+node3
+
+We will use 👉 node3 as DB node
+
+🧱 STEP 1: Label the Node (DB Node)
+kubectl label nodes node3 type=db
+✅ Verify
+kubectl get nodes --show-labels
+👉 You should see:
+
+node3   type=db
+🔴 STEP 2: Apply TAINT
+kubectl taint nodes node3 type=db:NoSchedule
+✅ Verify
+kubectl describe node node3 | grep Taint
+👉 Output:
+
+type=db:NoSchedule
+🧪 STEP 3: Create NORMAL POD (Should FAIL on node3)
+Create file:
+
+vi nginx.yaml
+Paste:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: normal-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+🚀 Apply
+kubectl apply -f nginx.yaml
+🔍 Check
+kubectl get pods -o wide
+👉 Observe:
+
+Pod runs on node1 or node2
+
+❌ NOT on node3
+
+🟢 STEP 4: Create DB POD (Only Toleration)
+vi db-pod.yaml
+Paste:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+  tolerations:
+  - key: "type"
+    operator: "Equal"
+    value: "db"
+    effect: "NoSchedule"
+🚀 Apply
+kubectl apply -f db-pod.yaml
+🔍 Check
+kubectl get pods -o wide
+👉 Observe:
+
+db-pod MAY go to node3
+
+OR may go to other nodes ❗
+
+👉 This is important:
+Toleration = only permission, NOT guarantee
+
+🔥 STEP 5: FINAL FIX (Add Affinity)
+Edit file:
+
+vi db-pod.yaml
+🔁 Replace with this:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: type
+            operator: In
+            values:
+            - db
+
+  tolerations:
+  - key: "type"
+    operator: "Equal"
+    value: "db"
+    effect: "NoSchedule"
+🔄 Re-apply
+kubectl delete pod db-pod
+kubectl apply -f db-pod.yaml
+🔍 FINAL CHECK
+kubectl get pods -o wide
+👉 RESULT:
+✔ db-pod → ONLY on node3
+❌ normal-pod → NOT on node3
+
+🧠 WHAT YOU JUST LEARNED (REAL DEVOPS)
+Concept	You saw practically
+Taint	Block node
+Toleration	Allow pod
+Affinity	Force correct node
+🧨 DEBUG COMMANDS (VERY IMPORTANT)
+If something fails:
+
+kubectl describe pod db-pod
+👉 Look for:
+
+“0/3 nodes available”
+
+“node didn’t match affinity”
+
+“taint not tolerated”
+
+🧹 CLEANUP
+kubectl delete pod normal-pod
+kubectl delete pod db-pod
+kubectl taint nodes node3 type=db:NoSchedule-
+kubectl label nodes node3 type-
+🎯 YOUR TASK NOW
+👉 Run till STEP 3
+👉 Send me output of:
+
+kubectl get pods -o wide
+I will:
+✔ Check your result
+✔ Correct mistakes
+✔ Continue next steps
+
+Let’s go 🔥 Bujji DevOps mode ON 💻🚀
+
+
+
+
